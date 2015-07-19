@@ -1,0 +1,26 @@
+body, html {
+  margin: 0;
+  padding: 0; }
+
+.list-items .list-item {
+  overflow: hidden;
+  position: relative;
+  border-bottom: 1px solid #333333; }
+  .list-items .list-item img {
+    width: 100%; }
+  .list-items .list-item .left, .list-items .list-item .right {
+    float: left;
+    padding: 1rem; }
+  .list-items .list-item .left {
+    width: 30%;
+    text-align: center;
+    background: black;
+    color: white;
+    font-size: 2rem; }
+  .list-items .list-item .right {
+    width: 70%; }
+
+.player {
+  min-height: 100vh; }
+  .player .stage {
+    background: black; }

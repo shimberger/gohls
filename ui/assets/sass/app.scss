@@ -1,0 +1,41 @@
+
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+.list-items {
+	.list-item {
+		overflow: hidden;
+		position: relative;
+		border-bottom: 1px solid #333333;
+
+		img {
+			width: 100%;
+		}
+
+		.left, .right {
+			float: left;
+			padding: 1rem;
+		}
+		.left {
+			width: 30%;
+			text-align: center;
+			background: black;
+			color: white;
+			font-size: 2rem;
+		}
+		.right {
+			width: 70%;
+		}
+
+	}
+}
+
+.player {
+	min-height: 100vh;
+
+	.stage {
+		background: black;
+	}
+}
