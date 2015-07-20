@@ -5,9 +5,11 @@ body, html {
 }
 
 .list-items {
+
 	.list-item {
 		overflow: hidden;
 		position: relative;
+		display: flex;
 		border-bottom: 1px solid #333333;
 
 		img {
@@ -15,6 +17,7 @@ body, html {
 		}
 
 		.left, .right {
+			display: flex;
 			float: left;
 			padding: 1rem;
 		}

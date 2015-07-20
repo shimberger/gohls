@@ -5,10 +5,12 @@ body, html {
 .list-items .list-item {
   overflow: hidden;
   position: relative;
+  display: flex;
   border-bottom: 1px solid #333333; }
   .list-items .list-item img {
     width: 100%; }
   .list-items .list-item .left, .list-items .list-item .right {
+    display: flex;
     float: left;
     padding: 1rem; }
   .list-items .list-item .left {

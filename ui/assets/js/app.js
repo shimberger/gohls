@@ -149,7 +149,6 @@ var routes = React.createElement(
 	Route,
 	{ path: "/ui/", handler: App },
 	React.createElement(DefaultRoute, { handler: List }),
-	React.createElement(Route, { path: "show/", handler: List }),
 	React.createElement(Route, { name: "list", path: "list/:path", handler: List }),
 	React.createElement(Route, { name: "play", path: "play/:path", handler: Player })
 );

@@ -113,7 +113,6 @@ var List = React.createClass({
 var routes = (
 	<Route path="/ui/" handler={App}>
 		<DefaultRoute handler={List}/>
-		<Route path="show/" handler={List} />
 		<Route name="list" path="list/:path"  handler={List} />
 		<Route name="play" path="play/:path"  handler={Player} />
 	</Route>
