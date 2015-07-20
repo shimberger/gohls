@@ -57,7 +57,7 @@ var Folder = React.createClass({
 				{ className: "right" },
 				React.createElement(
 					Link,
-					{ to: "show", params: { "path": encodeURIComponent(this.props.path) } },
+					{ to: "list", params: { "path": encodeURIComponent(this.props.path) } },
 					this.props.name
 				)
 			)
@@ -147,9 +147,10 @@ var List = React.createClass({
 
 var routes = React.createElement(
 	Route,
-	{ path: "/ui", handler: App },
+	{ path: "/ui/", handler: App },
+	React.createElement(DefaultRoute, { handler: List }),
 	React.createElement(Route, { path: "show/", handler: List }),
-	React.createElement(Route, { name: "show", path: "show/:path", handler: List }),
+	React.createElement(Route, { name: "list", path: "list/:path", handler: List }),
 	React.createElement(Route, { name: "play", path: "play/:path", handler: Player })
 );
 

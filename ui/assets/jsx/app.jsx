@@ -40,7 +40,7 @@ var Folder = React.createClass({
 					<span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
 				</div>
 				<div className="right">
-					<Link to="show" params={{"path": encodeURIComponent(this.props.path)}} >
+					<Link to="list" params={{"path": encodeURIComponent(this.props.path)}} >
 						{this.props.name}
 					</Link>
 				</div>
@@ -111,9 +111,10 @@ var List = React.createClass({
 });
 
 var routes = (
-	<Route path="/ui" handler={App}>
+	<Route path="/ui/" handler={App}>
+		<DefaultRoute handler={List}/>
 		<Route path="show/" handler={List} />
-		<Route name="show" path="show/:path"  handler={List} />
+		<Route name="list" path="list/:path"  handler={List} />
 		<Route name="play" path="play/:path"  handler={Player} />
 	</Route>
 );
