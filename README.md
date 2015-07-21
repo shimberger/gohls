@@ -11,7 +11,7 @@ Running it
 
 - Place ffmpeg and ffprobe binaries in "tools" dir
 - Run go run *.go <path to videos> in project root (e.g. go run *.go ~/Documents/)
-- Access http://localhost:8080/ui/show/
+- Access http://localhost:8080/ui/
 
 License
 -------
