@@ -33,7 +33,7 @@ var Player = React.createClass({
 				"div",
 				{ className: "stage" },
 				React.createElement("video", {
-					src: "/playlist/" + this.props.params.path,
+					src: "/playlist/" + this.props.params.splat,
 					width: "100%", autoPlay: true, controls: true })
 			)
 		);
@@ -57,7 +57,7 @@ var Folder = React.createClass({
 				{ className: "right" },
 				React.createElement(
 					Link,
-					{ to: "list", params: { "path": encodeURIComponent(this.props.path) } },
+					{ to: "list", params: { "splat": this.props.path } },
 					this.props.name
 				)
 			)
@@ -77,7 +77,7 @@ var Video = React.createClass({
 				{ className: "left" },
 				React.createElement(
 					Link,
-					{ to: "play", params: { "path": encodeURIComponent(this.props.path) } },
+					{ to: "play", params: { "splat": this.props.path } },
 					React.createElement("img", { src: "/frame/" + this.props.path })
 				)
 			),
@@ -112,12 +112,12 @@ var List = React.createClass({
 	},
 
 	componentDidMount: function componentDidMount() {
-		var path = this.props.params.path || "";
+		var path = this.props.params.splat || "";
 		this.fetchData(path);
 	},
 
 	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-		var path = nextProps.params.path || "";
+		var path = nextProps.params.splat || "";
 		this.fetchData(path);
 	},
 
@@ -149,8 +149,8 @@ var routes = React.createElement(
 	Route,
 	{ path: "/ui/", handler: App },
 	React.createElement(DefaultRoute, { handler: List }),
-	React.createElement(Route, { name: "list", path: "list/:path", handler: List }),
-	React.createElement(Route, { name: "play", path: "play/:path", handler: Player })
+	React.createElement(Route, { name: "list", path: "list/*", handler: List }),
+	React.createElement(Route, { name: "play", path: "play/*", handler: Player })
 );
 
 ReactRouter.run(routes, ReactRouter.HistoryLocation, function (Root) {

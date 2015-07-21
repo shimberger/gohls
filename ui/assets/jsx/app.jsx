@@ -22,7 +22,7 @@ var Player = React.createClass({
 				<h1>Player</h1>
 				<div className="stage">
 					<video
-						src={"/playlist/" + this.props.params.path}
+						src={"/playlist/" + this.props.params.splat}
 						width="100%"  autoPlay controls >
 					</video>	
 				</div>
@@ -40,7 +40,7 @@ var Folder = React.createClass({
 					<span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
 				</div>
 				<div className="right">
-					<Link to="list" params={{"path": encodeURIComponent(this.props.path)}} >
+					<Link to="list" params={{"splat": this.props.path}} >
 						{this.props.name}
 					</Link>
 				</div>
@@ -54,7 +54,7 @@ var Video = React.createClass({
 		return (
 			<div className="list-item video" key={this.props.path}>
 				<div className="left">
-					<Link to="play" params={{"path": encodeURIComponent(this.props.path)}} >
+					<Link to="play" params={{"splat": this.props.path}} >
 						<img src={"/frame/" + this.props.path} />
 					</Link>
 				</div>
@@ -85,12 +85,12 @@ var List = React.createClass({
 	},
 
 	componentDidMount() {
-		var path = this.props.params.path || "";		
+		var path = this.props.params.splat || "";		
 		this.fetchData(path)
 	},
 
 	componentWillReceiveProps(nextProps) {
-		var path = nextProps.params.path || "";
+		var path = nextProps.params.splat || "";
 		this.fetchData(path)
 	},
 
@@ -113,8 +113,8 @@ var List = React.createClass({
 var routes = (
 	<Route path="/ui/" handler={App}>
 		<DefaultRoute handler={List}/>
-		<Route name="list" path="list/:path"  handler={List} />
-		<Route name="play" path="play/:path"  handler={Player} />
+		<Route name="list" path="list/*"  handler={List} />
+		<Route name="play" path="play/*"  handler={Player} />
 	</Route>
 );
 
