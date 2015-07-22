@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	//"strings"
 )
 
 // UrlEncoded encodes a string like Javascript's encodeURIComponent()
@@ -15,7 +14,6 @@ func UrlEncoded(str string) (string, error) {
 		return "", err
 	}
 	return u.String(), nil
-	//return strings.Replace(u.String(), "/", "%2F", -1), nil
 }
 
 const hlsSegmentLength = 5.0 // 5 Seconds

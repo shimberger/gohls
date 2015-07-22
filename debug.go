@@ -11,9 +11,9 @@ func init() {
 	flag.BoolVar(&enableDebugging, "debug", false, "debug output")
 }
 
-var debug Debugger = false
+type Debugger struct{}
 
-type Debugger bool
+var debug Debugger = &Debugger{}
 
 func (d Debugger) Printf(format string, args ...interface{}) {
 	if enableDebugging {
