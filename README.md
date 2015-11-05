@@ -4,7 +4,7 @@ Golang HLS Streamer
 Simple server that exposes a directory for video streaming via HTTP Live Streaming (HLS).
 Uses ffmpeg for transcoding.
 
-This project is cobbled together from all kinds of code I has lying around so it's pretty crapy all around.
+This project is cobbled together from all kinds of code I has lying around so it's pretty crappy all around.
 
 Running it
 ----------
