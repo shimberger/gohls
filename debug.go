@@ -5,15 +5,18 @@ import (
 	"log"
 )
 
-var enableDebugging = false
-
-func init() {
-	flag.BoolVar(&enableDebugging, "debug", false, "debug output")
+type Debugger struct {
+	debug bool
 }
 
-type Debugger struct{}
+var enableDebugging = true
 
-var debug Debugger = &Debugger{}
+func init() {
+	flag.BoolVar(&enableDebugging, "debug", true, "debug output")
+	debug = &Debugger{enableDebugging}
+}
+
+var debug *Debugger = nil
 
 func (d Debugger) Printf(format string, args ...interface{}) {
 	if enableDebugging {
