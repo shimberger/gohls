@@ -9,6 +9,7 @@
   "author": "",
   "license": "None",
   "devDependencies": {
-    "gulp-plumber": "^1.0.1"
+    "gulp-plumber": "^1.0.1",
+    "gulp-sass": "^2.3.2"
   }
 }

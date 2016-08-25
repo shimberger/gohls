@@ -20,21 +20,59 @@ var App = React.createClass({
 var Player = React.createClass({
 	displayName: "Player",
 
+	// HLS.js doesn't seem to work somehow'
+	/*
+ componentDidMount() {
+ 	if (Hls.isSupported()) {
+ 		let video = this._video.getDOMNode();
+ 		this.hls = new Hls({
+ 			debug: true,
+ 	      	fragLoadingTimeOut: 60000,
+ 			
+ 		});
+ 		let hls = this.hls;
+ 		let props = this.props;
+ 		hls.attachMedia(video);
+ 		hls.on(Hls.Events.ERROR, function (event, data) {
+ 			console.log(data);
+ 		})			
+ 		hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+ 			console.log("video and hls.js are now bound together !");
+ 			hls.loadSource("/playlist/" + props.params.splat);
+ 			hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+ 				console.log(data)
+ 				console.log("manifest loaded, found " + data.levels.length + " quality level");
+ 				video.play();	
+ 			});
+ 		});			 
+ 	}
+ },
+ 	componentWillUnmount() {
+ 	this.hls.detachMedia()
+ },
+ */
+
+	goBack: function goBack(e) {
+		e.preventDefault();
+		window.history.back();
+	},
+
 	render: function render() {
 		return React.createElement(
 			"div",
 			{ className: "player", key: this.props.path },
 			React.createElement(
-				"h1",
-				null,
-				"Player"
-			),
-			React.createElement(
 				"div",
 				{ className: "stage" },
 				React.createElement("video", {
 					src: "/playlist/" + this.props.params.splat,
-					width: "100%", autoPlay: true, controls: true })
+
+					width: "100%", controls: true, autoPlay: true })
+			),
+			React.createElement(
+				"a",
+				{ href: "#", onClick: this.goBack, className: "back" },
+				React.createElement("span", { className: "glyphicon glyphicon-chevron-left", "aria-hidden": "true" })
 			)
 		);
 	}
@@ -45,21 +83,57 @@ var Folder = React.createClass({
 
 	render: function render() {
 		return React.createElement(
-			"div",
-			{ className: "list-item folder", key: this.props.path },
+			Link,
+			{ to: "list", params: { "splat": this.props.path } },
 			React.createElement(
 				"div",
-				{ className: "left" },
-				React.createElement("span", { className: "glyphicon glyphicon-folder-open", "aria-hidden": "true" })
-			),
-			React.createElement(
-				"div",
-				{ className: "right" },
+				{ className: "list-item folder", key: this.props.path },
 				React.createElement(
-					Link,
-					{ to: "list", params: { "splat": this.props.path } },
+					"div",
+					{ className: "left" },
+					React.createElement(
+						"div",
+						{ className: "frame" },
+						React.createElement(
+							"div",
+							{ className: "inner" },
+							React.createElement("span", { className: "glyphicon glyphicon-folder-open", "aria-hidden": "true" })
+						)
+					)
+				),
+				React.createElement(
+					"div",
+					{ className: "right" },
 					this.props.name
 				)
+			)
+		);
+	}
+});
+
+var Loader = React.createClass({
+	displayName: "Loader",
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "loader" },
+			React.createElement("img", { width: "30", height: "30", src: "/ui/assets/img/loader.svg" })
+		);
+	}
+});
+
+var EmptyMessage = React.createClass({
+	displayName: "EmptyMessage",
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "empty-message" },
+			React.createElement(
+				"p",
+				null,
+				"No folders or videos found in folder :-("
 			)
 		);
 	}
@@ -70,21 +144,29 @@ var Video = React.createClass({
 
 	render: function render() {
 		return React.createElement(
-			"div",
-			{ className: "list-item video", key: this.props.path },
+			Link,
+			{ to: "play", params: { "splat": this.props.path } },
 			React.createElement(
 				"div",
-				{ className: "left" },
+				{ className: "list-item video", key: this.props.path },
 				React.createElement(
-					Link,
-					{ to: "play", params: { "splat": this.props.path } },
-					React.createElement("img", { src: "/frame/" + this.props.path })
+					"div",
+					{ className: "left" },
+					React.createElement(
+						"div",
+						{ className: "frame", style: { "backgroundImage": "url('/frame/" + this.props.path + "')" } },
+						React.createElement(
+							"div",
+							{ className: "inner" },
+							React.createElement("span", { className: "glyphicon glyphicon-play-circle", "aria-hidden": "true" })
+						)
+					)
+				),
+				React.createElement(
+					"div",
+					{ className: "right" },
+					this.props.name
 				)
-			),
-			React.createElement(
-				"div",
-				{ className: "right" },
-				this.props.name
 			)
 		);
 	}
@@ -95,8 +177,8 @@ var List = React.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			"videos": [],
-			"folders": []
+			"videos": null,
+			"folders": null
 		};
 	},
 
@@ -122,24 +204,28 @@ var List = React.createClass({
 	},
 
 	render: function render() {
-		var folders = this.state.folders.map(function (folder) {
-			return React.createElement(Folder, { name: folder.name, path: folder.path });
-		});
-		var videos = this.state.videos.map(function (video) {
-			return React.createElement(Video, { name: video.name, path: video.path });
-		});
+		var loader = !this.state.folders ? React.createElement(Loader, null) : null;
+		var folders = [];
+		var videos = [];
+		if (this.state.folders) {
+			folders = this.state.folders.map(function (folder) {
+				return React.createElement(Folder, { key: folder.name, name: folder.name, path: folder.path });
+			});
+			videos = this.state.videos.map(function (video) {
+				return React.createElement(Video, { name: video.name, path: video.path, key: video.name });
+			});
+		}
+		var empty = this.state.folders != null && videos.length + folders.length == 0 ? React.createElement(EmptyMessage, null) : null;
 		return React.createElement(
 			"div",
-			{ className: "container" },
+			{ className: "list" },
 			React.createElement(
 				"div",
-				{ className: "row" },
-				React.createElement(
-					"div",
-					{ className: "col-md-12 list-items" },
-					folders,
-					videos
-				)
+				{ className: "list-items" },
+				loader,
+				folders,
+				videos,
+				empty
 			)
 		);
 	}
@@ -156,3 +242,4 @@ var routes = React.createElement(
 ReactRouter.run(routes, ReactRouter.HistoryLocation, function (Root) {
 	React.render(React.createElement(Root, null), document.getElementById("app"));
 });
+//						ref={(c) => this._video = c}

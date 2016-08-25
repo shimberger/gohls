@@ -16,17 +16,59 @@ var App = React.createClass({
 });
 
 var Player = React.createClass({
+
+	// HLS.js doesn't seem to work somehow'
+	/*
+	componentDidMount() {
+		if (Hls.isSupported()) {
+			let video = this._video.getDOMNode();
+			this.hls = new Hls({
+				debug: true,
+		      	fragLoadingTimeOut: 60000,
+				
+			});
+			let hls = this.hls;
+			let props = this.props;
+			hls.attachMedia(video);
+			hls.on(Hls.Events.ERROR, function (event, data) {
+				console.log(data);
+			})			
+			hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+				console.log("video and hls.js are now bound together !");
+				hls.loadSource("/playlist/" + props.params.splat);
+				hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+					console.log(data)
+					console.log("manifest loaded, found " + data.levels.length + " quality level");
+					video.play();	
+				});
+			});			 
+		}
+	},
+
+	componentWillUnmount() {
+		this.hls.detachMedia()
+	},
+	*/
+
+	goBack(e) {
+		e.preventDefault();
+		window.history.back();
+	},
+
 	render() {
 		return (
 			<div className="player" key={this.props.path}>
-				<h1>Player</h1>
 				<div className="stage">
-					<video
-						src={"/playlist/" + this.props.params.splat}
-						width="100%"  autoPlay controls >
+					<video		
+						src={"/playlist/" + this.props.params.splat}				
+//						ref={(c) => this._video = c}
+						width="100%" controls autoPlay >
 					</video>	
 				</div>
-				
+					<a href="#" onClick={this.goBack} className="back">
+						<span className="glyphicon glyphicon-chevron-left" aria-hidden="true">
+					</span>
+				</a>
 			</div>
 		)
 	}
@@ -35,33 +77,62 @@ var Player = React.createClass({
 var Folder = React.createClass({
 	render() {
 		return (
-			<div className="list-item folder" key={this.props.path}>
-				<div className="left">
-					<span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-				</div>
-				<div className="right">
-					<Link to="list" params={{"splat": this.props.path}} >
+			<Link to="list" params={{"splat": this.props.path}} >
+				<div className="list-item folder" key={this.props.path}>
+					<div className="left">
+						<div className="frame">
+							<div className="inner">
+								<span className="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+							</div>
+						</div>
+					</div>
+					<div className="right">
 						{this.props.name}
-					</Link>
+					</div>
 				</div>
+			</Link>
+		)
+	}
+})
+
+var Loader = React.createClass({
+	render() {
+		return (
+			<div className="loader">
+				<img width="30" height="30" src="/ui/assets/img/loader.svg" />
 			</div>
 		)
 	}
 })
 
+var EmptyMessage = React.createClass({
+	render() {
+		return (
+			<div className="empty-message">
+				<p>No folders or videos found in folder :-(</p>
+			</div>
+		)
+	}
+})
+
+
 var Video = React.createClass({
 	render() {
 		return (
-			<div className="list-item video" key={this.props.path}>
-				<div className="left">
-					<Link to="play" params={{"splat": this.props.path}} >
-						<img src={"/frame/" + this.props.path} />
-					</Link>
+			<Link to="play" params={{"splat": this.props.path}} >
+				<div className="list-item video" key={this.props.path}>
+					<div className="left">
+						<div className="frame" style={{"backgroundImage": "url('/frame/" + this.props.path+"')"}} >
+							<div className="inner">
+								<span className="glyphicon glyphicon-play-circle" aria-hidden="true"></span>								
+							</div>
+						</div>
+					</div>
+					<div className="right">
+						{this.props.name}
+					</div>
 				</div>
-				<div className="right">
-					{this.props.name}
-				</div>
-			</div>
+			</Link>
 		)
 	}
 })
@@ -70,8 +141,8 @@ var List = React.createClass({
 
 	getInitialState() {
 		return {
-			'videos': [],
-			'folders': []
+			'videos': null,
+			'folders': null
 		}
 	},
 
@@ -94,17 +165,23 @@ var List = React.createClass({
 		this.fetchData(path)
 	},
 
-	render () {		
-		var folders = this.state.folders.map((folder) => <Folder name={folder.name} path={folder.path} />)
-		var videos = this.state.videos.map((video) => <Video name={video.name} path={video.path} />)
+	render () {
+		let loader = (!this.state.folders) ? <Loader/> : null;
+		let folders = []
+		let videos = []
+		if (this.state.folders) {
+			folders = this.state.folders.map((folder) => <Folder key={folder.name} name={folder.name} path={folder.path} />)
+			videos = this.state.videos.map((video) => <Video name={video.name} path={video.path} key={video.name} />)
+		}
+		let empty = (this.state.folders != null && (videos.length + folders.length) == 0) ? <EmptyMessage/> : null
 		return (
-			<div className="container">
-				<div className="row">
-					<div className="col-md-12 list-items">
+			<div className="list">
+					<div className="list-items">
+						{loader}
 						{folders}
 						{videos}
+						{empty}
 					</div>
-				</div>
 			</div>
 		)
 	}
