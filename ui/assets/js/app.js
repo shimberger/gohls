@@ -185,6 +185,10 @@ var List = React.createClass({
 	fetchData: function fetchData(path) {
 		var _this = this;
 
+		this.setState({
+			"folders": null,
+			"videos": null
+		});
 		$.get("/list/" + path, function (data) {
 			_this.setState({
 				"folders": data.folders,
