@@ -43,6 +43,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header()["Content-Type"] = []string{"application/vnd.apple.mpegurl"}
+	w.Header()["Access-Control-Allow-Origin"] = []string{"*"}
 
 	fmt.Fprint(w, "#EXTM3U\n")
 	fmt.Fprint(w, "#EXT-X-VERSION:3\n")
