@@ -10,6 +10,8 @@ import (
 
 var videoSuffixes = []string{".mp4", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
 
+var videoInfos = make(map[string]*VideoInfo)
+
 type VideoInfo struct {
 	Duration float64 `json:"duration"`
 }
@@ -47,6 +49,9 @@ func GetFFMPEGJson(path string) (map[string]interface{}, error) {
 }
 
 func GetVideoInformation(path string) (*VideoInfo, error) {
+	if data, ok := videoInfos[path]; ok {
+		return data, nil
+	}
 	info, jsonerr := GetFFMPEGJson(path)
 	if jsonerr != nil {
 		return nil, jsonerr
@@ -63,5 +68,7 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	if perr != nil {
 		return nil, fmt.Errorf("Could not parse duration (%v) of '%v': ", format["duration"].(string), path, perr)
 	}
-	return &VideoInfo{duration}, nil
+	var vi = &VideoInfo{duration}
+	videoInfos[path] = vi
+	return vi, nil
 }
