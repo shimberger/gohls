@@ -14,6 +14,8 @@ func main() {
 	if flag.NArg() > 0 {
 		contentDir = flag.Arg(0)
 	}
+
+	http.Handle("/", http.RedirectHandler("/ui/",302))
 	http.Handle("/ui/assets/", http.StripPrefix("/ui/", http.FileServer(http.Dir(uiDirectory))))
 	http.Handle("/ui/", NewDebugHandlerWrapper(http.StripPrefix("/ui/", NewSingleFileServer(indexHtml))))
 	http.Handle("/list/", NewDebugHandlerWrapper(http.StripPrefix("/list/", NewListHandler(contentDir))))
