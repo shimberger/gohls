@@ -10,6 +10,7 @@ import (
 
 var videoSuffixes = []string{".mp4", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
 
+// TODO make mutex
 var videoInfos = make(map[string]*VideoInfo)
 
 type VideoInfo struct {
@@ -30,7 +31,7 @@ func GetRawFFMPEGInfo(path string) ([]byte, error) {
 	cmd := exec.Command("./tools/ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", ""+path+"")
 	data, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("Error executing ffprobe for file '%v':", path, err)
+		return nil, fmt.Errorf("Error executing ffprobe for file '%v': %v", path, err)
 	}
 	return data, nil
 }

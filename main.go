@@ -15,7 +15,7 @@ func main() {
 		contentDir = flag.Arg(0)
 	}
 
-	http.Handle("/", http.RedirectHandler("/ui/",302))
+	http.Handle("/", http.RedirectHandler("/ui/", 302))
 	http.Handle("/ui/assets/", http.StripPrefix("/ui/", http.FileServer(http.Dir(uiDirectory))))
 	http.Handle("/ui/", NewDebugHandlerWrapper(http.StripPrefix("/ui/", NewSingleFileServer(indexHtml))))
 	http.Handle("/list/", NewDebugHandlerWrapper(http.StripPrefix("/list/", NewListHandler(contentDir))))
@@ -23,5 +23,4 @@ func main() {
 	http.Handle("/playlist/", NewDebugHandlerWrapper(http.StripPrefix("/playlist/", NewPlaylistHandler(contentDir))))
 	http.Handle("/segments/", NewDebugHandlerWrapper(http.StripPrefix("/segments/", NewStreamHandler(contentDir))))
 	http.ListenAndServe(":8080", nil)
-
 }

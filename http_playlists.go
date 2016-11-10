@@ -16,7 +16,7 @@ func UrlEncoded(str string) (string, error) {
 	return u.String(), nil
 }
 
-const hlsSegmentLength = 5.0 // 5 Seconds
+const hlsSegmentLength = 5.0 // 10 Seconds
 
 type PlaylistHandler struct {
 	root string
@@ -49,7 +49,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "#EXT-X-VERSION:3\n")
 	fmt.Fprint(w, "#EXT-X-MEDIA-SEQUENCE:0\n")
 	fmt.Fprint(w, "#EXT-X-ALLOW-CACHE:YES\n")
-	fmt.Fprint(w, "#EXT-X-TARGETDURATION:5\n")
+	fmt.Fprint(w, "#EXT-X-TARGETDURATION:"+fmt.Sprintf("%.f",hlsSegmentLength)+"\n")
 	fmt.Fprint(w, "#EXT-X-PLAYLIST-TYPE:VOD\n")
 
 	leftover := duration

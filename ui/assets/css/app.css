@@ -78,7 +78,7 @@ body, html {
       display: flex; }
 
 .player {
-  min-height: 100vh;
+  height: 100vh;
   background: black;
   display: flex;
   flex-direction: column;

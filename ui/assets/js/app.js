@@ -1,7 +1,5 @@
 
 // Include RactRouter Module
-"use strict";
-
 var Router = ReactRouter.create();
 var Route = ReactRouter.Route;
 var RouteHandler = ReactRouter.RouteHandler;
@@ -12,13 +10,14 @@ var Link = ReactRouter.Link;
 var App = React.createClass({
 	displayName: "App",
 
-	render: function render() {
+	render() {
 		return React.createElement(RouteHandler, null);
 	}
 });
 
 var Player = React.createClass({
 	displayName: "Player",
+
 
 	// HLS.js doesn't seem to work somehow'
 	/*
@@ -28,23 +27,22 @@ var Player = React.createClass({
  		this.hls = new Hls({
  			debug: true,
  	      	fragLoadingTimeOut: 60000,
- 			
- 		});
+ 			});
  		let hls = this.hls;
  		let props = this.props;
  		hls.attachMedia(video);
  		hls.on(Hls.Events.ERROR, function (event, data) {
  			console.log(data);
- 		})			
+ 		})
  		hls.on(Hls.Events.MEDIA_ATTACHED, function () {
  			console.log("video and hls.js are now bound together !");
  			hls.loadSource("/playlist/" + props.params.splat);
  			hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
  				console.log(data)
  				console.log("manifest loaded, found " + data.levels.length + " quality level");
- 				video.play();	
+ 				video.play();
  			});
- 		});			 
+ 		});
  	}
  },
  	componentWillUnmount() {
@@ -52,12 +50,25 @@ var Player = React.createClass({
  },
  */
 
-	goBack: function goBack(e) {
+	componentWillUnmount() {
+		this.pauseVideo();
+		//	this.hls.detachMedia()
+	},
+
+	pauseVideo() {
+		let video = this._video.getDOMNode();
+		video.pause();
+		video.src = "";
+		video.play();
+		video.pause();
+	},
+
+	goBack(e) {
 		e.preventDefault();
 		window.history.back();
 	},
 
-	render: function render() {
+	render() {
 		return React.createElement(
 			"div",
 			{ className: "player", key: this.props.path },
@@ -66,7 +77,7 @@ var Player = React.createClass({
 				{ className: "stage" },
 				React.createElement("video", {
 					src: "/playlist/" + this.props.params.splat,
-
+					ref: c => this._video = c,
 					width: "100%", controls: true, autoPlay: true })
 			),
 			React.createElement(
@@ -81,7 +92,7 @@ var Player = React.createClass({
 var Folder = React.createClass({
 	displayName: "Folder",
 
-	render: function render() {
+	render() {
 		return React.createElement(
 			Link,
 			{ to: "list", params: { "splat": this.props.path } },
@@ -114,7 +125,7 @@ var Folder = React.createClass({
 var Loader = React.createClass({
 	displayName: "Loader",
 
-	render: function render() {
+	render() {
 		return React.createElement(
 			"div",
 			{ className: "loader" },
@@ -126,7 +137,7 @@ var Loader = React.createClass({
 var EmptyMessage = React.createClass({
 	displayName: "EmptyMessage",
 
-	render: function render() {
+	render() {
 		return React.createElement(
 			"div",
 			{ className: "empty-message" },
@@ -142,7 +153,7 @@ var EmptyMessage = React.createClass({
 var Video = React.createClass({
 	displayName: "Video",
 
-	render: function render() {
+	render() {
 		return React.createElement(
 			Link,
 			{ to: "play", params: { "splat": this.props.path } },
@@ -175,51 +186,46 @@ var Video = React.createClass({
 var List = React.createClass({
 	displayName: "List",
 
-	getInitialState: function getInitialState() {
+
+	getInitialState() {
 		return {
-			"videos": null,
-			"folders": null
+			'videos': null,
+			'folders': null
 		};
 	},
 
-	fetchData: function fetchData(path) {
-		var _this = this;
-
+	fetchData(path) {
 		this.setState({
-			"folders": null,
-			"videos": null
+			'folders': null,
+			'videos': null
 		});
-		$.get("/list/" + path, function (data) {
-			_this.setState({
-				"folders": data.folders,
-				"videos": data.videos
+		$.get('/list/' + path, data => {
+			this.setState({
+				'folders': data.folders,
+				'videos': data.videos
 			});
 		});
 	},
 
-	componentDidMount: function componentDidMount() {
+	componentDidMount() {
 		var path = this.props.params.splat || "";
 		this.fetchData(path);
 	},
 
-	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps(nextProps) {
 		var path = nextProps.params.splat || "";
 		this.fetchData(path);
 	},
 
-	render: function render() {
-		var loader = !this.state.folders ? React.createElement(Loader, null) : null;
-		var folders = [];
-		var videos = [];
+	render() {
+		let loader = !this.state.folders ? React.createElement(Loader, null) : null;
+		let folders = [];
+		let videos = [];
 		if (this.state.folders) {
-			folders = this.state.folders.map(function (folder) {
-				return React.createElement(Folder, { key: folder.name, name: folder.name, path: folder.path });
-			});
-			videos = this.state.videos.map(function (video) {
-				return React.createElement(Video, { name: video.name, path: video.path, key: video.name });
-			});
+			folders = this.state.folders.map(folder => React.createElement(Folder, { key: folder.name, name: folder.name, path: folder.path }));
+			videos = this.state.videos.map(video => React.createElement(Video, { name: video.name, path: video.path, key: video.name }));
 		}
-		var empty = this.state.folders != null && videos.length + folders.length == 0 ? React.createElement(EmptyMessage, null) : null;
+		let empty = this.state.folders != null && videos.length + folders.length == 0 ? React.createElement(EmptyMessage, null) : null;
 		return React.createElement(
 			"div",
 			{ className: "list" },
@@ -243,7 +249,6 @@ var routes = React.createElement(
 	React.createElement(Route, { name: "play", path: "play/*", handler: Player })
 );
 
-ReactRouter.run(routes, ReactRouter.HistoryLocation, function (Root) {
-	React.render(React.createElement(Root, null), document.getElementById("app"));
+ReactRouter.run(routes, ReactRouter.HistoryLocation, Root => {
+	React.render(React.createElement(Root, null), document.getElementById('app'));
 });
-//						ref={(c) => this._video = c}

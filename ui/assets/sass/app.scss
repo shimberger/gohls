@@ -51,7 +51,7 @@ body, html {
 
 		.left {
 			width: 30%;
-			max-width: 250px;			
+			max-width: 250px;
 			text-align: center;
 			background: #333;
 			color: white;
@@ -60,7 +60,7 @@ body, html {
 		.right {
 			display: flex;
 			flex-direction: column;
-			justify-content: center;			
+			justify-content: center;
 			width: 70%;
 			font-size: 2rem;
 
@@ -70,14 +70,14 @@ body, html {
 			background-color: black;
 			position: relative;
 			width: 100%;
-			padding-top: 56%;			
+			padding-top: 56%;
 			background-size: cover;
 		}
 
 		.frame > .inner {
 			display: flex;
 			flex-direction: column;
-			justify-content: center;			
+			justify-content: center;
 			position: absolute;
 			top: 0;
 			bottom: 0;
@@ -96,7 +96,7 @@ body, html {
 
 		.list-item {
 			background: #eeeeee;
-		
+
 			.left {
 				background: #555;
 			}
@@ -114,7 +114,7 @@ body, html {
 }
 
 .player {
-	min-height: 100vh;
+	height: 100vh;
 	background: black;
 	display: flex;
 	flex-direction: column;

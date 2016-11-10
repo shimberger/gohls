@@ -13,8 +13,10 @@ gulp.task('sass', function () {
 
 gulp.task('babel', function () {
 	gulp.src('./jsx/*.jsx')
-		.pipe(plumber())	
-		.pipe(babel())
+		.pipe(plumber())
+		.pipe(babel({
+            presets: ["react"]
+        }))
 		.pipe(gulp.dest('./js/'));
 });
 

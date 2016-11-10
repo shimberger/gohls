@@ -16,4 +16,3 @@ Running it
 License
 -------
 See LICENSE.txt
-

@@ -25,23 +25,23 @@ var Player = React.createClass({
 			this.hls = new Hls({
 				debug: true,
 		      	fragLoadingTimeOut: 60000,
-				
+
 			});
 			let hls = this.hls;
 			let props = this.props;
 			hls.attachMedia(video);
 			hls.on(Hls.Events.ERROR, function (event, data) {
 				console.log(data);
-			})			
+			})
 			hls.on(Hls.Events.MEDIA_ATTACHED, function () {
 				console.log("video and hls.js are now bound together !");
 				hls.loadSource("/playlist/" + props.params.splat);
 				hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
 					console.log(data)
 					console.log("manifest loaded, found " + data.levels.length + " quality level");
-					video.play();	
+					video.play();
 				});
-			});			 
+			});
 		}
 	},
 
@@ -49,6 +49,19 @@ var Player = React.createClass({
 		this.hls.detachMedia()
 	},
 	*/
+
+	componentWillUnmount() {
+		this.pauseVideo();
+		//	this.hls.detachMedia()
+	},
+
+	pauseVideo() {
+		let video = this._video.getDOMNode();
+		video.pause();
+		video.src = "";
+		video.play();
+		video.pause();
+	},
 
 	goBack(e) {
 		e.preventDefault();
@@ -59,11 +72,11 @@ var Player = React.createClass({
 		return (
 			<div className="player" key={this.props.path}>
 				<div className="stage">
-					<video		
-						src={"/playlist/" + this.props.params.splat}				
-//						ref={(c) => this._video = c}
+					<video
+						src={"/playlist/" + this.props.params.splat}
+						ref={(c) => this._video = c}
 						width="100%" controls autoPlay >
-					</video>	
+					</video>
 				</div>
 					<a href="#" onClick={this.goBack} className="back">
 						<span className="glyphicon glyphicon-chevron-left" aria-hidden="true">
@@ -124,7 +137,7 @@ var Video = React.createClass({
 					<div className="left">
 						<div className="frame" style={{"backgroundImage": "url('/frame/" + this.props.path+"')"}} >
 							<div className="inner">
-								<span className="glyphicon glyphicon-play-circle" aria-hidden="true"></span>								
+								<span className="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
 							</div>
 						</div>
 					</div>
@@ -160,7 +173,7 @@ var List = React.createClass({
 	},
 
 	componentDidMount() {
-		var path = this.props.params.splat || "";		
+		var path = this.props.params.splat || "";
 		this.fetchData(path)
 	},
 
