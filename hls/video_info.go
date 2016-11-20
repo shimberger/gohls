@@ -1,4 +1,4 @@
-package main
+package hls
 
 import (
 	"encoding/json"
@@ -12,6 +12,8 @@ var videoSuffixes = []string{".mp4", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".m
 
 // TODO make mutex
 var videoInfos = make(map[string]*VideoInfo)
+
+var FFProbePath = "ffprobe"
 
 type VideoInfo struct {
 	Duration float64 `json:"duration"`
@@ -28,7 +30,7 @@ func FilenameLooksLikeVideo(name string) bool {
 
 func GetRawFFMPEGInfo(path string) ([]byte, error) {
 	debug.Printf("Executing ffprobe for %v", path)
-	cmd := exec.Command("./tools/ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", ""+path+"")
+	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", ""+path+"")
 	data, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("Error executing ffprobe for file '%v': %v", path, err)

@@ -129,7 +129,7 @@ var Loader = React.createClass({
 		return React.createElement(
 			"div",
 			{ className: "loader" },
-			React.createElement("img", { width: "30", height: "30", src: "/ui/assets/img/loader.svg" })
+			React.createElement("img", { width: "30", height: "30", src: "/ui/img/loader.svg" })
 		);
 	}
 });

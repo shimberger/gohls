@@ -1,0 +1,3 @@
+package hls
+
+var HomeDir = "."

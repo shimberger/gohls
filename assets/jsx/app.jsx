@@ -112,7 +112,7 @@ var Loader = React.createClass({
 	render() {
 		return (
 			<div className="loader">
-				<img width="30" height="30" src="/ui/assets/img/loader.svg" />
+				<img width="30" height="30" src="/ui/img/loader.svg" />
 			</div>
 		)
 	}

@@ -1,4 +1,4 @@
-package main
+package hls
 
 import (
 	"net/http"
