@@ -12,7 +12,8 @@ function make_release() {
 	GOOS=$2
 	GOARCH=$3
 	VERSION=$4
-	RELEASE_PATH=build/gohls-$NAME-$VERSION
+	RELEASE_PATH=build/gohls-$NAME-${VERSION}
+	RELEASE_FILE=gohls-$NAME-${VERSION}.tar.gz
 	mkdir $RELEASE_PATH
 	mkdir $RELEASE_PATH/tools
 	mkdir $RELEASE_PATH/cache
@@ -22,6 +23,10 @@ function make_release() {
 	cp dist/tools/*.md $RELEASE_PATH/tools/
 	cp dist/cache/*.md $RELEASE_PATH/cache/
 	go build -o $RELEASE_PATH/gohls *.go
+	PREV_WD=$(PWD)
+	cd  $RELEASE_PATH
+	tar cvfz ../$RELEASE_FILE .
+	cd ../../
 }
 
 make_release "osx" "darwin" "amd64" $VERSION
