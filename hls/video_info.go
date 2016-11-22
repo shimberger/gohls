@@ -13,8 +13,6 @@ var videoSuffixes = []string{".mp4", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".m
 // TODO make mutex
 var videoInfos = make(map[string]*VideoInfo)
 
-var FFProbePath = "ffprobe"
-
 type VideoInfo struct {
 	Duration float64 `json:"duration"`
 }

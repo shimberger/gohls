@@ -1,11 +1,14 @@
 #!/bin/bash
 
+PATH=$GOPATH/bin/:$PATH
 VERSION=$1
 
-cd assets && gulp && cd ..
+cd ui/src && gulp && cd ../../
 
 rm -rf build
 mkdir build
+
+go-bindata -prefix ui/build ui/build/...
 
 function make_release() {
 	NAME=$1
@@ -15,13 +18,8 @@ function make_release() {
 	RELEASE_PATH=build/gohls-$NAME-${VERSION}
 	RELEASE_FILE=gohls-$NAME-${VERSION}.tar.gz
 	mkdir $RELEASE_PATH
-	mkdir $RELEASE_PATH/tools
-	mkdir $RELEASE_PATH/cache
 	cp README.md $RELEASE_PATH
 	cp LICENSE.txt $RELEASE_PATH
-	cp -r dist/ui $RELEASE_PATH
-	cp dist/tools/*.md $RELEASE_PATH/tools/
-	cp dist/cache/*.md $RELEASE_PATH/cache/
 	go build -o $RELEASE_PATH/gohls *.go
 	PREV_WD=$(PWD)
 	cd  $RELEASE_PATH

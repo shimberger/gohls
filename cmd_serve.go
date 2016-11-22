@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"github.com/google/subcommands"
 	"github.com/shimberger/gohls/hls"
+	"log"
 	"net/http"
+	"os/exec"
+	"os/user"
 	"path"
 )
 
@@ -24,37 +27,56 @@ func (*serveCmd) Usage() string {
 
 func (p *serveCmd) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&p.homeDir, "home", ".", "The home directory")
-	//f.BoolVar(&p.capitalize, "capitalize", false, "capitalize output")
 }
 
 func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-
-	uiDirectory := path.Join(p.homeDir, "ui")
-	indexHtml := path.Join(uiDirectory, "index.html")
-	contentDir := path.Join(p.homeDir, "videos")
-	if f.NArg() > 0 {
-		contentDir = f.Arg(0)
+	// Determine user info
+	usr, uerr := user.Current()
+	if uerr != nil {
+		log.Fatal(uerr)
 	}
 
+	// Find ffmpeg
+	ffmpeg, f1err := exec.LookPath("ffmpeg")
+	if f1err != nil {
+		log.Fatal("ffmpeg could not be found in your path", f1err)
+	}
+
+	// Find ffprobe
+	ffprobe, f2err := exec.LookPath("ffprobe")
+	if f2err != nil {
+		log.Fatal("ffprobe could not be found in your path", f2err)
+	}
+
+	// Generate variables and paths
 	var port = 8080
-	var ffmpegPath = path.Join(p.homeDir, "tools", "ffmpeg")
+	var homeDir = path.Join(usr.HomeDir, ".gohls")
+	var videoDir = path.Join(usr.HomeDir, "Videos")
+	if f.NArg() > 0 {
+		videoDir = f.Arg(0)
+	}
 
-	hls.FFProbePath = path.Join(p.homeDir, "tools", "ffprobe")
-	hls.HomeDir = path.Join(p.homeDir)
+	// Configure HLS module
+	hls.FFMPEGPath = "ffmpeg"
+	hls.FFProbePath = "ffprobe"
+	hls.HomeDir = homeDir
 
+	// Setup HTTP server
 	http.Handle("/", http.RedirectHandler("/ui/", 302))
-	http.Handle("/ui/css/", http.StripPrefix("/ui/", http.FileServer(http.Dir(uiDirectory))))
-	http.Handle("/ui/img/", http.StripPrefix("/ui/", http.FileServer(http.Dir(uiDirectory))))
-	http.Handle("/ui/js/", http.StripPrefix("/ui/", http.FileServer(http.Dir(uiDirectory))))
-	http.Handle("/ui/fonts/", http.StripPrefix("/ui/", http.FileServer(http.Dir(uiDirectory))))
-	http.Handle("/ui/", hls.NewDebugHandlerWrapper(http.StripPrefix("/ui/", hls.NewSingleFileServer(indexHtml))))
-	http.Handle("/list/", hls.NewDebugHandlerWrapper(http.StripPrefix("/list/", hls.NewListHandler(contentDir))))
-	http.Handle("/frame/", hls.NewDebugHandlerWrapper(http.StripPrefix("/frame/", hls.NewFrameHandler(contentDir, ffmpegPath))))
-	http.Handle("/playlist/", hls.NewDebugHandlerWrapper(http.StripPrefix("/playlist/", hls.NewPlaylistHandler(contentDir))))
-	http.Handle("/segments/", hls.NewDebugHandlerWrapper(http.StripPrefix("/segments/", hls.NewStreamHandler(contentDir, ffmpegPath))))
-	fmt.Printf("Home directory: %v/\n", p.homeDir)
-	fmt.Printf("Serving videos in %v\n", contentDir)
+	http.Handle("/ui/assets/", http.StripPrefix("/ui/assets/", &assetHandler{}))
+	http.Handle("/ui/", hls.NewDebugHandlerWrapper(http.StripPrefix("/ui/", NewSingleAssetHandler("index.html"))))
+	http.Handle("/list/", hls.NewDebugHandlerWrapper(http.StripPrefix("/list/", hls.NewListHandler(videoDir))))
+	http.Handle("/frame/", hls.NewDebugHandlerWrapper(http.StripPrefix("/frame/", hls.NewFrameHandler(videoDir))))
+	http.Handle("/playlist/", hls.NewDebugHandlerWrapper(http.StripPrefix("/playlist/", hls.NewPlaylistHandler(videoDir))))
+	http.Handle("/segments/", hls.NewDebugHandlerWrapper(http.StripPrefix("/segments/", hls.NewStreamHandler(videoDir))))
+
+	// Dump information to user
+	fmt.Printf("Path to ffmpeg executable: %v\n", ffmpeg)
+	fmt.Printf("Path to ffprobe executable: %v\n", ffprobe)
+	fmt.Printf("Home directory: %v/\n", homeDir)
+	fmt.Printf("Serving videos in %v\n", videoDir)
 	fmt.Printf("Visit http://localhost:%v/\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+
 	return subcommands.ExitSuccess
 }
