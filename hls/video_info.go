@@ -1,4 +1,4 @@
-package main
+package hls
 
 import (
 	"encoding/json"
@@ -28,7 +28,7 @@ func FilenameLooksLikeVideo(name string) bool {
 
 func GetRawFFMPEGInfo(path string) ([]byte, error) {
 	debug.Printf("Executing ffprobe for %v", path)
-	cmd := exec.Command("./tools/ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", ""+path+"")
+	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", ""+path+"")
 	data, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("Error executing ffprobe for file '%v': %v", path, err)

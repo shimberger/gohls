@@ -1,4 +1,4 @@
-package main
+package hls
 
 import (
 	"fmt"
@@ -49,7 +49,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "#EXT-X-VERSION:3\n")
 	fmt.Fprint(w, "#EXT-X-MEDIA-SEQUENCE:0\n")
 	fmt.Fprint(w, "#EXT-X-ALLOW-CACHE:YES\n")
-	fmt.Fprint(w, "#EXT-X-TARGETDURATION:"+fmt.Sprintf("%.f",hlsSegmentLength)+"\n")
+	fmt.Fprint(w, "#EXT-X-TARGETDURATION:"+fmt.Sprintf("%.f", hlsSegmentLength)+"\n")
 	fmt.Fprint(w, "#EXT-X-PLAYLIST-TYPE:VOD\n")
 
 	leftover := duration
