@@ -86,7 +86,7 @@ func cssAppCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "css/app.css", size: 1974, mode: os.FileMode(420), modTime: time.Unix(1479896890, 0)}
+	info := bindataFileInfo{name: "css/app.css", size: 1974, mode: os.FileMode(420), modTime: time.Unix(1481011409, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -106,7 +106,7 @@ func imgLoaderSvg() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "img/loader.svg", size: 3026, mode: os.FileMode(420), modTime: time.Unix(1479896890, 0)}
+	info := bindataFileInfo{name: "img/loader.svg", size: 3026, mode: os.FileMode(420), modTime: time.Unix(1481011409, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -126,7 +126,7 @@ func indexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "index.html", size: 918, mode: os.FileMode(420), modTime: time.Unix(1479896890, 0)}
+	info := bindataFileInfo{name: "index.html", size: 918, mode: os.FileMode(420), modTime: time.Unix(1481011409, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -146,7 +146,7 @@ func jsAppJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "js/app.js", size: 5815, mode: os.FileMode(420), modTime: time.Unix(1479896890, 0)}
+	info := bindataFileInfo{name: "js/app.js", size: 5815, mode: os.FileMode(420), modTime: time.Unix(1481011409, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
