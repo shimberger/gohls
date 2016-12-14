@@ -76,7 +76,10 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	fmt.Printf("Home directory: %v/\n", homeDir)
 	fmt.Printf("Serving videos in %v\n", videoDir)
 	fmt.Printf("Visit http://localhost:%v/\n", port)
-	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+
+	if herr := http.ListenAndServe(fmt.Sprintf(":%v", port), nil); herr != nil {
+		fmt.Printf("Error listening %v", herr)
+	}
 
 	return subcommands.ExitSuccess
 }

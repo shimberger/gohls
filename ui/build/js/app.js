@@ -1,17 +1,19 @@
 
-// Include RactRouter Module
-var Router = ReactRouter.create();
+var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
-var RouteHandler = ReactRouter.RouteHandler;
-var DefaultRoute = ReactRouter.DefaultRoute;
 var Link = ReactRouter.Link;
+var browserHistory = ReactRouter.browserHistory;
 
 // Application Frame
 var App = React.createClass({
 	displayName: "App",
 
 	render() {
-		return React.createElement(RouteHandler, null);
+		return React.createElement(
+			"div",
+			null,
+			this.props.children
+		);
 	}
 });
 
@@ -95,7 +97,7 @@ var Folder = React.createClass({
 	render() {
 		return React.createElement(
 			Link,
-			{ to: "list", params: { "splat": this.props.path } },
+			{ to: "/list/" + this.props.path },
 			React.createElement(
 				"div",
 				{ className: "list-item folder", key: this.props.path },
@@ -156,7 +158,7 @@ var Video = React.createClass({
 	render() {
 		return React.createElement(
 			Link,
-			{ to: "play", params: { "splat": this.props.path } },
+			{ to: "/play/" + this.props.path },
 			React.createElement(
 				"div",
 				{ className: "list-item video", key: this.props.path },
@@ -209,6 +211,7 @@ var List = React.createClass({
 
 	componentDidMount() {
 		var path = this.props.params.splat || "";
+		console.log(this.props);
 		this.fetchData(path);
 	},
 
@@ -241,14 +244,18 @@ var List = React.createClass({
 	}
 });
 
-var routes = React.createElement(
-	Route,
-	{ path: "/ui/", handler: App },
-	React.createElement(DefaultRoute, { handler: List }),
-	React.createElement(Route, { name: "list", path: "list/*", handler: List }),
-	React.createElement(Route, { name: "play", path: "play/*", handler: Player })
-);
-
-ReactRouter.run(routes, ReactRouter.HistoryLocation, Root => {
-	React.render(React.createElement(Root, null), document.getElementById('app'));
+const h = ReactRouter.useRouterHistory(History.createHistory)({
+	basename: '/ui'
 });
+
+ReactDOM.render(React.createElement(
+	Router,
+	{ history: h },
+	React.createElement(
+		Route,
+		{ component: App },
+		React.createElement(Route, { name: "list", path: "list/*", component: List }),
+		React.createElement(Route, { name: "play", path: "play/*", component: Player }),
+		React.createElement(Route, { path: "*", component: List })
+	)
+), document.getElementById('app'));

@@ -1,16 +1,16 @@
 
-// Include RactRouter Module
-var Router = ReactRouter.create();
+var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
-var RouteHandler = ReactRouter.RouteHandler;
-var DefaultRoute = ReactRouter.DefaultRoute;
 var Link = ReactRouter.Link;
+var browserHistory = ReactRouter.browserHistory;
 
 // Application Frame
 var App = React.createClass({
-	render () {
+	render() {
 		return (
-			<RouteHandler/>
+			<div>
+				{this.props.children}
+			</div>
 		)
 	}
 });
@@ -90,7 +90,7 @@ var Player = React.createClass({
 var Folder = React.createClass({
 	render() {
 		return (
-			<Link to="list" params={{"splat": this.props.path}} >
+			<Link to={"/list/" + this.props.path }  >
 				<div className="list-item folder" key={this.props.path}>
 					<div className="left">
 						<div className="frame">
@@ -132,7 +132,7 @@ var EmptyMessage = React.createClass({
 var Video = React.createClass({
 	render() {
 		return (
-			<Link to="play" params={{"splat": this.props.path}} >
+			<Link to={"/play/" + this.props.path} >
 				<div className="list-item video" key={this.props.path}>
 					<div className="left">
 						<div className="frame" style={{"backgroundImage": "url('/frame/" + this.props.path+"')"}} >
@@ -174,6 +174,7 @@ var List = React.createClass({
 
 	componentDidMount() {
 		var path = this.props.params.splat || "";
+		console.log(this.props);
 		this.fetchData(path)
 	},
 
@@ -204,14 +205,16 @@ var List = React.createClass({
 	}
 });
 
-var routes = (
-	<Route path="/ui/" handler={App}>
-		<DefaultRoute handler={List}/>
-		<Route name="list" path="list/*"  handler={List} />
-		<Route name="play" path="play/*"  handler={Player} />
-	</Route>
-);
+const h = ReactRouter.useRouterHistory(History.createHistory)({
+  basename: '/ui'
+})
 
-ReactRouter.run(routes, ReactRouter.HistoryLocation, (Root) => {
-	React.render(<Root/>, document.getElementById('app'));
-});
+ReactDOM.render((
+	<Router history={h} >
+		<Route component={App}>
+			<Route name="list" path="list/*"  component={List} />
+			<Route name="play" path="play/*"  component={Player} />
+			<Route path="*" component={List}/>
+		</Route>
+	</Router>
+), document.getElementById('app'));
