@@ -3,6 +3,11 @@
 PATH=$GOPATH/bin/:$PATH
 VERSION=$1
 
+if [ -z "$VERSION" ]; then
+	echo "You must call this script with a version as first argument"
+	exit 1
+fi
+
 cd ui/src && gulp && cd ../../
 
 rm -rf build
