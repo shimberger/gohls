@@ -52,6 +52,7 @@ gulp.task('vendor:js', function() {
   return gulp.src([
   		'node_modules/babel-polyfill/dist/polyfill.min.js',
   		'node_modules/jquery/dist/jquery.min.js',
+      'node_modules/moment/min/moment.min.js',
   		'node_modules/bootstrap/dist/css/bootstrap.min.js',
   		'node_modules/history/umd/history.min.js',
   		'node_modules/react/dist/react-with-addons.js',

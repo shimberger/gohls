@@ -3,9 +3,11 @@ package hls
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var videoSuffixes = []string{".mp4", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
@@ -15,6 +17,8 @@ var videoInfos = make(map[string]*VideoInfo)
 
 type VideoInfo struct {
 	Duration float64 `json:"duration"`
+	//FileCreated      time.Time `json:"created"`
+	FileLastModified time.Time `json:"lastModified"`
 }
 
 func FilenameLooksLikeVideo(name string) bool {
@@ -67,9 +71,13 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	}
 	duration, perr := strconv.ParseFloat(format["duration"].(string), 64)
 	if perr != nil {
-		return nil, fmt.Errorf("Could not parse duration (%v) of '%v': ", format["duration"].(string), path, perr)
+		return nil, fmt.Errorf("Could not parse duration (%v) of '%v' ", format["duration"].(string), path, perr)
 	}
-	var vi = &VideoInfo{duration}
+	finfo, staterr := os.Stat(path)
+	if staterr != nil {
+		return nil, fmt.Errorf("Could not stat file '%v': %v", path, staterr)
+	}
+	var vi = &VideoInfo{duration, finfo.ModTime()}
 	videoInfos[path] = vi
 	return vi, nil
 }

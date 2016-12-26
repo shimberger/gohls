@@ -53,6 +53,7 @@ func (s *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			vinfo, err := GetVideoInformation(filePath)
 			if err != nil {
 				log.Printf("Could not read video information of %v: %v", filePath, err)
+				continue
 			}
 			video := &ListResponseVideo{f.Name(), path.Join(r.URL.Path, f.Name()), vinfo}
 			videos = append(videos, video)

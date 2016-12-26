@@ -129,6 +129,23 @@ var EmptyMessage = React.createClass({
 })
 
 
+
+const Duration = (props) => {
+	function pad(str) {
+		var pad = "00"
+		return pad.substring(0, pad.length - str.length) + str
+	}
+	let time = parseInt(props.duration)
+	let hours = Math.floor(time / 3600)
+	let minutes = Math.floor((time - hours * 3600) / 60)
+	let seconds = (time - hours * 3600 - minutes * 60)
+	return (
+		<span>
+			{pad(hours)}h{pad(minutes)}m{pad(seconds)}s
+		</span>
+	);
+}
+
 var Video = React.createClass({
 	render() {
 		return (
@@ -142,7 +159,11 @@ var Video = React.createClass({
 						</div>
 					</div>
 					<div className="right">
-						{this.props.name}
+						<p>{this.props.name}</p>
+						<p className="video-info">
+							<span className="glyphicon glyphicon-time"/> <Duration duration={this.props.info.duration} />
+							&nbsp;| {moment(this.props.info.lastModified).format("MMM DD YYYY, hh:mm")}
+						</p>
 					</div>
 				</div>
 			</Link>
@@ -189,7 +210,7 @@ var List = React.createClass({
 		let videos = []
 		if (this.state.folders) {
 			folders = this.state.folders.map((folder) => <Folder key={folder.name} name={folder.name} path={folder.path} />)
-			videos = this.state.videos.map((video) => <Video name={video.name} path={video.path} key={video.name} />)
+			videos = this.state.videos.map((video) => <Video name={video.name} info={video.info} path={video.path} key={video.name} />)
 		}
 		let empty = (this.state.folders != null && (videos.length + folders.length) == 0) ? <EmptyMessage/> : null
 		return (

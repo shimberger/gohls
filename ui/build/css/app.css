@@ -60,12 +60,16 @@ body, html {
     flex-direction: column;
     justify-content: center;
     position: absolute;
+    font-size: 4rem;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0; }
   .list-items .list-item.video .frame > .inner {
     display: none; }
+  .list-items .list-item .video-info {
+    color: #888;
+    font-size: 1.5rem; }
 
 .list-items a:hover {
   text-decoration: none; }

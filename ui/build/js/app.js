@@ -152,6 +152,27 @@ var EmptyMessage = React.createClass({
 	}
 });
 
+const Duration = props => {
+	function pad(str) {
+		var pad = "00";
+		return pad.substring(0, pad.length - str.length) + str;
+	}
+	let time = parseInt(props.duration);
+	let hours = Math.floor(time / 3600);
+	let minutes = Math.floor((time - hours * 3600) / 60);
+	let seconds = time - hours * 3600 - minutes * 60;
+	return React.createElement(
+		"span",
+		null,
+		pad(hours),
+		"h",
+		pad(minutes),
+		"m",
+		pad(seconds),
+		"s"
+	);
+};
+
 var Video = React.createClass({
 	displayName: "Video",
 
@@ -178,7 +199,20 @@ var Video = React.createClass({
 				React.createElement(
 					"div",
 					{ className: "right" },
-					this.props.name
+					React.createElement(
+						"p",
+						null,
+						this.props.name
+					),
+					React.createElement(
+						"p",
+						{ className: "video-info" },
+						React.createElement("span", { className: "glyphicon glyphicon-time" }),
+						" ",
+						React.createElement(Duration, { duration: this.props.info.duration }),
+						"\xA0| ",
+						moment(this.props.info.lastModified).format("MMM DD YYYY, hh:mm")
+					)
 				)
 			)
 		);
@@ -226,7 +260,7 @@ var List = React.createClass({
 		let videos = [];
 		if (this.state.folders) {
 			folders = this.state.folders.map(folder => React.createElement(Folder, { key: folder.name, name: folder.name, path: folder.path }));
-			videos = this.state.videos.map(video => React.createElement(Video, { name: video.name, path: video.path, key: video.name }));
+			videos = this.state.videos.map(video => React.createElement(Video, { name: video.name, info: video.info, path: video.path, key: video.name }));
 		}
 		let empty = this.state.folders != null && videos.length + folders.length == 0 ? React.createElement(EmptyMessage, null) : null;
 		return React.createElement(

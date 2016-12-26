@@ -79,6 +79,7 @@ body, html {
 			flex-direction: column;
 			justify-content: center;
 			position: absolute;
+			font-size: 4rem;
 			top: 0;
 			bottom: 0;
 			left: 0;
@@ -87,6 +88,11 @@ body, html {
 
 		&.video .frame > .inner {
 			display: none;
+		}
+
+		.video-info {
+			color: #888;
+			font-size: 1.5rem;
 		}
 
 	}
