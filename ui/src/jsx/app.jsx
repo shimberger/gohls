@@ -18,10 +18,24 @@ var App = React.createClass({
 var Player = React.createClass({
 
 	// HLS.js doesn't seem to work somehow'
-	/*
+
 	componentDidMount() {
-		if (Hls.isSupported()) {
-			let video = this._video.getDOMNode();
+			this.video = ReactDOM.findDOMNode(this._video);
+			this.player = videojs(this.video,{
+				hls: {
+
+				}
+			});
+			videojs.Hls.xhr.beforeRequest = function(options) {
+				options.timeout = 30000;
+				return options;
+			};
+			this.player.src({
+            	src: "/playlist/" + this.props.params.splat,
+            	type: 'application/x-mpegURL'
+          	});
+
+			/*
 			this.hls = new Hls({
 				debug: true,
 		      	fragLoadingTimeOut: 60000,
@@ -42,13 +56,13 @@ var Player = React.createClass({
 					video.play();
 				});
 			});
-		}
+			*/
 	},
 
 	componentWillUnmount() {
-		this.hls.detachMedia()
+		//this.hls.detachMedia()
 	},
-	*/
+
 
 	componentWillUnmount() {
 		this.pauseVideo();
@@ -57,11 +71,11 @@ var Player = React.createClass({
 
 	pauseVideo() {
 		// TODO: Fix to use promises
-		let video = ReactDOM.findDOMNode(this._video);
-		video.pause();
-		video.src = "";
-		video.play();
-		video.pause();
+		this.player.pause();
+		this.video.pause();
+		this.video.src = "";
+		this.video.play();
+		this.video.pause();
 	},
 
 	goBack(e) {
@@ -74,7 +88,7 @@ var Player = React.createClass({
 			<div className="player" key={this.props.path}>
 				<div className="stage">
 					<video
-						src={"/playlist/" + this.props.params.splat}
+						className="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls="controls"
 						ref={(c) => this._video = c}
 						width="100%" controls autoPlay >
 					</video>
