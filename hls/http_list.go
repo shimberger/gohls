@@ -2,8 +2,8 @@ package hls
 
 import (
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"path"
 	"strings"
@@ -52,7 +52,7 @@ func (s *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if FilenameLooksLikeVideo(filePath) {
 			vinfo, err := GetVideoInformation(filePath)
 			if err != nil {
-				log.Printf("Could not read video information of %v: %v", filePath, err)
+				log.Errorf("Could not read video information of %v: %v", filePath, err)
 				continue
 			}
 			video := &ListResponseVideo{f.Name(), path.Join(r.URL.Path, f.Name()), vinfo}

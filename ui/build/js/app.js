@@ -58,6 +58,7 @@ var Player = React.createClass({
 	},
 
 	pauseVideo() {
+		// TODO: Fix to use promises
 		let video = ReactDOM.findDOMNode(this._video);
 		video.pause();
 		video.src = "";

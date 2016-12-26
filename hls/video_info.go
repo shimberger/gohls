@@ -3,6 +3,7 @@ package hls
 import (
 	"encoding/json"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"os"
 	"os/exec"
 	"strconv"
@@ -31,7 +32,7 @@ func FilenameLooksLikeVideo(name string) bool {
 }
 
 func GetRawFFMPEGInfo(path string) ([]byte, error) {
-	debug.Printf("Executing ffprobe for %v", path)
+	log.Debugf("Executing ffprobe for %v", path)
 	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", ""+path+"")
 	data, err := cmd.Output()
 	if err != nil {
@@ -61,7 +62,7 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	if jsonerr != nil {
 		return nil, jsonerr
 	}
-	debug.Printf("ffprobe for %v returned", path, info)
+	log.Debugf("ffprobe for %v returned", path, info)
 	if _, ok := info["format"]; !ok {
 		return nil, fmt.Errorf("ffprobe data for '%v' does not contain format info", path)
 	}

@@ -20,6 +20,7 @@ func NewSingleAssetHandler(path string) *singleAssetHandler {
 func (s *singleAssetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, err := Asset(s.path)
 	if err != nil {
+		http.NotFound(w, r)
 		fmt.Fprintf(w, "Not found %v", s.path)
 		// Asset was not found.
 	}

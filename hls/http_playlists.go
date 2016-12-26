@@ -7,16 +7,14 @@ import (
 	"path"
 )
 
-// UrlEncoded encodes a string like Javascript's encodeURIComponent()
-func UrlEncoded(str string) (string, error) {
+// Encodes a string like Javascript's encodeURIComponent()
+func urlEncoded(str string) (string, error) {
 	u, err := url.Parse(str)
 	if err != nil {
 		return "", err
 	}
 	return u.String(), nil
 }
-
-const hlsSegmentLength = 5.0 // 10 Seconds
 
 type PlaylistHandler struct {
 	root string
@@ -36,7 +34,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	duration := vinfo.Duration
 	baseurl := fmt.Sprintf("http://%v", r.Host)
 
-	id, err := UrlEncoded(r.URL.Path)
+	id, err := urlEncoded(r.URL.Path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

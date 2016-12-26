@@ -2,4 +2,4 @@
 
 PATH=$GOPATH/bin/:$PATH
 go-bindata -debug -prefix ui/build ui/build/...
-go run *.go ${@:1}
+DEBUG=true go run *.go ${@:1}

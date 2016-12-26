@@ -4,13 +4,10 @@ import (
 	"context"
 	"flag"
 	"github.com/google/subcommands"
-	"os"
-	"path/filepath"
+	"github.com/shimberger/gohls/hls"
 )
 
-type clearCmd struct {
-	homeDir string
-}
+type clearCmd struct{}
 
 func (*clearCmd) Name() string     { return "clear" }
 func (*clearCmd) Synopsis() string { return "Clears all caches and temporary files" }
@@ -20,14 +17,9 @@ func (*clearCmd) Usage() string {
 `
 }
 
-func (p *clearCmd) SetFlags(f *flag.FlagSet) {
-	//f.StringVar(&p.homeDir, "home", ".", "The home directory")
-}
+func (p *clearCmd) SetFlags(f *flag.FlagSet) {}
 
 func (p *clearCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	var homeDir = GetHomeDir()
-	var cacheDir = filepath.Join(homeDir, "cache")
-	os.RemoveAll(cacheDir)
-
+	hls.ClearCache()
 	return subcommands.ExitSuccess
 }

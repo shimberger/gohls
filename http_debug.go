@@ -1,6 +1,7 @@
-package hls
+package main
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"net/http"
 )
 
@@ -13,6 +14,6 @@ func NewDebugHandlerWrapper(handler http.Handler) *DebugHandlerWrapper {
 }
 
 func (s *DebugHandlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	debug.Printf("%v %v", r.Method, r.URL.Path)
+	log.Debugf("HTTP %v %v", r.Method, r.URL.Path)
 	s.handler.ServeHTTP(w, r)
 }

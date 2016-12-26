@@ -9,8 +9,7 @@ import (
 	"path"
 )
 
-type assetHandler struct {
-}
+type assetHandler struct{}
 
 func (s *assetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data, err := Asset(r.URL.Path)
