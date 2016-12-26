@@ -26,7 +26,7 @@ func (*serveCmd) Usage() string {
 }
 
 func (p *serveCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&p.homeDir, "home", ".", "The home directory")
+	//f.StringVar(&p.homeDir, "home", ".", "The home directory")
 }
 
 func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -50,7 +50,6 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 
 	// Generate variables and paths
 	var port = 8080
-	var homeDir = path.Join(usr.HomeDir, ".gohls")
 	var videoDir = path.Join(usr.HomeDir, "Videos")
 	if f.NArg() > 0 {
 		videoDir = f.Arg(0)
@@ -59,7 +58,7 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	// Configure HLS module
 	hls.FFMPEGPath = "ffmpeg"
 	hls.FFProbePath = "ffprobe"
-	hls.HomeDir = homeDir
+	hls.HomeDir = GetHomeDir()
 
 	// Setup HTTP server
 	http.Handle("/", http.RedirectHandler("/ui/", 302))
@@ -73,7 +72,7 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	// Dump information to user
 	fmt.Printf("Path to ffmpeg executable: %v\n", ffmpeg)
 	fmt.Printf("Path to ffprobe executable: %v\n", ffprobe)
-	fmt.Printf("Home directory: %v/\n", homeDir)
+	fmt.Printf("Home directory: %v/\n", hls.HomeDir)
 	fmt.Printf("Serving videos in %v\n", videoDir)
 	fmt.Printf("Visit http://localhost:%v/\n", port)
 
