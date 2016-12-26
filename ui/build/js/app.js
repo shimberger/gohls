@@ -58,7 +58,7 @@ var Player = React.createClass({
 	},
 
 	pauseVideo() {
-		let video = this._video.getDOMNode();
+		let video = ReactDOM.findDOMNode(this._video);
 		video.pause();
 		video.src = "";
 		video.play();
