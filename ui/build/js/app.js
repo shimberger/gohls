@@ -21,61 +21,24 @@ var Player = React.createClass({
 	displayName: "Player",
 
 
-	// HLS.js doesn't seem to work somehow'
-
 	componentDidMount() {
 		this.video = ReactDOM.findDOMNode(this._video);
-		this.player = videojs(this.video, {
-			hls: {}
-		});
-		videojs.Hls.xhr.beforeRequest = function (options) {
-			options.timeout = 30000;
-			return options;
-		};
-		this.player.src({
-			src: "/playlist/" + this.props.params.splat,
-			type: 'application/x-mpegURL'
-		});
+		this.player = videojs(this.video);
+		this.player.play();
+	},
 
+	componentWillUnmount() {
+		// TODO: Fix to use promises
+		this.player.dispose();
 		/*
-  this.hls = new Hls({
-  	debug: true,
-       	fragLoadingTimeOut: 60000,
-  	});
-  let hls = this.hls;
-  let props = this.props;
-  hls.attachMedia(video);
-  hls.on(Hls.Events.ERROR, function (event, data) {
-  	console.log(data);
-  })
-  hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-  	console.log("video and hls.js are now bound together !");
-  	hls.loadSource("/playlist/" + props.params.splat);
-  	hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-  		console.log(data)
-  		console.log("manifest loaded, found " + data.levels.length + " quality level");
-  		video.play();
-  	});
+  this.video.pause();
+  this.video.src = "";
+  this.video.play().then(() => {
+  	try {
+  		this.video.pause();
+  	} catch (e) {}
   });
   */
-	},
-
-	componentWillUnmount() {
-		//this.hls.detachMedia()
-	},
-
-	componentWillUnmount() {
-		this.pauseVideo();
-		//	this.hls.detachMedia()
-	},
-
-	pauseVideo() {
-		// TODO: Fix to use promises
-		this.player.pause();
-		this.video.pause();
-		this.video.src = "";
-		this.video.play();
-		this.video.pause();
 	},
 
 	goBack(e) {
@@ -90,10 +53,16 @@ var Player = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "stage" },
-				React.createElement("video", {
-					className: "video-js vjs-default-skin vjs-16-9 vjs-big-play-centered", controls: "controls",
-					ref: c => this._video = c,
-					width: "100%", controls: true, autoPlay: true })
+				React.createElement(
+					"video",
+					{
+						className: "video-js vjs-default-skin vjs-16-9 vjs-big-play-centered",
+						ref: c => this._video = c,
+						width: "100%", controls: true },
+					React.createElement("source", {
+						src: "/playlist/" + this.props.params.splat,
+						type: "application/x-mpegURL" })
+				)
 			),
 			React.createElement(
 				"a",
@@ -258,7 +227,6 @@ var List = React.createClass({
 
 	componentDidMount() {
 		var path = this.props.params.splat || "";
-		console.log(this.props);
 		this.fetchData(path);
 	},
 
@@ -290,6 +258,11 @@ var List = React.createClass({
 		);
 	}
 });
+
+videojs.Hls.xhr.beforeRequest = function (options) {
+	options.timeout = 30000;
+	return options;
+};
 
 const h = ReactRouter.useRouterHistory(History.createHistory)({
 	basename: '/ui'

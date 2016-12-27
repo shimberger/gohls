@@ -27,7 +27,7 @@ func (s *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// see http://superuser.com/questions/908280/what-is-the-correct-way-to-fix-keyframes-in-ffmpeg-for-dash
 	if err := s.cmdHandler.ServeCommand(FFMPEGPath, []string{
 		// Prevent encoding to run longer than 30 seonds
-		"-timelimit", "30",
+		"-timelimit", "45",
 
 		// TODO: Some stuff to investigate
 		// "-probesize", "524288",
@@ -35,14 +35,15 @@ func (s *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// "-analyzeduration", "2147483647",
 		//"-hwaccel:0", "qsv",
 
+		// The start time
+		// important: needs to be before -i to do input seeking
+		"-ss", fmt.Sprintf("%v.00", startTime),
+
 		// The source file
 		"-i", filePath,
 
 		// Put all streams to output
 		"-map", "0",
-
-		// The start time
-		"-ss", fmt.Sprintf("%v.00", startTime),
 
 		// The duration
 		"-t", fmt.Sprintf("%v.00", hlsSegmentLength),

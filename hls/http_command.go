@@ -101,9 +101,23 @@ func (s *HttpCommandHandler) ServeCommand(cmdPath string, args []string, w io.Wr
 		cmd.Process.Wait()
 		return err
 	}
-	cmd.Wait()
+	perr := cmd.Wait()
+	if perr != nil {
+		log.Errorf("Error waiting for process: %v", perr)
+		cacheFile.Close()
+		os.Remove(cachePath)
+		return perr
+	}
+	/*
+		if !state.Success {
+			log.Errorf("Process didn't end successfully")
+			cacheFile.Close()
+			os.Remove(cachePath)
+			return fmt.Errorf("Process didn't end successfully")
+		}
+	*/
 	filew.Flush()
-	log.Debugf("HTTP command done")
+	log.Debugf("HTTP command success")
 	return nil
 	//s.inProgressMutex.Lock()
 	//s.inProgressMutex.Unlock()
