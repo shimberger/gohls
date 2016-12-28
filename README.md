@@ -4,7 +4,14 @@ Simple server that exposes a directory for video streaming via HTTP Live Streami
 
 *This project is cobbled together from all kinds of code I has lying around so it's pretty crappy all around. It also has some serious shortcomings.*
 
+## Snapshots
+
+* [Windows (64 bit)](https://s3.amazonaws.com/gohls/gohls-windows-amd64-snapshot.tar.gz)
+* [Linux (64 bit)](https://s3.amazonaws.com/gohls/gohls-linux-amd64-snapshot.tar.gz)
+* [macOS (64 bit)](https://s3.amazonaws.com/gohls/gohls-osx-snapshot.tar.gz)
+
 ## Running it
+
 *Important*: You need the ffmpeg and ffrpobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at https://ffmpeg.org/download.html.
 
 1. Download the binary for your operating system from the releases page (https://github.com/shimberger/gohls/releases)
@@ -12,6 +19,7 @@ Simple server that exposes a directory for video streaming via HTTP Live Streami
 3. Visit the URL http://localhost:8080 to access the web interface
 
 ## Developing it
+
 Just do a `go get /github.com/shimberger/golhls/...` in your GOPATH. Then change into the project directory and run the development server by executing `./scripts/run_dev` (sorry Windows users). You need gulp & npm to build the frontend.
 
 ## License
