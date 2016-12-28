@@ -17,7 +17,7 @@ func NewFrameHandler(root string) *FrameHandler {
 
 func (s *FrameHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := path.Join(s.root, r.URL.Path)
-	if err := s.cmdHandler.ServeCommand(FFMPEGPath, []string{"-timelimit", "10", "-loglevel", "error", "-ss", "00:00:30", "-i", path, "-vf", "scale=320:-1", "-frames:v", "1", "-f", "image2", "-"}, w); err != nil {
+	if err := s.cmdHandler.ServeCommand(FFMPEGPath, []string{"-timelimit", "15", "-loglevel", "error", "-ss", "00:00:30", "-i", path, "-vf", "scale=320:-1", "-frames:v", "1", "-f", "image2", "-"}, w); err != nil {
 		log.Errorf("Problem serving screenshot: %v", err)
 	}
 }

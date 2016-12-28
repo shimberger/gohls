@@ -61,8 +61,8 @@ body, html {
 	border-radius: 1000px;
 	text-align: center;
 	width: 75px;
-    height: 75px;
-    line-height: 70px;
+	height: 75px;
+	line-height: 70px;
 	display: block;
 }
 
@@ -102,6 +102,10 @@ body, html {
 			color: white;
 			font-size: 3rem;
 			min-height: 150px;
+			background-size: 50px;
+			background-image: url(/ui/assets/img/loader.svg);
+			background-repeat: no-repeat;
+			background-position: center;
 		}
 		.right {
 			display: flex;
@@ -113,7 +117,7 @@ body, html {
 		}
 
 		.frame {
-			background-color: black;
+			//background-color: black;
 			position: relative;
 			width: 100%;
 			padding-top: 56%;
