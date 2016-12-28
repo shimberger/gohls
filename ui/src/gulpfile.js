@@ -41,6 +41,7 @@ gulp.task('html', function () {
 gulp.task('vendor:css', function() {
   return gulp.src([
   		'node_modules/bootstrap/dist/css/bootstrap.css',
+//      'node_modules/videojs-airplay/dist/videojs.airplay.css',
   	])
     .pipe(concat('vendor.css'))
     .pipe(gulp.dest('../build/css/'));
@@ -55,6 +56,7 @@ gulp.task('vendor:js', function() {
   		'node_modules/jquery/dist/jquery.min.js',
       'node_modules/video.js/dist/video.min.js',
       'node_modules/videojs-contrib-hls/dist/videojs-contrib-hls.min.js',
+//      'node_modules/videojs-airplay/dist/videojs.airplay.js',
       'node_modules/moment/min/moment.min.js',
   		'node_modules/bootstrap/dist/css/bootstrap.min.js',
   		'node_modules/history/umd/history.min.js',

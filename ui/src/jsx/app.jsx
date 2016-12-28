@@ -24,7 +24,11 @@ var Player = React.createClass({
 
 	componentDidMount() {
 		this.video = ReactDOM.findDOMNode(this._video);
-		this.player = videojs(this.video);
+		$(this.video).attr('x-webkit-airplay','allow');
+		$(this.video).attr('airplay','allow');
+		this.player = videojs(this.video,{
+			plugins: { airplayButton: {} }
+		});
 		this.player.play();
 	},
 
