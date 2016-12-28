@@ -51,6 +51,7 @@ gulp.task('vendor:css', function() {
 gulp.task('vendor:js', function() {
   return gulp.src([
   		'node_modules/babel-polyfill/dist/polyfill.min.js',
+      'node_modules/lodash/lodash.min.js',
   		'node_modules/jquery/dist/jquery.min.js',
       'node_modules/video.js/dist/video.min.js',
       'node_modules/videojs-contrib-hls/dist/videojs-contrib-hls.min.js',

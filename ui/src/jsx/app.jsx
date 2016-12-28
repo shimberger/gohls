@@ -4,6 +4,11 @@ var Route = ReactRouter.Route;
 var Link = ReactRouter.Link;
 var browserHistory = ReactRouter.browserHistory;
 
+function getParent(path) {
+	let paths = path.split("/")
+	return (paths.length >= 2) ? "/" + _.join(_.take(paths,paths.length-1),"/") : "/"
+}
+
 // Application Frame
 var App = React.createClass({
 	render() {
@@ -24,41 +29,26 @@ var Player = React.createClass({
 	},
 
 	componentWillUnmount() {
-		// TODO: Fix to use promises
 		this.player.dispose();
-		/*
-		this.video.pause();
-		this.video.src = "";
-		this.video.play().then(() => {
-			try {
-				this.video.pause();
-			} catch (e) {}
-		});
-		*/
-	},
-
-	goBack(e) {
-		e.preventDefault();
-		window.history.back();
 	},
 
 	render() {
+		let path = this.props.params.splat;
 		return (
-			<div className="player" key={this.props.path}>
+			<div className="player" key={path}>
 				<div className="stage">
 					<video
 						className="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
 						ref={(c) => this._video = c}
 						width="100%" controls >
 						<source
-    						src={"/playlist/" + this.props.params.splat}
+    						src={"/playlist/" + path}
              				type="application/x-mpegURL" />
 					</video>
 				</div>
-					<a href="#" onClick={this.goBack} className="back">
-						<span className="glyphicon glyphicon-chevron-left" aria-hidden="true">
-					</span>
-				</a>
+				<Link to={getParent(path)} className="back">
+					<span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				</Link>
 			</div>
 		)
 	}
@@ -182,6 +172,7 @@ var List = React.createClass({
 
 	render () {
 		let loader = (!this.state.folders) ? <Loader/> : null;
+
 		let folders = []
 		let videos = []
 		if (this.state.folders) {
@@ -191,12 +182,29 @@ var List = React.createClass({
 		let empty = (this.state.folders != null && (videos.length + folders.length) == 0) ? <EmptyMessage/> : null
 		return (
 			<div className="list">
+				<header className="header">
+					<div className="header-content">
+						<div className="header-left">
+							<Link to={getParent(this.props.params.splat)}>
+								<span className="glyphicon glyphicon-circle-arrow-left"/>
+							</Link>
+						</div>
+						<div className="header-center">
+							{"/" + this.props.params.splat || "/"}
+						</div>
+						<div className="header-right">
+
+						</div>
+					</div>
+				</header>
+				<div className="">
 					<div className="list-items">
 						{loader}
 						{folders}
 						{videos}
 						{empty}
 					</div>
+				</div>
 			</div>
 		)
 	}

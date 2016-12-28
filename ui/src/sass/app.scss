@@ -1,9 +1,48 @@
 
 @import "../node_modules/video.js/src/css/vjs";
 
+$header-height: 50px;
+
 body, html {
 	margin: 0;
 	padding: 0;
+}
+
+.header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: $header-height;
+	background: #AAA;
+	border-bottom: 1px solid black;
+	z-index: 999;
+	font-size: 30px;
+	line-height: $header-height - 5px;
+
+	a {
+		color: #555;
+	}
+	a:hover {
+		color: white;
+	}
+
+	&-content {
+		display: flex;
+	}
+
+	&-left, &-right {
+		padding: 5px;
+	}
+
+	&-center {
+		padding: 5px;
+		font-size: 20px;
+		height: $header-height;
+		flex-grow: 1;
+		overflow: hidden;
+		text-align: center;
+	}
 }
 
 .loader, .empty-message {
@@ -31,8 +70,13 @@ body, html {
 	background: rgba(200,200,200,0.75)
 }
 
+.list {
+	padding-top: $header-height;
+}
+
 
 .list-items {
+	background: white;
 
 	.list-item {
 		color: #333;
@@ -47,7 +91,6 @@ body, html {
 
 		.left, .right {
 			display: flex;
-			float: left;
 			padding: 0.75rem;
 		}
 
@@ -58,6 +101,7 @@ body, html {
 			background: #333;
 			color: white;
 			font-size: 3rem;
+			min-height: 150px;
 		}
 		.right {
 			display: flex;
