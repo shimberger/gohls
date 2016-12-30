@@ -23,8 +23,6 @@ func (s *FrameHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if tint, err := strconv.Atoi(t); err == nil {
 		time = tint
 	}
-	log.Debugf("Second %v", time)
-
 	path := path.Join(s.root, r.URL.Path)
 	if err := s.cmdHandler.ServeCommand(FFMPEGPath, []string{"-timelimit", "15", "-loglevel", "error", "-ss", fmt.Sprintf("%v.0", time), "-i", path, "-vf", "scale=320:-1", "-frames:v", "1", "-f", "image2", "-"}, w); err != nil {
 		log.Errorf("Problem serving screenshot: %v", err)
