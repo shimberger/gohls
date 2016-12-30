@@ -14,6 +14,16 @@ import (
 	"syscall"
 )
 
+func calculateCommandHash(cmd string, args []string) string {
+	h := sha1.New()
+	h.Write([]byte(cmd))
+	for _, v := range args {
+		h.Write([]byte(v))
+	}
+	sum := h.Sum(nil)
+	return fmt.Sprintf("%x", sum)
+}
+
 type Empty struct{}
 
 type HttpCommandHandler struct {
@@ -37,18 +47,7 @@ func (s *HttpCommandHandler) start() {
 
 }
 
-func (s *HttpCommandHandler) calculateKey(cmd string, args []string) string {
-	h := sha1.New()
-	h.Write([]byte(cmd))
-	for _, v := range args {
-		h.Write([]byte(v))
-	}
-	sum := h.Sum(nil)
-	return fmt.Sprintf("%x", sum)
-}
-
-func (s *HttpCommandHandler) ServeCommand(cmdPath string, args []string, w io.Writer) error {
-	key := s.calculateKey(cmdPath, args)
+func (s *HttpCommandHandler) ServeCommand(cmdPath string, args []string, key string, w io.Writer) error {
 	cachePath := filepath.Join(HomeDir, cacheDirName, s.cacheDir, key)
 	mkerr := os.MkdirAll(filepath.Join(HomeDir, cacheDirName, s.cacheDir), 0777)
 	if mkerr != nil {
