@@ -54,6 +54,9 @@ func (s *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// x264 video codec
 		"-vcodec", "libx264",
 
+		// x264 preset
+		"-preset", "fast",
+
 		// aac audio codec
 		"-acodec", "aac",
 

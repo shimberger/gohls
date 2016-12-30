@@ -49,12 +49,6 @@ func (s *HttpCommandHandler) calculateKey(cmd string, args []string) string {
 
 func (s *HttpCommandHandler) ServeCommand(cmdPath string, args []string, w io.Writer) error {
 	key := s.calculateKey(cmdPath, args)
-	token := <-s.tokenChannel
-	//log.Printf("Token: %v",key)
-	defer func() {
-		s.tokenChannel <- token
-		//log.Printf("Released token")
-	}()
 	cachePath := filepath.Join(HomeDir, cacheDirName, s.cacheDir, key)
 	mkerr := os.MkdirAll(filepath.Join(HomeDir, cacheDirName, s.cacheDir), 0777)
 	if mkerr != nil {
@@ -70,6 +64,12 @@ func (s *HttpCommandHandler) ServeCommand(cmdPath string, args []string, w io.Wr
 		}
 		return nil
 	}
+	token := <-s.tokenChannel
+	//log.Printf("Token: %v",key)
+	defer func() {
+		s.tokenChannel <- token
+		//log.Printf("Released token")
+	}()
 	cacheFile, ferr := os.Create(cachePath)
 	if ferr != nil {
 		log.Errorf("Could not create cache file %v: %v", cacheFile, ferr)
