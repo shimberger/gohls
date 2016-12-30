@@ -119,11 +119,12 @@ const Duration = (props) => {
 
 var Video = React.createClass({
 	render() {
+		let time = Math.min(30.0,Math.ceil(this.props.info.duration * 0.1))
 		return (
 			<Link to={"/play/" + this.props.path} >
 				<div className="list-item video" key={this.props.path}>
 					<div className="left">
-						<div className="frame" style={{"backgroundImage": "url('/frame/" + this.props.path+"')"}} >
+						<div className="frame" style={{"backgroundImage": "url('/frame/" + this.props.path+"?t="+time+"')"}} >
 							<div className="inner">
 								<span className="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
 							</div>
