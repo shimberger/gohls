@@ -2,10 +2,14 @@ package hls
 
 import (
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"net/http"
 	"net/url"
 	"path"
+	"regexp"
 )
+
+var playlistRegexp = regexp.MustCompile(`^(320|480|720|1080)/(.*)$`)
 
 // Encodes a string like Javascript's encodeURIComponent()
 func urlEncoded(str string) (string, error) {
@@ -25,8 +29,17 @@ func NewPlaylistHandler(root string) *PlaylistHandler {
 }
 
 func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	filePath := path.Join(s.root, r.URL.Path)
-	vinfo, err := GetVideoInformation(filePath)
+	log.Debugf("Playlist request: %v", r.URL.Path)
+	matches := playlistRegexp.FindStringSubmatch(r.URL.Path)
+	if matches == nil {
+		http.Error(w, "Wrong path format", 400)
+		return
+	}
+	file := path.Join(s.root, matches[2])
+	res := matches[1]
+	log.Debugf("Playlist request: %v", matches)
+
+	vinfo, err := GetVideoInformation(file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -34,7 +47,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	duration := vinfo.Duration
 	baseurl := fmt.Sprintf("http://%v", r.Host)
 
-	id, err := urlEncoded(r.URL.Path)
+	id, err := urlEncoded(matches[2])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -59,7 +72,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else {
 			fmt.Fprintf(w, "#EXTINF: %f,\n", leftover)
 		}
-		fmt.Fprintf(w, baseurl+"/segments/%v/%v.ts\n", id, segmentIndex)
+		fmt.Fprintf(w, baseurl+"/segments/%v/%v/%v.ts\n", id, res, segmentIndex)
 		segmentIndex++
 		leftover = leftover - hlsSegmentLength
 	}

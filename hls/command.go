@@ -3,6 +3,7 @@ package hls
 import (
 	"bytes"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"io"
 	"os/exec"
 	"syscall"
@@ -16,6 +17,8 @@ func execute(cmdPath string, args []string) (data []byte, err error) {
 		err = fmt.Errorf("Error opening stdout of command: %v", err)
 		return
 	}
+
+	log.Debugf("Executing: %v %v", cmdPath, args)
 	err2 := cmd.Start()
 	if err2 != nil {
 		err = fmt.Errorf("Error starting command: %v", err)

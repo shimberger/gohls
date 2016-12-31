@@ -46,7 +46,7 @@ var Player = React.createClass({
 						ref={(c) => this._video = c}
 						width="100%" controls >
 						<source
-    						src={"/playlist/" + path}
+    						src={"/playlist/720/" + path }
              				type="application/x-mpegURL" />
 					</video>
 				</div>
