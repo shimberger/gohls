@@ -46,6 +46,7 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	http.Handle("/frame/", NewDebugHandlerWrapper(http.StripPrefix("/frame/", hls.NewFrameHandler(videoDir))))
 	http.Handle("/playlist/", NewDebugHandlerWrapper(http.StripPrefix("/playlist/", hls.NewPlaylistHandler(videoDir))))
 	http.Handle("/segments/", NewDebugHandlerWrapper(http.StripPrefix("/segments/", hls.NewStreamHandler(videoDir))))
+	http.Handle("/download/", NewDebugHandlerWrapper(http.StripPrefix("/download/", NewDownloadHandler(videoDir))))
 
 	// Dump information to user
 	fmt.Printf("Path to ffmpeg executable: %v\n", hls.FFMPEGPath)

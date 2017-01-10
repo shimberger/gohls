@@ -131,7 +131,10 @@ var Video = React.createClass({
 						</div>
 					</div>
 					<div className="right">
-						<p>{this.props.name}</p>
+						<p>
+							{this.props.name}&nbsp;
+							(<a onClick={(e) => {e.preventDefault(); window.location = "/download/" + this.props.path}} target="_blank">Download</a>)
+						</p>
 						<p className="video-info">
 							<span className="glyphicon glyphicon-time"/> <Duration duration={this.props.info.duration} />
 							&nbsp;| {moment(this.props.info.lastModified).format("MMM DD YYYY, hh:mm")}
