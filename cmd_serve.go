@@ -12,7 +12,9 @@ import (
 	"path"
 )
 
-type serveCmd struct{}
+type serveCmd struct {
+	port int
+}
 
 func (*serveCmd) Name() string     { return "serve" }
 func (*serveCmd) Synopsis() string { return "Serves the directory for streaming" }
@@ -22,7 +24,9 @@ func (*serveCmd) Usage() string {
 `
 }
 
-func (p *serveCmd) SetFlags(f *flag.FlagSet) {}
+func (p *serveCmd) SetFlags(f *flag.FlagSet) {
+	f.IntVar(&p.port, "port", 8080, "Listening port")
+}
 
 func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	// Determine user info
@@ -32,7 +36,7 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	}
 
 	// Generate variables and paths
-	var port = 8080
+	var port = p.port
 	var videoDir = path.Join(usr.HomeDir, "Videos")
 	if f.NArg() > 0 {
 		videoDir = f.Arg(0)
