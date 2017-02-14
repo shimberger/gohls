@@ -5,19 +5,8 @@ import (
 	"github.com/shimberger/gohls/hls"
 	"os"
 	"os/exec"
-	"os/user"
-	"path"
 	"strconv"
 )
-
-func getHomeDir() string {
-	usr, uerr := user.Current()
-	if uerr != nil {
-		log.Fatal(uerr)
-	}
-	var homeDir = path.Join(usr.HomeDir, ".gohls")
-	return homeDir
-}
 
 func init() {
 	log.SetOutput(os.Stderr)
@@ -41,5 +30,4 @@ func init() {
 	// Configure HLS module
 	hls.FFMPEGPath = ffmpeg
 	hls.FFProbePath = ffprobe
-	hls.HomeDir = getHomeDir()
 }

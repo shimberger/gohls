@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-var HomeDir = "."
+var HomeDir = ".gohls"
 var FFProbePath = "ffprobe"
 var FFMPEGPath = "ffmpeg"
 

@@ -6,14 +6,12 @@ import (
 	"fmt"
 	"github.com/google/subcommands"
 	"github.com/shimberger/gohls/hls"
-	"log"
 	"net/http"
-	"os/user"
-	"path"
 )
 
 type serveCmd struct {
-	port int
+	port    int
+	homeDir string
 }
 
 func (*serveCmd) Name() string     { return "serve" }
@@ -29,18 +27,10 @@ func (p *serveCmd) SetFlags(f *flag.FlagSet) {
 }
 
 func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	// Determine user info
-	usr, uerr := user.Current()
-	if uerr != nil {
-		log.Fatal(uerr)
-	}
 
 	// Generate variables and paths
 	var port = p.port
-	var videoDir = path.Join(usr.HomeDir, "Videos")
-	if f.NArg() > 0 {
-		videoDir = f.Arg(0)
-	}
+	var videoDir = setVideoDir(f)
 
 	// Setup HTTP server
 	http.Handle("/", http.RedirectHandler("/ui/", 302))
