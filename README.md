@@ -18,6 +18,12 @@ Simple server that exposes a directory for video streaming via HTTP Live Streami
 2. Execute the command `gohls serve <path to videos>` e.g. `gohls serve ~/Documents/Videos` to serve the videos located in `~/Documents/Videos`.
 3. Visit the URL http://localhost:8080 to access the web interface
 
+## Specifying the port
+
+To make the server listen on another port just use the `serve` command with `--port` like so (the example uses port 7000):
+
+	gohls serve --port 7000 <path to videos>
+
 ## Developing it
 
 Just do a `go get /github.com/shimberger/golhls/...` in your GOPATH. Then change into the project directory and run the development server by executing `./scripts/run_dev` (sorry Windows users). You need gulp & npm to build the frontend.
