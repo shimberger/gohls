@@ -139,7 +139,7 @@ func EncodingArgs(videoFile string, segment int64, res int64) []string {
 		// "-probesize", "524288",
 		// "-fpsprobesize", "10",
 		// "-analyzeduration", "2147483647",
-		//"-hwaccel:0", "qsv",
+		// "-hwaccel:0", "vda",
 
 		// The start time
 		// important: needs to be before -i to do input seeking
