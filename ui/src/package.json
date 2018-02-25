@@ -26,7 +26,8 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-router": "^3.0.0",
-    "video.js": "^5.14.1",
-    "videojs-contrib-hls": "^4.0.3"
+    "video.js": "^6.6.3",
+    "videojs-airplay": "^1.0.3",
+    "videojs-contrib-hls": "^5.12.2"
   }
 }
