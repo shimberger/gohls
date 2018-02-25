@@ -37,5 +37,6 @@ function make_release() {
 }
 
 make_release "osx" "darwin" "amd64" ""
+make_release "linux-386" "linux" "386" ""
 make_release "linux-amd64" "linux" "amd64" ""
 make_release "windows-amd64" "windows" "amd64" ".exe"
