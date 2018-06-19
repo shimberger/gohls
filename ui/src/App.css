@@ -1,0 +1,70 @@
+
+
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+.header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+	background: #AAA;
+	border-bottom: 1px solid black;
+	z-index: 999;
+	font-size: 30px;
+	line-height: 45px;
+}
+
+.header a {
+		color: #555;
+  }
+  
+  .header 	a:hover {
+		color: white;
+	}
+
+	.header-content {
+		display: flex;
+	}
+
+	.header-left, .header-right {
+		padding: 5px;
+	}
+
+	.header-center {
+		padding: 5px;
+		font-size: 20px;
+		height: 50px;
+		flex-grow: 1;
+		overflow: hidden;
+		text-align: center;
+	}
+
+
+
+
+  .header .back > span {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	color: white;
+	font-size: 30px;
+	border: 2px solid white;
+	border-radius: 1000px;
+	text-align: center;
+	width: 75px;
+	height: 75px;
+	line-height: 70px;
+	display: block;
+}
+
+.header .back:hover > span {
+	background: rgba(200,200,200,0.75)
+}
+
+
+
+

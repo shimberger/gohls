@@ -32,15 +32,14 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	var port = p.port
 	var videoDir = setVideoDir(f)
 
+	http.Handle("/api/list/", NewDebugHandlerWrapper(http.StripPrefix("/api/list/", hls.NewListHandler(videoDir))))
+	http.Handle("/api/frame/", NewDebugHandlerWrapper(http.StripPrefix("/api/frame/", hls.NewFrameHandler(videoDir))))
+	http.Handle("/api/playlist/", NewDebugHandlerWrapper(http.StripPrefix("/api/playlist/", hls.NewPlaylistHandler(videoDir))))
+	http.Handle("/api/segments/", NewDebugHandlerWrapper(http.StripPrefix("/api/segments/", hls.NewStreamHandler(videoDir))))
+	http.Handle("/api/download/", NewDebugHandlerWrapper(http.StripPrefix("/api/download/", NewDownloadHandler(videoDir))))
+
 	// Setup HTTP server
-	http.Handle("/", http.RedirectHandler("/ui/", 302))
-	http.Handle("/ui/assets/", http.StripPrefix("/ui/assets/", &assetHandler{}))
-	http.Handle("/ui/", NewDebugHandlerWrapper(http.StripPrefix("/ui/", NewSingleAssetHandler("index.html"))))
-	http.Handle("/list/", NewDebugHandlerWrapper(http.StripPrefix("/list/", hls.NewListHandler(videoDir))))
-	http.Handle("/frame/", NewDebugHandlerWrapper(http.StripPrefix("/frame/", hls.NewFrameHandler(videoDir))))
-	http.Handle("/playlist/", NewDebugHandlerWrapper(http.StripPrefix("/playlist/", hls.NewPlaylistHandler(videoDir))))
-	http.Handle("/segments/", NewDebugHandlerWrapper(http.StripPrefix("/segments/", hls.NewStreamHandler(videoDir))))
-	http.Handle("/download/", NewDebugHandlerWrapper(http.StripPrefix("/download/", NewDownloadHandler(videoDir))))
+	http.Handle("/", NewDebugHandlerWrapper(NewSingleAssetHandler("index.html")))
 
 	// Dump information to user
 	fmt.Printf("Path to ffmpeg executable: %v\n", hls.FFMPEGPath)

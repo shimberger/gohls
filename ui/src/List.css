@@ -1,0 +1,102 @@
+
+.list {
+	padding-top: 50px;
+}
+
+
+.list-items {
+	background: white;
+}
+
+.list-items .list-item {
+		color: #333;
+		overflow: hidden;
+		position: relative;
+		display: flex;
+		border-bottom: 1px solid #000;
+}
+
+.list-items .list-item 		img {
+			width: 100%;
+		}
+
+        .list-items .list-item 		.left, .list-items .list-item  .right {
+			display: flex;
+			padding: 0.75rem;
+		}
+
+        .list-items .list-item 	.left {
+			width: 30%;
+			max-width: 250px;
+			text-align: center;
+			background: #333;
+			color: white;
+			font-size: 3rem;
+			min-height: 150px;
+			background-size: 50px;
+			background-image: url(/ui/assets/img/loader.svg);
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+        .list-items .list-item 	.right {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			width: 70%;
+			font-size: 2rem;
+
+		}
+
+        .list-items .list-item 	.frame {
+			position: relative;
+			width: 100%;
+			padding-top: 56%;
+			background-size: cover;
+		}
+
+		.list-items .list-item  .frame > .inner {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			position: absolute;
+			font-size: 4rem;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+
+		.list-items .list-item.video .frame > .inner {
+			display: none;
+		}
+
+		.list-items .list-item .video-info {
+			color: #888;
+			font-size: 1.5rem;
+		}
+
+	
+
+	.list a:hover {
+		text-decoration: none;
+    }
+    
+    
+    .list .list-item {
+			background: #eeeeee;
+    }
+
+    .list .list-item			.left {
+				background: #555;
+			}
+
+            .list .list-item.video .frame > .inner {
+				background: rgba(100,100,100,0.3);
+				display: flex;
+			}
+
+		
+
+
+	
+

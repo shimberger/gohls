@@ -45,7 +45,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	duration := vinfo.Duration
-	baseurl := fmt.Sprintf("http://%v", r.Host)
+	baseurl := fmt.Sprintf("http://%v/api", r.Host)
 
 	id, err := urlEncoded(matches[2])
 	if err != nil {
