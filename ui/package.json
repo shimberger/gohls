@@ -2,7 +2,7 @@
   "name": "ui",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:4000",
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "bootstrap": "^3.3.7",
     "lodash": "^4.17.10",
