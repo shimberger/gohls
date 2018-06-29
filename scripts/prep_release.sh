@@ -9,7 +9,7 @@ if [ -z "$VERSION" ]; then
 	exit 1
 fi
 
-cd ui/src && gulp && cd ../../
+cd ui/src && npm run build && cd ../../
 
 rm -rf build
 mkdir build
