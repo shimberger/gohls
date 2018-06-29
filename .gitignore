@@ -4,4 +4,5 @@
 node_modules
 videos
 buildinfo.go
+bindata.go
 LOCAL_NOTES.txt
