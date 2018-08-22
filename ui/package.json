@@ -4,6 +4,8 @@
   "private": true,
   "proxy": "http://localhost:8080",
   "dependencies": {
+    "@material-ui/core": "^1.5.1",
+    "@material-ui/icons": "^2.0.3",
     "bootstrap": "^3.3.7",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
@@ -11,6 +13,7 @@
     "react-dom": "^16.4.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "typeface-roboto": "0.0.54",
     "video.js": "^7.0.3"
   },
   "scripts": {
