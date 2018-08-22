@@ -26,7 +26,7 @@ To make the server listen on another port just use the `serve` command with `--p
 
 ## Developing it
 
-Just do a `go get /github.com/shimberger/golhls/...` in your GOPATH. Then change into the project directory and run the development server by executing `./scripts/run_dev` (sorry Windows users). You need gulp & npm to build the frontend.
+Just do a `go get github.com/shimberger/gohls/...` in your GOPATH. Then change into the project directory and run the development server by executing `./scripts/run_dev` (sorry Windows users). You need gulp & npm to build the frontend.
 
 ## License
 
