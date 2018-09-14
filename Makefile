@@ -51,3 +51,8 @@ bindata:
 ## Build UI
 ui:
 	cd ui/src && npm run build && cd -
+
+.PHONY: run
+## Run the server
+run:
+	DEBUG=true go run *.go serve /tmp/videos
