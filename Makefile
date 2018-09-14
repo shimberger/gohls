@@ -17,21 +17,21 @@ default: build
 
 .PHONY: build
 ## Build a development binary
-build: $(OUTPUT)
-
-$(OUTPUT): *.go
+build:
 	@mkdir -p dist/
 	go build -o $(OUTPUT) -ldflags=$(LDFLAGS)
 
 .PHONY: build_release
 ## Build the release binaries and save them to ./dist
-build_release: clean
+build_release: clean ui bindata
 	gox -arch="amd64" -os="windows darwin linux" -output="dist/$(NAME)-{{.Arch}}-{{.OS}}" -ldflags=$(LDFLAGS)
 
 .PHONY: clean
 ## Remove the release folder
 clean:
 	rm -rf dist/
+	rm -rf ui/build
+	rm -rf bindata.go
 
 .PHONY: tag
 ## Tag the project with the current version and push to GitHub

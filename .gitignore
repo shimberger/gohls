@@ -1,5 +1,6 @@
 .DS_Store
 .sass-cache
+.vscode
 
 # Build artifacts
 /build
