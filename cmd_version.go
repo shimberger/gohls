@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+
 	"github.com/google/subcommands"
 )
 
@@ -20,6 +21,6 @@ func (*versionCmd) Usage() string {
 func (p *versionCmd) SetFlags(f *flag.FlagSet) {}
 
 func (p *versionCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	fmt.Printf("gohls %v (commit %v) (from %v)\n", VERSION, COMMIT, BUILD_TIME)
+	fmt.Printf("%s (from %s)\n", VERSION, BUILDDATE)
 	return subcommands.ExitSuccess
 }

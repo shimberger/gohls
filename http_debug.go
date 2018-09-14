@@ -1,8 +1,9 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"net/http"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 type DebugHandlerWrapper struct {

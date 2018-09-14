@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/google/subcommands"
 	"os"
+
+	"github.com/google/subcommands"
 )
 
 func main() {

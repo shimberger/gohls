@@ -1,8 +1,11 @@
 .DS_Store
 .sass-cache
+
+# Build artifacts
 /build
+/dist
+
 node_modules
 videos
-buildinfo.go
 bindata.go
 LOCAL_NOTES.txt

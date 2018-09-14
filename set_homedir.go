@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
+	"path"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/shimberger/gohls/hls"
-	"path"
 )
 
 func setVideoDir(f *flag.FlagSet) string {

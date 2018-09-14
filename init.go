@@ -1,11 +1,12 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/shimberger/gohls/hls"
 	"os"
 	"os/exec"
 	"strconv"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/shimberger/gohls/hls"
 )
 
 func init() {
