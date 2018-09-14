@@ -12,7 +12,7 @@ Simple server that exposes a directory for video streaming via HTTP Live Streami
 
 ## Running it
 
-*Important*: You need the ffmpeg and ffrpobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at https://ffmpeg.org/download.html.
+*Important*: You need the ffmpeg and ffprobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at https://ffmpeg.org/download.html.
 
 1. Download the binary for your operating system from the releases page (https://github.com/shimberger/gohls/releases)
 2. Execute the command `gohls serve <path to videos>` e.g. `gohls serve ~/Documents/Videos` to serve the videos located in `~/Documents/Videos`.
