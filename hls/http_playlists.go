@@ -6,10 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"regexp"
 )
-
-var playlistRegexp = regexp.MustCompile(`^(320|480|720|1080)/(.*)$`)
 
 // Encodes a string like Javascript's encodeURIComponent()
 func urlEncoded(str string) (string, error) {
@@ -21,23 +18,18 @@ func urlEncoded(str string) (string, error) {
 }
 
 type PlaylistHandler struct {
-	root string
+	root         string
+	rootUri      string
+	segmentsPath string
 }
 
-func NewPlaylistHandler(root string) *PlaylistHandler {
-	return &PlaylistHandler{root}
+func NewPlaylistHandler(root string, rootUri string, segmentsPath string) *PlaylistHandler {
+	return &PlaylistHandler{root, rootUri, segmentsPath}
 }
 
 func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Debugf("Playlist request: %v", r.URL.Path)
-	matches := playlistRegexp.FindStringSubmatch(r.URL.Path)
-	if matches == nil {
-		http.Error(w, "Wrong path format", 400)
-		return
-	}
-	file := path.Join(s.root, matches[2])
-	res := matches[1]
-	log.Debugf("Playlist request: %v", matches)
+	file := path.Join(s.root, r.URL.Path)
 
 	vinfo, err := GetVideoInformation(file)
 	if err != nil {
@@ -45,9 +37,9 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	duration := vinfo.Duration
-	baseurl := fmt.Sprintf("http://%v/api", r.Host)
+	baseurl := fmt.Sprintf("http://%v", r.Host)
 
-	id, err := urlEncoded(matches[2])
+	id, err := urlEncoded(r.URL.Path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -72,7 +64,7 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else {
 			fmt.Fprintf(w, "#EXTINF: %f,\n", leftover)
 		}
-		fmt.Fprintf(w, baseurl+"/segments/%v/%v/%v.ts\n", id, res, segmentIndex)
+		fmt.Fprintf(w, baseurl+s.segmentsPath+"%v/%v.ts\n", id, segmentIndex)
 		segmentIndex++
 		leftover = leftover - hlsSegmentLength
 	}

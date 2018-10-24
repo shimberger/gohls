@@ -9,15 +9,16 @@ import (
 	"time"
 )
 
-var streamRegexp = regexp.MustCompile(`^(.*)/(320|480|720|1080)/([0-9]+)\.ts$`)
+var streamRegexp = regexp.MustCompile(`^(.*)/([0-9]+)\.ts$`)
 
 type StreamHandler struct {
 	root    string
+	rootUri string
 	encoder *Encoder
 }
 
-func NewStreamHandler(root string) *StreamHandler {
-	return &StreamHandler{root, NewEncoder("segments", 2)}
+func NewStreamHandler(root string, rootUri string) *StreamHandler {
+	return &StreamHandler{root, rootUri, NewEncoder("segments", 2)}
 }
 
 func (s *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -28,8 +29,8 @@ func (s *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, _ := strconv.ParseInt(matches[2], 0, 64)
-	segment, _ := strconv.ParseInt(matches[3], 0, 64)
+	res := int64(720)
+	segment, _ := strconv.ParseInt(matches[2], 0, 64)
 	file := path.Join(s.root, matches[1])
 	er := NewEncodingRequest(file, segment, res)
 	s.encoder.Encode(*er)

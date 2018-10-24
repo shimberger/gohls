@@ -10,11 +10,12 @@ import (
 
 type FrameHandler struct {
 	root       string
+	rootUri    string
 	cmdHandler *HttpCommandHandler
 }
 
-func NewFrameHandler(root string) *FrameHandler {
-	return &FrameHandler{root, NewHttpCommandHandler(2, "frames")}
+func NewFrameHandler(root string, rootUri string) *FrameHandler {
+	return &FrameHandler{root, rootUri, NewHttpCommandHandler(2, "frames")}
 }
 
 func (s *FrameHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

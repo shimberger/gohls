@@ -83,7 +83,7 @@ class Player extends React.Component<any, any> {
 							ref={(c) => this.videoRef = c}
 							width="100%" controls={true} >
 							<source
-								src={"/api/playlist/720/" + path}
+								src={"/api/playlist/" + path}
 								type="application/x-mpegURL" />
 						</video>
 					</div>

@@ -39,6 +39,8 @@ class List extends React.Component<any, any> {
 	public fetchData(path) {
 		this.setState({
 			'folders': null,
+			'name': null,
+			'path': null,
 			'videos': null
 		})
 		fetch('/api/list/' + path).then((response) => {
@@ -46,6 +48,9 @@ class List extends React.Component<any, any> {
 				window.setTimeout(() => {
 					this.setState({
 						'folders': data.folders,
+						'name': data.name,
+						'parents': data.parents,
+						'path': data.path,
 						'videos': data.videos
 					})
 				}, 0)
@@ -55,7 +60,7 @@ class List extends React.Component<any, any> {
 	}
 
 	public componentDidMount() {
-		const path = this.splat() || "";
+		const path = this.splat().path || "";
 		this.fetchData(path)
 	}
 
@@ -74,20 +79,19 @@ class List extends React.Component<any, any> {
 			folders = this.state.folders.map((folder) => <Grid key={folder.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Folder name={folder.name} path={folder.path} /></Grid>)
 			videos = this.state.videos.map((video) => <Grid key={video.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Video name={video.name} info={video.info} path={video.path} /></Grid>)
 		}
-		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage><p>No folders or videos found in folder :-(</p></ListMessage> : null
+		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage>No folders or videos found in folder</ListMessage> : null
 		return (
 			<div className="list">
 
 				<AppBar >
 					<Toolbar>
-
 						<IconButton color="inherit" component={Link}
 							// @ts-ignore
-							to={getParent(this.splat())} aria-label="Menu">
+							to={getParent(this.splat().path)} aria-label="Menu">
 							<BackIcon />
 						</IconButton>
 						<Typography variant="title" className={classNames(classes.title)} color="inherit" >
-							{this.splat() || "/"}
+							{this.splat().name}
 						</Typography>
 					</Toolbar>
 				</AppBar>
@@ -107,7 +111,13 @@ class List extends React.Component<any, any> {
 	}
 
 	private splat() {
-		return this.props.match.params[0]
+		if (!this.state.path) {
+			return {
+				name: "",
+				path: this.props.match.params[0]
+			}
+		}
+		return this.state
 	}
 }
 
