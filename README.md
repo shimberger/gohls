@@ -45,7 +45,7 @@ Execute the command `gohls serve -config <path-to-config>` e.g. `gohls serve -co
 
 ### 4. Open a web browser
 
-Visit the URL [](http://localhost:8080) to access the web interface.
+Visit the URL [http://localhost:8080](http://localhost:8080) to access the web interface.
 
 ## Contributing
 
