@@ -6,11 +6,11 @@ Simple server that exposes a directory for video streaming via HTTP Live Streami
 
 ## Running it
 
-*Important*: You need the ffmpeg and ffrpobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at [](https://ffmpeg.org/download.html).
+*Important*: You need the ffmpeg and ffrpobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html).
 
 ### 1. Download the binary for your operating system
 
-You can find the latest release on the releases page [](https://github.com/shimberger/gohls/releases) or just download a current snapshot:
+You can find the latest release on the releases page [https://github.com/shimberger/gohls/releases](https://github.com/shimberger/gohls/releases) or just download a current snapshot:
 
 - [Windows (64 bit)](https://s3.amazonaws.com/gohls/gohls-windows-amd64-snapshot.tar.gz)
 - [Linux (64 bit)](https://s3.amazonaws.com/gohls/gohls-linux-amd64-snapshot.tar.gz)
@@ -37,7 +37,7 @@ The configuration is stored in JSON format. Just call the file `gohls-config.jso
 
 This will configure which directories on your system will be made available for streaming. See the screenshot for details:
 
-![](https://s3-eu-west-1.amazonaws.com/captured-krxvuizy1557lsmzs8mvzdj4/yd4ei-20181024-24215053.png =250x)
+![](https://s3-eu-west-1.amazonaws.com/captured-krxvuizy1557lsmzs8mvzdj4/yd4ei-20181024-24215053.png)
 
 ### 3. Run the server
 
@@ -45,7 +45,7 @@ Execute the command `gohls serve -config <path-to-config>` e.g. `gohls serve -co
 
 ### 4. Open a web browser
 
-Visit the URL [](http://localhost:8080) to access the web interface.
+Visit the URL [http://localhost:8080](http://localhost:8080) to access the web interface.
 
 ## Contributing
 
