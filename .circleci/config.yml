@@ -5,4 +5,5 @@ jobs:
       - image: circleci/golang
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: go get -d ./...
+      - run: ./scrips/release_snapshot.sh
