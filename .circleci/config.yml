@@ -6,4 +6,4 @@ jobs:
     steps:
       - checkout
       - run: go get -d ./...
-      - run: ./scrips/release_snapshot.sh
+      - run: ./scripts/release_snapshot.sh
