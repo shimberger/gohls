@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang
+      - image: shimberger/docker-ci-builder
     steps:
       - checkout
       - run: go get -d ./...
