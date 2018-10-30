@@ -6,5 +6,6 @@ jobs:
     steps:
       - checkout
       - run: cd ui && npm install
+      - run: go get -u github.com/jteeuwen/go-bindata/...
       - run: go get -d ./...
       - run: ./scripts/release_snapshot.sh
