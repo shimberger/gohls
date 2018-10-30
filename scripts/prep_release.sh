@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PATH=$GOPATH/bin/:$PATH
-VERSION=$1
-TIME=$(date +%s)
+export PATH=$GOPATH/bin/:$PATH
+export VERSION=$1
+export TIME=$(date +%s)
 
 if [ -z "$VERSION" ]; then
 	echo "You must call this script with a version as first argument"
@@ -30,7 +30,7 @@ function make_release() {
 	echo $GOARCH
 	cat buildinfo.go.in | sed "s/##VERSION##/${VERSION}/g" | sed "s/##COMMIT##/$(git rev-parse HEAD)/g" | sed "s/##BUILD_TIME##/$TIME/g" > buildinfo.go
 	go build -o $RELEASE_PATH/gohls${SUFFIX} *.go
-	PREV_WD=$(PWD)
+	PREV_WD=$(pwd)
 	cd  $RELEASE_PATH
 	tar cvfz ../$RELEASE_FILE .
 	cd ../../
