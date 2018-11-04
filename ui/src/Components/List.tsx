@@ -90,7 +90,7 @@ class List extends React.Component<any, any> {
 							to={getParent(this.splat().path)} aria-label="Menu">
 							<BackIcon />
 						</IconButton>
-						<Typography variant="title" className={classNames(classes.title)} color="inherit" >
+						<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
 							{this.splat().name}
 						</Typography>
 					</Toolbar>

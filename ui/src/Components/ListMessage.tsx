@@ -21,7 +21,7 @@ function ListMessage(props) {
 	const { classes } = props
 	return (
 		<div className={classNames(classes.loader)}>
-			<Typography variant="headline">
+			<Typography variant="h5">
 				{props.children}
 			</Typography>
 		</div>

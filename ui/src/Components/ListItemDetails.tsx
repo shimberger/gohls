@@ -20,7 +20,7 @@ function ListItemDetails(props) {
 		<CardContent>
 			<div style={{ overflow: 'hidden', maxWidth: '100%' }}>
 				<Link className={classNames(classes.link)} to={props.to}>
-					<Typography gutterBottom={true} variant="headline" component="h3">
+					<Typography gutterBottom={true} variant="h5" component="h3">
 						{formatTitle(props.title)}
 					</Typography>
 				</Link>
