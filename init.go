@@ -2,9 +2,11 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/shimberger/gohls/hls"
 	"os"
 	"os/exec"
+	"path"
 	"strconv"
 )
 
@@ -16,18 +18,24 @@ func init() {
 	}
 
 	// Find ffmpeg
-	ffmpeg, f1err := exec.LookPath("ffmpeg")
-	if f1err != nil {
-		log.Fatal("ffmpeg could not be found in your path", f1err)
+	ffmpeg, err := exec.LookPath("ffmpeg")
+	if err != nil {
+		log.Fatal("ffmpeg could not be found in your path", err)
 	}
 
 	// Find ffprobe
-	ffprobe, f2err := exec.LookPath("ffprobe")
-	if f2err != nil {
-		log.Fatal("ffprobe could not be found in your path", f2err)
+	ffprobe, err := exec.LookPath("ffprobe")
+	if err != nil {
+		log.Fatal("ffprobe could not be found in your path", err)
+	}
+
+	homeDir, err := homedir.Dir()
+	if err != nil {
+		log.Fatal("Could not determine home directory", err)
 	}
 
 	// Configure HLS module
 	hls.FFMPEGPath = ffmpeg
 	hls.FFProbePath = ffprobe
+	hls.HomeDir = path.Join(homeDir, ".gohls")
 }

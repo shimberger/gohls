@@ -50,11 +50,11 @@ function Video(props) {
 			<ListItemDetails title={props.name} to={playLink}>
 				<Typography className={classes.pos} color="textSecondary">
 
-					<AccessTimeIcon style={{ fontSize: 'inherit' }} />
-					<Duration duration={props.info.duration} /> <br />
+					<span style={{ marginRight: '0.25em' }}><AccessTimeIcon style={{ fontSize: 'inherit', 'verticalAlign': 'middle' }} /></span>
+					<span style={{ verticalAlign: 'middle' }}><Duration duration={props.info.duration} /></span><br />
 
-					<DateRangeIcon style={{ fontSize: 'inherit' }} />
-					{moment(props.info.lastModified).format("MMM DD YYYY, hh:mm")}
+					<span style={{ marginRight: '0.25em' }}><DateRangeIcon style={{ fontSize: 'inherit', 'verticalAlign': 'middle' }} /></span>
+					<span style={{ verticalAlign: 'middle' }}>{moment(props.info.lastModified).format("MMM DD YYYY, hh:mm")}</span>
 
 				</Typography>
 			</ListItemDetails>
@@ -69,7 +69,7 @@ function Video(props) {
 				visibility: 'hidden'
 			}} {...props} />
 
-		</ListItem>
+		</ListItem >
 	);
 }
 

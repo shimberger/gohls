@@ -6,3 +6,4 @@ videos
 buildinfo.go
 bindata.go
 LOCAL_NOTES.txt
+gohls-config.json

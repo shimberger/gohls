@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: shimberger/docker-ci-builder
+    steps:
+      - checkout
+      - run: cd ui && npm install
+      - run: go get -u github.com/jteeuwen/go-bindata/...
+      - run: go get -u github.com/konsorten/go-windows-terminal-sequences/...
+      - run: go get -d ./...
+      - run: ./scripts/release_snapshot.sh

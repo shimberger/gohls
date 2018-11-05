@@ -11,8 +11,10 @@ import Typography from '@material-ui/core/Typography';
 import BackIcon from '@material-ui/icons/ChevronLeft';
 import classNames from 'classnames';
 
-import * as videojs from 'video.js';
-import 'video.js/dist/video-js.css'
+import 'video.js/dist/video-js.css';
+
+import videojs from 'video.js'
+
 
 const styles = {
 	root: {
@@ -71,7 +73,7 @@ class Player extends React.Component<any, any> {
 							to={'/list/' + parent} aria-label="Menu">
 							<BackIcon />
 						</IconButton>
-						<Typography className={classNames(classes.title)} variant="title" color="inherit" >
+						<Typography className={classNames(classes.title)} variant="h6" color="inherit" >
 							{name}
 						</Typography>
 					</Toolbar>
@@ -83,7 +85,7 @@ class Player extends React.Component<any, any> {
 							ref={(c) => this.videoRef = c}
 							width="100%" controls={true} >
 							<source
-								src={"/api/playlist/720/" + path}
+								src={"/api/playlist/" + path}
 								type="application/x-mpegURL" />
 						</video>
 					</div>

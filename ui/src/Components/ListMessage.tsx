@@ -2,6 +2,7 @@
 import * as React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 
 const styles = {
@@ -20,7 +21,9 @@ function ListMessage(props) {
 	const { classes } = props
 	return (
 		<div className={classNames(classes.loader)}>
-			{props.children}
+			<Typography variant="h5">
+				{props.children}
+			</Typography>
 		</div>
 	)
 }

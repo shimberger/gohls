@@ -15,6 +15,9 @@ const theme = createMuiTheme({
 		primary: primaryColor,
 		type: 'dark',
 	},
+	typography: {
+		useNextVariants: true
+	},	
 });
 
 function App(props) {

@@ -20,7 +20,6 @@ func (*clearCmd) Usage() string {
 func (p *clearCmd) SetFlags(f *flag.FlagSet) {}
 
 func (p *clearCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	setVideoDir(f)
 	hls.ClearCache()
 	return subcommands.ExitSuccess
 }

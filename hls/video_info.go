@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var videoSuffixes = []string{".mp4", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
+var videoSuffixes = []string{".mp4", ".rmvb", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
 
 // TODO make mutex
 var videoInfos = make(map[string]*VideoInfo)
