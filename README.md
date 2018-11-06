@@ -8,7 +8,7 @@ Simple server that exposes a directory for video streaming via HTTP Live Streami
 
 ## Running it
 
-*Important*: You need the ffmpeg and ffpobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html).
+*Important*: You need the ffmpeg and ffprobe binaries in your PATH. The server will not start without them. You can find builds most operating systems at [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html).
 
 ### 1. Download the binary for your operating system
 
