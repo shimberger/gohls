@@ -41,11 +41,7 @@ func (s *downloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ext := filepath.Ext(r.URL.Path)
 		dlfile = fmt.Sprintf("%s_%s_%s%s", strings.TrimSuffix(filepath.Base(r.URL.Path), ext), start, duration, ext)
 		dlfullpath = filepath.Join(hls.HomeDir, dlfile)
-		args := []string{"-y", "-ss", "start", "-t", "duration", "-i", "filePath", "-c:v", "copy", "dlfullpath"}
-		args[6] = filePath
-		args[2] = start
-		args[4] = duration
-		args[9] = dlfullpath
+		args := []string{"-y", "-ss", start, "-t", duration, "-i", filePath, "-c:v", "copy", dlfullpath}
 		log.Debugf("Executing: ffmpeg %v", args)
 		cmd := exec.Command(hls.FFMPEGPath, args...)
 		_, err := cmd.CombinedOutput()
