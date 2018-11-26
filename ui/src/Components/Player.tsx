@@ -108,6 +108,72 @@ class Player extends React.Component<any, any> {
 		const open = Boolean(anchorEl);
 		const downloadsPath = "/api/download/" + path
 		const clipPath = downloadsPath + "?start=" + start + "&duration=" + duration
+
+		const clipDialog = 
+			<Dialog
+				open={openDialog}
+				onClose={this.handleClose}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogTitle id="alert-dialog-title">{"Download video clip"}</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						Enter the starting position and duration of the clip in seconds:
+					</DialogContentText>
+					<TextField
+						label="Start at"
+						value={start}
+						autoFocus={true}
+						onChange={this.handleChange('start')}
+					/>
+					<TextField
+						label="Duration"
+						value={duration}
+						onChange={this.handleChange('duration')}
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={this.handleClose} color="primary">
+						Cancel
+					</Button>
+					<Button 
+						onClick={this.handleClose} 
+						color="primary" 
+						target="_blank"
+						href={clipPath}
+					>
+						Download
+					</Button>
+				</DialogActions>
+			</Dialog>
+
+		const downloadMenu = 
+			<div>
+				<IconButton
+					aria-owns={open ? 'download-menu' : null}
+					aria-haspopup="true"
+					onClick={this.handleMenu}
+				>
+					<MoreVertIcon />
+				</IconButton>
+				<Menu
+					id="download-menu"
+					anchorEl={anchorEl}
+					open={open}
+					onClose={this.handleDownload}
+				>
+					<MenuItem onClick={this.handleDownload}>
+						<Button target="_blank" href={downloadsPath}>
+							Download video
+						</Button>
+					</MenuItem>
+					<MenuItem onClick={this.handleClip}>
+						<Button>Download clip</Button>
+					</MenuItem>
+				</Menu>
+			</div>
+
 		return (
 			<div className="player" key={path}>
 				<AppBar >
@@ -120,69 +186,8 @@ class Player extends React.Component<any, any> {
 						<Typography className={classNames(classes.title)} variant="h6" color="inherit" >
 							{name}
 						</Typography>
-						<div>
-							<IconButton
-								aria-owns={open ? 'download-menu' : null}
-								aria-haspopup="true"
-								onClick={this.handleMenu}
-							>
-								<MoreVertIcon />
-							</IconButton>
-							<Menu
-								id="download-menu"
-								anchorEl={anchorEl}
-								open={open}
-								onClose={this.handleDownload}
-							>
-								<MenuItem onClick={this.handleDownload}>
-									<Button target="_blank" href={downloadsPath}>
-										Download video
-									</Button>
-								</MenuItem>
-								<MenuItem onClick={this.handleClip}>
-									<Button>Download clip</Button>
-								</MenuItem>
-							</Menu>
-							<Dialog
-								open={openDialog}
-								onClose={this.handleClose}
-								aria-labelledby="alert-dialog-title"
-								aria-describedby="alert-dialog-description"
-							>
-								<DialogTitle id="alert-dialog-title">{"Download video clip"}</DialogTitle>
-								<DialogContent>
-									<DialogContentText id="alert-dialog-description">
-										{downloadsPath}
-										<br/>
-										{"start="+start+"&duration="+duration}
-									</DialogContentText>
-									<TextField
-										label="Start at"
-										value={start}
-										autoFocus={true}
-										onChange={this.handleChange('start')}
-									/>
-									<TextField
-										label="Duration"
-										value={duration}
-										onChange={this.handleChange('duration')}
-									/>
-								</DialogContent>
-								<DialogActions>
-									<Button onClick={this.handleClose} color="primary">
-										Cancel
-									</Button>
-									<Button 
-										onClick={this.handleClose} 
-										color="primary" 
-										target="_blank"
-										href={clipPath}
-									>
-										Download
-									</Button>
-								</DialogActions>
-							</Dialog>
-						</div>
+						{downloadMenu}
+						{clipDialog}
 					</Toolbar>
 				</AppBar>
 				<div className={classNames(classes.stage)}>
