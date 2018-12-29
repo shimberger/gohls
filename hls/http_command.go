@@ -6,7 +6,7 @@ import (
 	"bufio"
 	"crypto/sha1"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"os/exec"

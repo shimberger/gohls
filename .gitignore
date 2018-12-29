@@ -1,6 +1,7 @@
 .DS_Store
 .sass-cache
 /build
+ui/src/build
 node_modules
 videos
 buildinfo.go

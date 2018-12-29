@@ -1,8 +1,11 @@
 package main
 
 import (
+	"github.com/shimberger/gohls/hls"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 type downloadHandler struct {

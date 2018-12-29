@@ -4,9 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"github.com/google/subcommands"
 	"github.com/shimberger/gohls/hls"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 

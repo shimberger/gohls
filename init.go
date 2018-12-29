@@ -1,9 +1,9 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/shimberger/gohls/hls"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
 	"path"
