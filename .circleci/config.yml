@@ -14,8 +14,5 @@ jobs:
       - save_cache:
             paths:
               - ui/node_modules
-            key: npm-v1-{{ checksum "ui/package-lock.json" }}  
-      - run: go get -u github.com/jteeuwen/go-bindata/...
-      - run: go get -u github.com/konsorten/go-windows-terminal-sequences/...
-      - run: go get -d ./...
+            key: npm-v1-{{ checksum "ui/package-lock.json" }}
       - run: ./scripts/release_snapshot.sh
