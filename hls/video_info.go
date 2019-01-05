@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var videoSuffixes = []string{".mp4", ".rmvb", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
+var VideoSuffixes = []string{".mp4", ".rmvb", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
 
 // TODO make mutex
 var videoInfos = make(map[string]*VideoInfo)
@@ -23,7 +23,7 @@ type VideoInfo struct {
 }
 
 func FilenameLooksLikeVideo(name string) bool {
-	for _, suffix := range videoSuffixes {
+	for _, suffix := range VideoSuffixes {
 		if strings.HasSuffix(name, suffix) {
 			return true
 		}
@@ -56,10 +56,14 @@ func GetFFMPEGJson(path string) (map[string]interface{}, error) {
 
 func GetVideoInformation(path string) (*VideoInfo, error) {
 	if data, ok := videoInfos[path]; ok {
+		if data == nil {
+			return nil, fmt.Errorf("no video data available due to previous error for %v", path)
+		}
 		return data, nil
 	}
 	info, jsonerr := GetFFMPEGJson(path)
 	if jsonerr != nil {
+		videoInfos[path] = nil
 		return nil, jsonerr
 	}
 	log.Debugf("ffprobe for %v returned", path, info)

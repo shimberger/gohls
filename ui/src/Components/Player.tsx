@@ -63,24 +63,45 @@ class Player extends React.Component<any, any> {
 		this.player = videojs(this.video, {
 
 		});
-		this.player.play();
+		this.player.play()
+		this.fetchData()
 	}
 
 	public componentWillUnmount() {
 		this.player.dispose();
 	}
 
+	public fetchData() {
+		const path = this.props.match.params[0];
+		fetch('/api/info/' + path).then((response) => {
+			response.json().then((data) => {
+				window.setTimeout(() => {
+					this.setState({
+						'parents': data.parents,
+						'video': data.videos[0],
+					})
+				}, 0)
+
+			})
+		});
+	}
+
+	public componentWillReceiveProps(nextProps) {
+		this.fetchData()
+	}
+
 	state = {
 		anchorEl: null,
 		openDialog: false,
 		start: '0',
+		video: null,
 		duration: '60',
 	};
-	
+
 	handleMenu = event => {
 		this.setState({ anchorEl: event.currentTarget });
 	};
-	
+
 	handleDownload = () => {
 		this.setState({ anchorEl: null });
 	};
@@ -95,7 +116,7 @@ class Player extends React.Component<any, any> {
 
 	handleChange = name => event => {
 		this.setState({
-		  [name]: event.target.value,
+			[name]: event.target.value,
 		});
 	};
 
@@ -109,7 +130,7 @@ class Player extends React.Component<any, any> {
 		const downloadsPath = "/api/download/" + path
 		const clipPath = downloadsPath + "?start=" + start + "&duration=" + duration
 
-		const clipDialog = 
+		const clipDialog =
 			<Dialog
 				open={openDialog}
 				onClose={this.handleClose}
@@ -137,9 +158,9 @@ class Player extends React.Component<any, any> {
 					<Button onClick={this.handleClose} color="primary">
 						Cancel
 					</Button>
-					<Button 
-						onClick={this.handleClose} 
-						color="primary" 
+					<Button
+						onClick={this.handleClose}
+						color="primary"
 						target="_blank"
 						href={clipPath}
 					>
@@ -148,7 +169,7 @@ class Player extends React.Component<any, any> {
 				</DialogActions>
 			</Dialog>
 
-		const downloadMenu = 
+		const downloadMenu =
 			<div>
 				<IconButton
 					aria-owns={open ? 'download-menu' : null}
@@ -174,18 +195,26 @@ class Player extends React.Component<any, any> {
 				</Menu>
 			</div>
 
+		const back = (this.state.video) ? (
+			<IconButton color="inherit" component={Link}
+				// @ts-ignore
+				to={"/list/" + this.state.parents[0].path} aria-label="Menu">
+				<BackIcon />
+			</IconButton>
+		) : null
+
+		const nameElem = (this.state.video) ? (
+			<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
+				{this.state.video.name}
+			</Typography>
+		) : null
+
 		return (
 			<div className="player" key={path}>
 				<AppBar >
 					<Toolbar>
-						<IconButton color="inherit" component={Link}
-							// @ts-ignore
-							to={'/list/' + parent} aria-label="Menu">
-							<BackIcon />
-						</IconButton>
-						<Typography className={classNames(classes.title)} variant="h6" color="inherit" >
-							{name}
-						</Typography>
+						{back}
+						{nameElem}
 						{downloadMenu}
 						{clipDialog}
 					</Toolbar>

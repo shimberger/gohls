@@ -18,7 +18,7 @@ func (s *foldersHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	videos := make([]*hls.ListResponseVideo, 0)
 	folders := make([]*hls.ListResponseFolder, 0)
 	parents := make([]*hls.ListResponseFolder, 0)
-	response := &hls.ListResponse{nil, "Home", "/", parents, folders, videos}
+	response := &hls.ListResponse{nil, "Home", "/", &parents, folders, videos}
 	for _, f := range s.config.Folders {
 		folder := &hls.ListResponseFolder{f.Title, path.Join(r.URL.Path, f.Id)}
 		folders = append(folders, folder)

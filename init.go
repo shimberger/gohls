@@ -16,6 +16,9 @@ func init() {
 	if _, err := strconv.ParseBool(os.Getenv("DEBUG")); err == nil {
 		log.SetLevel(log.DebugLevel)
 	}
+	if _, err := strconv.ParseBool(os.Getenv("TRACE")); err == nil {
+		log.SetLevel(log.TraceLevel)
+	}
 
 	// Find ffmpeg
 	ffmpeg, err := exec.LookPath("ffmpeg")

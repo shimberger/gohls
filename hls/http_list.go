@@ -1,9 +1,8 @@
 package hls
 
 import (
-	"fmt"
+	"github.com/shimberger/gohls/fileindex"
 	log "github.com/sirupsen/logrus"
-	"io/ioutil"
 	"net/http"
 	"path"
 	"strings"
@@ -21,59 +20,76 @@ type ListResponseFolder struct {
 }
 
 type ListResponse struct {
-	Error   error                 `json:"error"`
-	Name    string                `json:"name"`
-	Path    string                `json:"path"`
-	Parents []*ListResponseFolder `json:"parents"`
-	Folders []*ListResponseFolder `json:"folders"`
-	Videos  []*ListResponseVideo  `json:"videos"`
+	Error   error                  `json:"error"`
+	Name    string                 `json:"name"`
+	Path    string                 `json:"path"`
+	Parents *[]*ListResponseFolder `json:"parents"`
+	Folders []*ListResponseFolder  `json:"folders"`
+	Videos  []*ListResponseVideo   `json:"videos"`
 }
 
 type ListHandler struct {
-	path    string
+	idx     fileindex.Index
 	name    string
 	rootUri string
 }
 
-func NewListHandler(path string, name string, rootUri string) *ListHandler {
-	return &ListHandler{path, name, rootUri}
+func NewListHandler(idx fileindex.Index, name string, rootUri string) *ListHandler {
+	return &ListHandler{idx, name, rootUri}
 }
 
 func (s *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.idx.WaitForReady()
 	videos := make([]*ListResponseVideo, 0)
 	folders := make([]*ListResponseFolder, 0)
 
 	parents := make([]*ListResponseFolder, 0)
-	parents = append(parents, &ListResponseFolder{"Home", "/"})
-	response := &ListResponse{nil, s.name, s.rootUri, parents, folders, videos}
+	response := &ListResponse{nil, s.name, s.rootUri, &parents, folders, videos}
 
 	if r.URL.Path != "" {
-		response.Path = path.Join(s.rootUri, r.URL.Path)
-		response.Name = path.Base(r.URL.Path)
+		entry, err := s.idx.Get(r.URL.Path)
+		if err != nil {
+			ServeJson(404, err, w)
+			return
+		}
+
+		curr := entry
+		for curr.ParentId() != "" {
+			curr, err = s.idx.Get(curr.ParentId())
+			if err != nil {
+				ServeJson(500, err, w)
+				return
+			}
+			parents = append(parents, &ListResponseFolder{curr.Name(), path.Join(s.rootUri, curr.Id())})
+		}
+		parents = append(parents, &ListResponseFolder{s.name, s.rootUri})
+
+		response.Path = path.Join(s.rootUri, entry.Id())
+		response.Name = entry.Name()
 	}
 
-	files, rerr := ioutil.ReadDir(path.Join(s.path, r.URL.Path))
-	if rerr != nil {
-		response.Error = fmt.Errorf("Error reading path: %v", r.URL.Path)
-		ServeJson(500, response, w)
+	parents = append(parents, &ListResponseFolder{"Home", ""})
+
+	files, err := s.idx.List(r.URL.Path)
+	if err != nil {
+		ServeJson(404, err, w)
 		return
 	}
 	for _, f := range files {
-		filePath := path.Join(s.path, r.URL.Path, f.Name())
 		if strings.HasPrefix(f.Name(), ".") || strings.HasPrefix(f.Name(), "$") {
 			continue
 		}
-		if FilenameLooksLikeVideo(filePath) {
-			vinfo, err := GetVideoInformation(filePath)
+		if FilenameLooksLikeVideo(f.Path()) {
+			vinfo, err := GetVideoInformation(f.Path())
 			if err != nil {
-				log.Errorf("Could not read video information of %v: %v", filePath, err)
+				log.Errorf("Could not read video information of %v: %v", f.Path(), err)
 				continue
 			}
-			video := &ListResponseVideo{f.Name(), path.Join(s.rootUri, r.URL.Path, f.Name()), vinfo}
+			video := &ListResponseVideo{f.Name(), path.Join(s.rootUri, f.Id()), vinfo}
 			videos = append(videos, video)
 		}
 		if f.IsDir() {
-			folder := &ListResponseFolder{f.Name(), path.Join(s.rootUri, r.URL.Path, f.Name())}
+			folder := &ListResponseFolder{f.Name(), path.Join(s.rootUri, f.Id())}
 			folders = append(folders, folder)
 		}
 	}

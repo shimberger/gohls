@@ -2,20 +2,20 @@ package hls
 
 import (
 	"fmt"
+	"github.com/shimberger/gohls/fileindex"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"path"
 	"strconv"
 )
 
 type FrameHandler struct {
-	root       string
+	idx        fileindex.Index
 	rootUri    string
 	cmdHandler *HttpCommandHandler
 }
 
-func NewFrameHandler(root string, rootUri string) *FrameHandler {
-	return &FrameHandler{root, rootUri, NewHttpCommandHandler(2, "frames")}
+func NewFrameHandler(idx fileindex.Index, rootUri string) *FrameHandler {
+	return &FrameHandler{idx, rootUri, NewHttpCommandHandler(2, "frames")}
 }
 
 func (s *FrameHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,13 @@ func (s *FrameHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if tint, err := strconv.Atoi(t); err == nil {
 		time = tint
 	}
-	path := path.Join(s.root, r.URL.Path)
+	s.idx.WaitForReady()
+	entry, err := s.idx.Get(r.URL.Path)
+	if err != nil {
+		ServeJson(404, err, w)
+		return
+	}
+	path := entry.Path()
 	args := []string{
 		"-timelimit", "15",
 		"-loglevel", "error",

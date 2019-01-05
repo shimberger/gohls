@@ -1,9 +1,9 @@
 package hls
 
 import (
+	"github.com/shimberger/gohls/fileindex"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"path"
 	"regexp"
 	"strconv"
 	"time"
@@ -12,26 +12,33 @@ import (
 var streamRegexp = regexp.MustCompile(`^(.*)/([0-9]+)\.ts$`)
 
 type StreamHandler struct {
-	root    string
+	idx     fileindex.Index
 	rootUri string
 	encoder *Encoder
 }
 
-func NewStreamHandler(root string, rootUri string) *StreamHandler {
-	return &StreamHandler{root, rootUri, NewEncoder("segments", 2)}
+func NewStreamHandler(idx fileindex.Index, rootUri string) *StreamHandler {
+	return &StreamHandler{idx, rootUri, NewEncoder("segments", 2)}
 }
 
 func (s *StreamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Debugf("Stream request: %v", r.URL.Path)
+	s.idx.WaitForReady()
 	matches := streamRegexp.FindStringSubmatch(r.URL.Path)
 	if matches == nil {
 		http.Error(w, "Wrong path format", 400)
 		return
 	}
 
+	entry, err := s.idx.Get(matches[1])
+	if err != nil {
+		ServeJson(404, err, w)
+		return
+	}
+
 	res := int64(720)
 	segment, _ := strconv.ParseInt(matches[2], 0, 64)
-	file := path.Join(s.root, matches[1])
+	file := entry.Path()
 	er := NewEncodingRequest(file, segment, res)
 	s.encoder.Encode(*er)
 

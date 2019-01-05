@@ -2,10 +2,10 @@ package hls
 
 import (
 	"fmt"
+	"github.com/shimberger/gohls/fileindex"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
-	"path"
 )
 
 // Encodes a string like Javascript's encodeURIComponent()
@@ -18,18 +18,24 @@ func urlEncoded(str string) (string, error) {
 }
 
 type PlaylistHandler struct {
-	root         string
+	idx          fileindex.Index
 	rootUri      string
 	segmentsPath string
 }
 
-func NewPlaylistHandler(root string, rootUri string, segmentsPath string) *PlaylistHandler {
-	return &PlaylistHandler{root, rootUri, segmentsPath}
+func NewPlaylistHandler(idx fileindex.Index, rootUri string, segmentsPath string) *PlaylistHandler {
+	return &PlaylistHandler{idx, rootUri, segmentsPath}
 }
 
 func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Debugf("Playlist request: %v", r.URL.Path)
-	file := path.Join(s.root, r.URL.Path)
+	s.idx.WaitForReady()
+	entry, err := s.idx.Get(r.URL.Path)
+	if err != nil {
+		ServeJson(404, err, w)
+		return
+	}
+	file := entry.Path()
 
 	vinfo, err := GetVideoInformation(file)
 	if err != nil {

@@ -16,7 +16,7 @@ import Video from './Video';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-
+import { orderBy } from 'lodash';
 
 const styles = theme => ({
 	root: {
@@ -89,17 +89,18 @@ class List extends React.Component<any, any> {
 			'name': null,
 			'search': '',
 			'path': null,
+			'parents': null,
 			'videos': null
 		})
 		fetch('/api/list/' + path).then((response) => {
 			response.json().then((data) => {
 				window.setTimeout(() => {
 					this.setState({
-						'folders': data.folders,
+						'folders': orderBy(data.folders, 'name', 'asc'),
 						'name': data.name,
 						'parents': data.parents,
 						'path': data.path,
-						'videos': data.videos
+						'videos': orderBy(data.videos, 'name', 'asc')
 					})
 				}, 0)
 
@@ -121,7 +122,7 @@ class List extends React.Component<any, any> {
 	}
 
 	public componentDidMount() {
-		const path = this.splat().path || "";
+		const path = this.props.match.params[0] || "";
 		this.fetchData(path)
 	}
 
@@ -140,20 +141,29 @@ class List extends React.Component<any, any> {
 			folders = this.filter(this.state.folders).map((folder) => <Grid key={folder.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Folder name={folder.name} path={folder.path} /></Grid>)
 			videos = this.filter(this.state.videos).map((video) => <Grid key={video.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Video name={video.name} info={video.info} path={video.path} /></Grid>)
 		}
+
+		const back = (this.state.parents && this.state.parents.length > 0) ? (
+			<IconButton color="inherit" component={Link}
+				// @ts-ignore
+				to={"/list/" + this.state.parents[0].path} aria-label="Menu">
+				<BackIcon />
+			</IconButton>
+		) : null
+
+		const name = (this.state.name) ? (
+			<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
+				{this.state.name}
+			</Typography>
+		) : null
+
 		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage>No folders or videos found</ListMessage> : null
 		return (
 			<div className="list">
 
 				<AppBar >
 					<Toolbar>
-						<IconButton color="inherit" component={Link}
-							// @ts-ignore
-							to={getParent(this.splat().path)} aria-label="Menu">
-							<BackIcon />
-						</IconButton>
-						<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
-							{this.splat().name}
-						</Typography>
+						{back}
+						{name}
 						<div className={classes.grow} />
 						<div className={classes.search}>
 							<div className={classes.searchIcon}>
@@ -186,15 +196,6 @@ class List extends React.Component<any, any> {
 		)
 	}
 
-	private splat() {
-		if (!this.state.path) {
-			return {
-				name: "",
-				path: this.props.match.params[0]
-			}
-		}
-		return this.state
-	}
 }
 
 export default withStyles(styles)(List);
