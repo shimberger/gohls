@@ -102,12 +102,17 @@ class Player extends React.Component<any, any> {
 		this.setState({ anchorEl: event.currentTarget });
 	};
 
-	handleDownload = () => {
+	handleReset = () => {
 		this.setState({ anchorEl: null });
 	};
 
 	handleClip = () => {
 		this.setState({ openDialog: true, anchorEl: null });
+	};
+
+	handleDownload = () => {
+		var win = window.open(this.downloadsPath(), '_blank');
+		this.setState({ anchorEl: null });
 	};
 
 	handleClose = () => {
@@ -120,6 +125,11 @@ class Player extends React.Component<any, any> {
 		});
 	};
 
+	downloadsPath() {
+		const path = this.props.match.params[0];
+		return "/api/download/" + path
+	}
+
 	public render() {
 		const { classes } = this.props;
 		const path = this.props.match.params[0];
@@ -127,7 +137,7 @@ class Player extends React.Component<any, any> {
 		const parent = path.substring(0, path.lastIndexOf("/"));
 		const { anchorEl, openDialog, start, duration } = this.state;
 		const open = Boolean(anchorEl);
-		const downloadsPath = "/api/download/" + path
+		const downloadsPath = this.downloadsPath()
 		const clipPath = downloadsPath + "?start=" + start + "&duration=" + duration
 
 		const clipDialog =
@@ -140,7 +150,8 @@ class Player extends React.Component<any, any> {
 				<DialogTitle id="alert-dialog-title">{"Download video clip"}</DialogTitle>
 				<DialogContent>
 					<DialogContentText id="alert-dialog-description">
-						Enter the starting position and duration of the clip in seconds:
+						Enter the starting position and duration of the clip in seconds.
+						<br /><br />
 					</DialogContentText>
 					<TextField
 						label="Start at"
@@ -148,6 +159,7 @@ class Player extends React.Component<any, any> {
 						autoFocus={true}
 						onChange={this.handleChange('start')}
 					/>
+					&nbsp;&nbsp;
 					<TextField
 						label="Duration"
 						value={duration}
@@ -182,15 +194,13 @@ class Player extends React.Component<any, any> {
 					id="download-menu"
 					anchorEl={anchorEl}
 					open={open}
-					onClose={this.handleDownload}
+					onClose={this.handleReset}
 				>
 					<MenuItem onClick={this.handleDownload}>
-						<Button target="_blank" href={downloadsPath}>
-							Download video
-						</Button>
+						Download Video
 					</MenuItem>
 					<MenuItem onClick={this.handleClip}>
-						<Button>Download clip</Button>
+						Download Clip
 					</MenuItem>
 				</Menu>
 			</div>
