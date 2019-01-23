@@ -13,9 +13,9 @@ import classNames from 'classnames';
 import { orderBy } from 'lodash';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import Folder from './Folder';
-import ListMessage from './ListMessage';
-import Video from './Video';
+import Folder from '../Presentation/Folder';
+import ListMessage from '../Presentation/ListMessage';
+import Video from '../Presentation/Video';
 
 const styles = theme => ({
 	root: {
