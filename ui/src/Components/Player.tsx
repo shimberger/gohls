@@ -1,30 +1,26 @@
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Link } from "react-router-dom";
-
 import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import BackIcon from '@material-ui/icons/ChevronLeft';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import BackIcon from '@material-ui/icons/ChevronLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import classNames from 'classnames';
-
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { Link } from "react-router-dom";
+import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
-
-import videojs from 'video.js'
-
 
 const styles = {
 	root: {

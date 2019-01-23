@@ -1,22 +1,21 @@
-import * as React from 'react';
 import AppBar from '@material-ui/core/AppBar';
-import BackIcon from '@material-ui/icons/ChevronLeft';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import classNames from 'classnames';
-import Folder from './Folder';
-import getParent from '../getParent';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
-import ListMessage from './ListMessage';
-import SearchIcon from '@material-ui/icons/Search';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Video from './Video';
-import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import BackIcon from '@material-ui/icons/ChevronLeft';
+import SearchIcon from '@material-ui/icons/Search';
+import classNames from 'classnames';
 import { orderBy } from 'lodash';
+import * as React from 'react';
+import { Link } from 'react-router-dom';
+import Folder from './Folder';
+import ListMessage from './ListMessage';
+import Video from './Video';
 
 const styles = theme => ({
 	root: {

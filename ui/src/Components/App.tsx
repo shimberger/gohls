@@ -1,14 +1,11 @@
-import * as React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
-
 import primaryColor from '@material-ui/core/colors/teal';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-
+import * as React from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import 'typeface-roboto';
 import List from './List';
 import Player from './Player';
-
-import 'typeface-roboto'
 
 const theme = createMuiTheme({
 	palette: {
@@ -17,7 +14,7 @@ const theme = createMuiTheme({
 	},
 	typography: {
 		useNextVariants: true
-	},	
+	},
 });
 
 function App(props) {

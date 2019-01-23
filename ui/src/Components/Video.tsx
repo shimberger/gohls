@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,12 +7,11 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import MovieIcon from '@material-ui/icons/Movie';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import SaveIcon from '@material-ui/icons/Save';
-
+import * as moment from 'moment';
+import * as React from 'react';
 import Duration from './Duration';
 import ListItem from './ListItem';
 import ListItemDetails from './ListItemDetails';
-
-import * as moment from 'moment';
 
 const styles = {
 

@@ -1,8 +1,6 @@
-import * as React from 'react';
-
 import { withStyles } from '@material-ui/core/styles';
-
 import FolderIcon from '@material-ui/icons/FolderOpen';
+import * as React from 'react';
 import ListItem from './ListItem';
 import ListItemDetails from './ListItemDetails';
 
