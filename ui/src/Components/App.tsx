@@ -17,18 +17,16 @@ const theme = createMuiTheme({
 	},
 });
 
-function App(props) {
+function App() {
 	return (
 		<MuiThemeProvider theme={theme}>
 			<CssBaseline />
 			<Router>
-				<div>
-					<Switch>
-						<Route name="list" path="/list/**" component={List} />
-						<Route name="play" path="/play/**" component={Player} />
-						<Redirect to="/list/" />
-					</Switch>
-				</div>
+				<Switch>
+					<Route name="list" path="/list/**" component={List} />
+					<Route name="play" path="/play/**" component={Player} />
+					<Redirect to="/list/" />
+				</Switch>
 			</Router>
 		</MuiThemeProvider>
 	);

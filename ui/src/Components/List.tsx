@@ -1,15 +1,13 @@
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import Typography from '@material-ui/core/Typography';
-import BackIcon from '@material-ui/icons/ChevronLeft';
 import SearchIcon from '@material-ui/icons/Search';
 import classNames from 'classnames';
 import { orderBy } from 'lodash';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import BackButton from '../Presentation/BackButton';
 import Folder from '../Presentation/Folder';
 import ListMessage from '../Presentation/ListMessage';
 import Video from '../Presentation/Video';
@@ -74,7 +72,7 @@ class List extends Page<any, any> {
 		return {
 			'folders': null,
 			'videos': null,
-			'search': ''
+			'search': '',
 		}
 	}
 
@@ -89,14 +87,16 @@ class List extends Page<any, any> {
 			'videos': null
 		})
 		return fetch('/api/list/' + path).then((response) => {
-			return response.json().then((data) => {
-				this.setState({
+			return response.json()
+		}).then((data) => {
+			return new Promise((resolve, reject) => {
+				resolve({
 					'folders': orderBy(data.folders, 'name', 'asc'),
 					'name': data.name,
 					'parents': data.parents,
 					'path': data.path,
 					'videos': orderBy(data.videos, 'name', 'asc')
-				})
+				});
 			})
 		});
 
@@ -117,13 +117,10 @@ class List extends Page<any, any> {
 
 	public toolbar() {
 		const { classes } = this.props;
+		const back = (this.state.parents[0]) ? <BackButton to={"/list/" + this.state.parents[0].path} /> : null
 		return (
 			<React.Fragment>
-				<IconButton color="inherit" component={Link}
-					// @ts-ignore
-					to={"/list/" + this.state.parents[0].path} aria-label="Menu">
-					<BackIcon />
-				</IconButton>
+				{back}
 				<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
 					{this.state.name}
 				</Typography>

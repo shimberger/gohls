@@ -22,9 +22,6 @@ export default class Page<P = {}, S = {}, SS = any> extends React.Component<P & 
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({
-			isPageLoading: true
-		})
 		this._fetch(nextProps);
 	}
 
@@ -41,10 +38,13 @@ export default class Page<P = {}, S = {}, SS = any> extends React.Component<P & 
 	}
 
 	private _fetch(props: P & any) {
-		this.fetch(props).then(() => {
-			this.setState({
+		this.setState({
+			isPageLoading: true
+		})
+		this.fetch(props).then((state) => {
+			this.setState(Object.assign({
 				isPageLoading: false
-			})
+			}, state))
 		})
 	}
 

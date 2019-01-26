@@ -1,4 +1,3 @@
-
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,14 +10,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import BackIcon from '@material-ui/icons/ChevronLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import classNames from 'classnames';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Link } from "react-router-dom";
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import BackButton from '../Presentation/BackButton';
 import Page from './Page';
 
 const styles = {
@@ -174,11 +172,7 @@ class Player extends Page<any, any> {
 		return (
 			<React.Fragment>
 				{clipDialog}
-				<IconButton color="inherit" component={Link}
-					// @ts-ignore
-					to={"/list/" + this.state.parents[0].path} aria-label="Menu">
-					<BackIcon />
-				</IconButton>
+				<BackButton to={"/list/" + this.state.parents[0].path} />
 				<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
 					{this.state.video.name}
 				</Typography>
