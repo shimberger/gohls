@@ -1,11 +1,8 @@
-import AppBar from '@material-ui/core/AppBar';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import BackIcon from '@material-ui/icons/ChevronLeft';
 import SearchIcon from '@material-ui/icons/Search';
@@ -16,6 +13,7 @@ import { Link } from 'react-router-dom';
 import Folder from '../Presentation/Folder';
 import ListMessage from '../Presentation/ListMessage';
 import Video from '../Presentation/Video';
+import Page from './Page';
 
 const styles = theme => ({
 	root: {
@@ -70,19 +68,18 @@ const styles = theme => ({
 	}
 });
 
-class List extends React.Component<any, any> {
+class List extends Page<any, any> {
 
-	constructor(props: any) {
-		super(props)
-		this.state = {
+	getInitialState() {
+		return {
 			'folders': null,
 			'videos': null,
 			'search': ''
 		}
 	}
 
-
-	public fetchData(path) {
+	public fetch(props) {
+		const path = props.match.params[0] || "";
 		this.setState({
 			'folders': null,
 			'name': null,
@@ -91,20 +88,18 @@ class List extends React.Component<any, any> {
 			'parents': null,
 			'videos': null
 		})
-		fetch('/api/list/' + path).then((response) => {
-			response.json().then((data) => {
-				window.setTimeout(() => {
-					this.setState({
-						'folders': orderBy(data.folders, 'name', 'asc'),
-						'name': data.name,
-						'parents': data.parents,
-						'path': data.path,
-						'videos': orderBy(data.videos, 'name', 'asc')
-					})
-				}, 0)
-
+		return fetch('/api/list/' + path).then((response) => {
+			return response.json().then((data) => {
+				this.setState({
+					'folders': orderBy(data.folders, 'name', 'asc'),
+					'name': data.name,
+					'parents': data.parents,
+					'path': data.path,
+					'videos': orderBy(data.videos, 'name', 'asc')
+				})
 			})
 		});
+
 	}
 
 	public filter(items) {
@@ -120,77 +115,52 @@ class List extends React.Component<any, any> {
 		})
 	}
 
-	public componentDidMount() {
-		const path = this.props.match.params[0] || "";
-		this.fetchData(path)
-	}
-
-	public componentWillReceiveProps(nextProps) {
-		const path = nextProps.match.params[0] || "";
-		this.fetchData(path)
-	}
-
-	public render(): any {
-		const loader = (!this.state.folders) ? <ListMessage><CircularProgress size={50} /></ListMessage> : null;
+	public toolbar() {
 		const { classes } = this.props;
+		return (
+			<React.Fragment>
+				<IconButton color="inherit" component={Link}
+					// @ts-ignore
+					to={"/list/" + this.state.parents[0].path} aria-label="Menu">
+					<BackIcon />
+				</IconButton>
+				<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
+					{this.state.name}
+				</Typography>
+				<div className={classes.grow} />
+				<div className={classes.search}>
+					<div className={classes.searchIcon}>
+						<SearchIcon />
+					</div>
+					<InputBase
+						value={this.state.search}
+						placeholder="Search…"
+						onChange={this.onSearch}
+						classes={{
+							root: classes.inputRoot,
+							input: classes.inputInput,
+						}}
+					/>
+				</div>
+			</React.Fragment>
+		)
+	}
 
+	public content() {
 		let folders = []
 		let videos = []
 		if (this.state.folders) {
 			folders = this.filter(this.state.folders).map((folder) => <Grid key={folder.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Folder name={folder.name} path={folder.path} /></Grid>)
 			videos = this.filter(this.state.videos).map((video) => <Grid key={video.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Video name={video.name} info={video.info} path={video.path} /></Grid>)
 		}
-
-		const back = (this.state.parents && this.state.parents.length > 0) ? (
-			<IconButton color="inherit" component={Link}
-				// @ts-ignore
-				to={"/list/" + this.state.parents[0].path} aria-label="Menu">
-				<BackIcon />
-			</IconButton>
-		) : null
-
-		const name = (this.state.name) ? (
-			<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
-				{this.state.name}
-			</Typography>
-		) : null
-
 		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage>No folders or videos found</ListMessage> : null
 		return (
-			<div className="list">
-
-				<AppBar >
-					<Toolbar>
-						{back}
-						{name}
-						<div className={classes.grow} />
-						<div className={classes.search}>
-							<div className={classes.searchIcon}>
-								<SearchIcon />
-							</div>
-							<InputBase
-								value={this.state.search}
-								placeholder="Search…"
-								onChange={this.onSearch}
-								classes={{
-									root: classes.inputRoot,
-									input: classes.inputInput,
-								}}
-							/>
-						</div>
-					</Toolbar>
-				</AppBar>
-				<div style={{ padding: 20, paddingTop: '84px' }}>
-					<Grid container={true} spacing={40} alignItems="stretch">
-
-						{loader}
-						{folders}
-						{videos}
-						{empty}
-
-					</Grid>
-
-				</div>
+			<div style={{ padding: 20, paddingTop: '84px' }}>
+				<Grid container={true} spacing={40} alignItems="stretch">
+					{folders}
+					{videos}
+					{empty}
+				</Grid>
 			</div>
 		)
 	}

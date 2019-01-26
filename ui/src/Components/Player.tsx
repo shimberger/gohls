@@ -1,5 +1,4 @@
 
-import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,7 +10,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import BackIcon from '@material-ui/icons/ChevronLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -21,6 +19,7 @@ import * as ReactDOM from 'react-dom';
 import { Link } from "react-router-dom";
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import Page from './Page';
 
 const styles = {
 	root: {
@@ -46,53 +45,50 @@ const styles = {
 	},
 };
 
-class Player extends React.Component<any, any> {
+class Player extends Page<any, any> {
 
 	private video: any
 	private videoRef: any
 	private player: any
 
-	public componentDidMount() {
+	public componentDidUpdate() {
 		this.video = ReactDOM.findDOMNode(this.videoRef);
-		// this.video.setAttribute('x-webkit-airplay','allow');
-		// this.video.setAttribute('airplay','allow');
-		this.player = videojs(this.video, {
+		if (this.video) {
+			// this.video.setAttribute('x-webkit-airplay','allow');
+			// this.video.setAttribute('airplay','allow');
+			this.player = videojs(this.video, {
 
-		});
-		this.player.play()
-		this.fetchData()
+			});
+			this.player.play();
+		}
 	}
 
 	public componentWillUnmount() {
 		this.player.dispose();
 	}
 
-	public fetchData() {
-		const path = this.props.match.params[0];
-		fetch('/api/info/' + path).then((response) => {
-			response.json().then((data) => {
-				window.setTimeout(() => {
+	public fetch(props) {
+		const path = props.match.params[0];
+		return fetch('/api/info/' + path)
+			.then((response) => {
+				return response.json().then((data) => {
 					this.setState({
 						'parents': data.parents,
 						'video': data.videos[0],
 					})
-				}, 0)
-
-			})
-		});
+				})
+			});
 	}
 
-	public componentWillReceiveProps(nextProps) {
-		this.fetchData()
+	getInitialState() {
+		return {
+			anchorEl: null,
+			openDialog: false,
+			start: '0',
+			video: null,
+			duration: '60',
+		}
 	}
-
-	state = {
-		anchorEl: null,
-		openDialog: false,
-		start: '0',
-		video: null,
-		duration: '60',
-	};
 
 	handleMenu = event => {
 		this.setState({ anchorEl: event.currentTarget });
@@ -126,7 +122,7 @@ class Player extends React.Component<any, any> {
 		return "/api/download/" + path
 	}
 
-	public render() {
+	toolbar() {
 		const { classes } = this.props;
 		const path = this.props.match.params[0];
 		const name = path.substring(path.lastIndexOf("/") + 1);
@@ -135,7 +131,6 @@ class Player extends React.Component<any, any> {
 		const open = Boolean(anchorEl);
 		const downloadsPath = this.downloadsPath()
 		const clipPath = downloadsPath + "?start=" + start + "&duration=" + duration
-
 		const clipDialog =
 			<Dialog
 				open={openDialog}
@@ -176,70 +171,63 @@ class Player extends React.Component<any, any> {
 					</Button>
 				</DialogActions>
 			</Dialog>
-
-		const downloadMenu =
-			<div>
-				<IconButton
-					aria-owns={open ? 'download-menu' : null}
-					aria-haspopup="true"
-					onClick={this.handleMenu}
-				>
-					<MoreVertIcon />
-				</IconButton>
-				<Menu
-					id="download-menu"
-					anchorEl={anchorEl}
-					open={open}
-					onClose={this.handleReset}
-				>
-					<MenuItem onClick={this.handleDownload}>
-						Download Video
-					</MenuItem>
-					<MenuItem onClick={this.handleClip}>
-						Download Clip
-					</MenuItem>
-				</Menu>
-			</div>
-
-		const back = (this.state.video) ? (
-			<IconButton color="inherit" component={Link}
-				// @ts-ignore
-				to={"/list/" + this.state.parents[0].path} aria-label="Menu">
-				<BackIcon />
-			</IconButton>
-		) : null
-
-		const nameElem = (this.state.video) ? (
-			<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
-				{this.state.video.name}
-			</Typography>
-		) : null
-
 		return (
-			<div className="player" key={path}>
-				<AppBar >
-					<Toolbar>
-						{back}
-						{nameElem}
-						{downloadMenu}
-						{clipDialog}
-					</Toolbar>
-				</AppBar>
-				<div className={classNames(classes.stage)}>
-					<div className={classNames(classes.video)}>
-						<video
-							className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered"
-							ref={(c) => this.videoRef = c}
-							width="100%" controls={true} >
-							<source
-								src={"/api/playlist/" + path}
-								type="application/x-mpegURL" />
-						</video>
-					</div>
+			<React.Fragment>
+				{clipDialog}
+				<IconButton color="inherit" component={Link}
+					// @ts-ignore
+					to={"/list/" + this.state.parents[0].path} aria-label="Menu">
+					<BackIcon />
+				</IconButton>
+				<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
+					{this.state.video.name}
+				</Typography>
+				<div>
+					<IconButton
+						aria-owns={open ? 'download-menu' : null}
+						aria-haspopup="true"
+						onClick={this.handleMenu}
+					>
+						<MoreVertIcon />
+					</IconButton>
+					<Menu
+						id="download-menu"
+						anchorEl={anchorEl}
+						open={open}
+						onClose={this.handleReset}
+					>
+						<MenuItem onClick={this.handleDownload}>
+							Download Video
+					</MenuItem>
+						<MenuItem onClick={this.handleClip}>
+							Download Clip
+					</MenuItem>
+					</Menu>
+				</div>
+			</React.Fragment>
+
+		)
+	}
+
+	public content() {
+		const { classes } = this.props;
+		const path = this.props.match.params[0];
+		return (
+			<div className={classNames(classes.stage)}>
+				<div className={classNames(classes.video)}>
+					<video
+						className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered"
+						ref={(c) => this.videoRef = c}
+						width="100%" controls={true} >
+						<source
+							src={"/api/playlist/" + path}
+							type="application/x-mpegURL" />
+					</video>
 				</div>
 			</div>
 		)
 	}
+
 }
 
 export default withStyles(styles)(Player)
