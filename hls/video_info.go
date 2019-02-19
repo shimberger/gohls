@@ -33,7 +33,7 @@ func FilenameLooksLikeVideo(name string) bool {
 
 func GetRawFFMPEGInfo(path string) ([]byte, error) {
 	log.Debugf("Executing ffprobe for %v", path)
-	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", "'"+path+"'")
+	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", path)
 	data, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("Error executing ffprobe for file '%v': %v", path, err)
