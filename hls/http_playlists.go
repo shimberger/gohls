@@ -43,7 +43,11 @@ func (s *PlaylistHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	duration := vinfo.Duration
-	baseurl := fmt.Sprintf("http://%v", r.Host)
+	protocol := "http"
+	if r.Header.Get("X-Forwarded-Proto") != "" {
+		protocol = r.Header.Get("X-Forwarded-Proto")
+	}
+	baseurl := fmt.Sprintf("%v://%v", protocol, r.Host)
 
 	id, err := urlEncoded(r.URL.Path)
 	if err != nil {
