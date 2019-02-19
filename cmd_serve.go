@@ -12,7 +12,7 @@ import (
 )
 
 type serveCmd struct {
-	port       int
+	listen     string
 	homeDir    string
 	configFile string
 }
@@ -26,15 +26,12 @@ func (*serveCmd) Usage() string {
 }
 
 func (p *serveCmd) SetFlags(f *flag.FlagSet) {
-	f.IntVar(&p.port, "port", 8080, "Listening port")
+	f.StringVar(&p.listen, "listen", "127.0.0.1:8080", "Address and port to listen on (use :<port> to listen on all IPs)")
 	f.StringVar(&p.configFile, "config", "./gohls-config.json", "The configuration file to use")
 
 }
 
 func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-
-	// Generate variables and paths
-	port := p.port
 
 	config, err := getConfig(p.configFile)
 	if err != nil {
@@ -66,9 +63,9 @@ func (p *serveCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{})
 	fmt.Printf("Path to ffmpeg executable: %v\n", hls.FFMPEGPath)
 	fmt.Printf("Path to ffprobe executable: %v\n", hls.FFProbePath)
 	fmt.Printf("HLS data directory: %v/\n", hls.HomeDir)
-	fmt.Printf("Visit http://localhost:%v/\n", port)
+	fmt.Printf("Visit http://%v/\n", p.listen)
 
-	if herr := http.ListenAndServe(fmt.Sprintf(":%v", port), nil); herr != nil {
+	if herr := http.ListenAndServe(p.listen, nil); herr != nil {
 		fmt.Printf("Error listening %v", herr)
 	}
 

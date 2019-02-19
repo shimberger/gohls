@@ -43,11 +43,11 @@ This will configure which directories on your system will be made available for 
 
 ### 3. Run the server
 
-Execute the command `gohls serve -config <path-to-config>` e.g. `gohls serve -config gohls-config.json` to serve the videos specified by the config file. To make the server listen on another port just use the `serve` command with `--port` like so (the example uses port 7000): `gohls serve --port 7000 -config <path-to-config>`
+Execute the command `gohls serve -config <path-to-config>` e.g. `gohls serve -config gohls-config.json` to serve the videos specified by the config file. To make the server listen on another port or address just use the `serve` command with `--listen` like so (the example uses port 7000 on all interfaces): `gohls serve --listen 0.0.0.0:7000 -config <path-to-config>`
 
 ### 4. Open a web browser
 
-Visit the URL [http://localhost:8080](http://localhost:8080) to access the web interface.
+Visit the URL [http://127.0.0.1:8080](http://127.0.0.1:8080) to access the web interface.
 
 ## Contributing
 
