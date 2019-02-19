@@ -71,25 +71,21 @@ class List extends Page<any, any> {
 	getInitialState() {
 		return {
 			'folders': null,
-			'videos': null,
-			'search': '',
-		}
-	}
-
-	public fetch(props) {
-		const path = props.match.params[0] || "";
-		this.setState({
-			'folders': null,
 			'name': null,
 			'search': '',
 			'path': null,
 			'parents': null,
 			'videos': null
-		})
+		}
+	}
+
+	public fetch(props) {
+		const path = props.match.params[0] || "";
+		this.setState(this.getInitialState())
 		return fetch('/api/list/' + path).then((response) => {
 			return response.json()
 		}).then((data) => {
-			return new Promise((resolve, reject) => {
+			return new Promise((resolve) => {
 				resolve({
 					'folders': orderBy(data.folders, 'name', 'asc'),
 					'name': data.name,
@@ -99,7 +95,6 @@ class List extends Page<any, any> {
 				});
 			})
 		});
-
 	}
 
 	public filter(items) {
@@ -144,12 +139,8 @@ class List extends Page<any, any> {
 	}
 
 	public content() {
-		let folders = []
-		let videos = []
-		if (this.state.folders) {
-			folders = this.filter(this.state.folders).map((folder) => <Grid key={folder.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Folder name={folder.name} path={folder.path} /></Grid>)
-			videos = this.filter(this.state.videos).map((video) => <Grid key={video.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Video name={video.name} info={video.info} path={video.path} /></Grid>)
-		}
+		let folders = this.filter(this.state.folders).map((folder) => <Grid key={folder.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Folder name={folder.name} path={folder.path} /></Grid>)
+		let videos = this.filter(this.state.videos).map((video) => <Grid key={video.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Video name={video.name} info={video.info} path={video.path} /></Grid>)
 		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage>No folders or videos found</ListMessage> : null
 		return (
 			<div style={{ padding: 20, paddingTop: '84px' }}>
