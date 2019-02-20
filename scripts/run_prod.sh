@@ -2,5 +2,5 @@
 
 PATH=$GOPATH/bin/:$PATH
 cp buildinfo.go.in buildinfo.go
-go-bindata -prefix ui/build ui/build/...
+go generate
 go run *.go ${@:1}

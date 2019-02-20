@@ -2,5 +2,5 @@
 
 PATH=$GOPATH/bin/:$PATH
 cp buildinfo.go.in buildinfo.go
-go-bindata -debug -prefix ui/build ui/build/...
+go generate
 DEBUG=true go run *.go ${@:1}

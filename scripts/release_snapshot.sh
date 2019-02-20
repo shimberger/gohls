@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 #Build
 ./scripts/prep_release.sh snapshot

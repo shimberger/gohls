@@ -1,6 +1,6 @@
 #!/bin/bash
+set -euo pipefail
 
-export PATH=$GOPATH/bin/:$PATH
 export VERSION=$1
 export TIME=$(date +%s)
 
@@ -14,7 +14,7 @@ cd ui/src && npm run build && cd ../../
 rm -rf build
 mkdir build
 
-go-bindata -prefix ui/build ui/build/...
+go generate
 
 function make_release() {
 	NAME=$1
