@@ -1,17 +1,18 @@
-package main
+package api
 
 import (
-	"github.com/shimberger/gohls/hls"
+	"github.com/shimberger/gohls/internal/config"
+	"github.com/shimberger/gohls/internal/hls"
 	"net/http"
 	"path"
 )
 
 type foldersHandler struct {
-	config *Config
+	conf *config.Config
 }
 
-func NewFoldersHandler(config *Config) *foldersHandler {
-	return &foldersHandler{config}
+func NewFoldersHandler(conf *config.Config) *foldersHandler {
+	return &foldersHandler{conf}
 }
 
 func (s *foldersHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +20,7 @@ func (s *foldersHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	folders := make([]*hls.ListResponseFolder, 0)
 	parents := make([]*hls.ListResponseFolder, 0)
 	response := &hls.ListResponse{nil, "Home", "/", &parents, folders, videos}
-	for _, f := range s.config.Folders {
+	for _, f := range s.conf.Folders {
 		folder := &hls.ListResponseFolder{f.Title, path.Join(r.URL.Path, f.Id)}
 		folders = append(folders, folder)
 	}

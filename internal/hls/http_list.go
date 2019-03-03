@@ -1,7 +1,7 @@
 package hls
 
 import (
-	"github.com/shimberger/gohls/fileindex"
+	"github.com/shimberger/gohls/internal/fileindex"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"path"

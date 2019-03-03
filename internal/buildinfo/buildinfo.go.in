@@ -1,4 +1,4 @@
-package main
+package buildinfo
 
 const VERSION = "##VERSION##"
 const COMMIT = "##COMMIT##"

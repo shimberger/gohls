@@ -1,9 +1,9 @@
-package main
+package api
 
 import (
 	"fmt"
-	"github.com/shimberger/gohls/fileindex"
-	"github.com/shimberger/gohls/hls"
+	"github.com/shimberger/gohls/internal/fileindex"
+	"github.com/shimberger/gohls/internal/hls"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os/exec"

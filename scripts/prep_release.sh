@@ -28,7 +28,7 @@ function make_release() {
 	cp LICENSE.txt $RELEASE_PATH
 	echo $GOOS
 	echo $GOARCH
-	cat buildinfo.go.in | sed "s/##VERSION##/${VERSION}/g" | sed "s/##COMMIT##/$(git rev-parse HEAD)/g" | sed "s/##BUILD_TIME##/$TIME/g" > buildinfo.go
+	cat internal/buildinfo/buildinfo.go.in | sed "s/##VERSION##/${VERSION}/g" | sed "s/##COMMIT##/$(git rev-parse HEAD)/g" | sed "s/##BUILD_TIME##/$TIME/g" > internal/buildinfo/buildinfo.go
 	go build -o $RELEASE_PATH/gohls${SUFFIX} *.go
 	PREV_WD=$(pwd)
 	cd  $RELEASE_PATH

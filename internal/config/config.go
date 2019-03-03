@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -37,6 +37,6 @@ func readConfig(path string) (*Config, error) {
 	return &config, nil
 }
 
-func getConfig(path string) (*Config, error) {
+func GetConfig(path string) (*Config, error) {
 	return readConfig(path)
 }

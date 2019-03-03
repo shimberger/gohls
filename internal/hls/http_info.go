@@ -1,7 +1,7 @@
 package hls
 
 import (
-	"github.com/shimberger/gohls/fileindex"
+	"github.com/shimberger/gohls/internal/fileindex"
 	"net/http"
 	"path"
 )

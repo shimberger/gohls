@@ -1,8 +1,8 @@
-package main
+package cmd
 
 import (
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/shimberger/gohls/hls"
+	"github.com/shimberger/gohls/internal/hls"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func init() {
+func init_hls() {
 	log.SetOutput(os.Stderr)
 	log.SetLevel(log.InfoLevel)
 	if _, err := strconv.ParseBool(os.Getenv("DEBUG")); err == nil {
