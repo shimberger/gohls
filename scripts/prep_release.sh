@@ -14,7 +14,7 @@ cd ui/src && npm run build && cd ../../
 rm -rf build
 mkdir build
 
-go generate
+go generate github.com/shimberger/gohls/internal/api
 
 function make_release() {
 	NAME=$1
