@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/shimberger/gohls/internal/config"
 	"github.com/shimberger/gohls/internal/fileindex"
 	log "github.com/sirupsen/logrus"
@@ -84,9 +85,9 @@ func Setup(conf *config.Config) {
 	}
 
 	router := chi.NewRouter()
-	router.Use(DebugMiddleware)
+	router.Use(middleware.Logger)
 	router.Use(CORSMiddleware)
-	router.Use(CORSMiddleware)
+	router.Use(ForwardedProtoMiddleware)
 
 	router.Route("/api/", func(r chi.Router) {
 
@@ -101,12 +102,12 @@ func Setup(conf *config.Config) {
 		r.Handle("/info/{folder}/*", withFolder(idxs, handleInfo))
 		r.Handle("/frame/{folder}/*", withEntry(idxs, handleFrame))
 		r.Handle("/playlist/{folder}/*", withEntry(idxs, handlePlaylist))
-		r.Handle("/segments/{folder}/*", withFolder(idxs, handleSegment))
+		r.Handle("/segments/{resolution}/{segment}/{folder}/*", withEntry(idxs, handleSegment))
 		r.Handle("/download/{folder}/*", withEntry(idxs, handleDownload))
 
 	})
 
-	//router.PathPrefix("/").Handler(NewSingleAssetHandler("index.html"))
+	router.Handle("/*", NewSingleAssetHandler("index.html"))
 	// Setup HTTP server
 	http.Handle("/", router)
 

@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 )
 
+const PlaylistContentType = "application/vnd.apple.mpegurl"
+
 var HomeDir = ".gohls"
 var FFProbePath = "ffprobe"
 var FFMPEGPath = "ffmpeg"

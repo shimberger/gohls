@@ -1,13 +1,33 @@
 package hls
 
 import (
+	"bytes"
 	"fmt"
 	"io"
+	"text/template"
 )
 
-func WritePlaylist(baseurl string, vinfo *VideoInfo, w io.Writer) error {
+func WritePlaylist(urlTemplate string, file string, w io.Writer) error {
+	t := template.Must(template.New("urlTemplate").Parse(urlTemplate))
+
+	vinfo, err := GetVideoInformation(file)
+	if err != nil {
+		return err
+	}
 
 	duration := vinfo.Duration
+
+	getUrl := func(segmentIndex int) string {
+		buf := new(bytes.Buffer)
+		t.Execute(buf, struct {
+			Resolution int64
+			Segment    int
+		}{
+			720,
+			segmentIndex,
+		})
+		return buf.String()
+	}
 
 	fmt.Fprint(w, "#EXTM3U\n")
 	fmt.Fprint(w, "#EXT-X-VERSION:3\n")
@@ -25,7 +45,7 @@ func WritePlaylist(baseurl string, vinfo *VideoInfo, w io.Writer) error {
 		} else {
 			fmt.Fprintf(w, "#EXTINF: %f,\n", leftover)
 		}
-		fmt.Fprintf(w, baseurl+"/%v.ts\n", segmentIndex)
+		fmt.Fprintf(w, getUrl(segmentIndex)+"\n")
 		segmentIndex++
 		leftover = leftover - hlsSegmentLength
 	}

@@ -12,7 +12,6 @@ func handleFrame(w http.ResponseWriter, r *http.Request) {
 	if tint, err := strconv.Atoi(t); err == nil {
 		time = tint
 	}
-	entry := getEntry(r)
-	path := entry.Path()
-	hls.WriteFrame(path, time, w)
+	file := getEntry(r).Path()
+	hls.WriteFrame(file, time, w)
 }

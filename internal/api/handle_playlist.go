@@ -4,31 +4,14 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/shimberger/gohls/internal/hls"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func handlePlaylist(w http.ResponseWriter, r *http.Request) {
+	w.Header()["Content-Type"] = []string{hls.PlaylistContentType}
+	log.Infof("URL %v", r.URL)
 	entry := getEntry(r)
-	idx := getIndexWithRoot(r).idx
-	path := entry.Path()
-	pathParam := "" + chi.URLParam(r, "*")
-
-	vinfo, err := hls.GetVideoInformation(path)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Refactor into middleware
-	protocol := "http"
-	if r.Header.Get("X-Forwarded-Proto") != "" {
-		protocol = r.Header.Get("X-Forwarded-Proto")
-	}
-
-	baseurl := fmt.Sprintf("%v://%v/api/segments/%v/%v", protocol, r.Host, idx.Id(), pathParam)
-
-	w.Header()["Content-Type"] = []string{"application/vnd.apple.mpegurl"}
-	w.Header()["Access-Control-Allow-Origin"] = []string{"*"}
-
-	hls.WritePlaylist(baseurl, vinfo, w)
+	template := fmt.Sprintf("%v://%v/api/segments/{{.Resolution}}/{{.Segment}}/%v/%v", r.URL.Scheme, r.Host, chi.URLParam(r, "folder"), chi.URLParam(r, "*"))
+	hls.WritePlaylist(template, entry.Path(), w)
 }
