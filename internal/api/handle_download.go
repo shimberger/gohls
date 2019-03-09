@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/go-chi/chi"
 	"github.com/shimberger/gohls/internal/hls"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -12,18 +11,7 @@ import (
 )
 
 func handleDownload(w http.ResponseWriter, r *http.Request) {
-
-	pathParam := "" + chi.URLParam(r, "*")
-	d := getIndexWithRoot(r)
-	idx := d.idx
-	log.Debugf("Download %v", pathParam)
-
-	entry, err := idx.Get(pathParam)
-	if err != nil {
-		serveJson(404, err, w)
-		return
-	}
-
+	entry := getEntry(r)
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, fmt.Sprintf("ParseForm() error: %v", err), http.StatusInternalServerError)
 		return

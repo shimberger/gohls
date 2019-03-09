@@ -8,16 +8,10 @@ import (
 )
 
 func handlePlaylist(w http.ResponseWriter, r *http.Request) {
-	pathParam := "" + chi.URLParam(r, "*")
-	d := getIndexWithRoot(r)
-	idx := d.idx
-
-	entry, err := idx.Get(pathParam)
-	if err != nil {
-		serveJson(404, err, w)
-		return
-	}
+	entry := getEntry(r)
+	idx := getIndexWithRoot(r).idx
 	path := entry.Path()
+	pathParam := "" + chi.URLParam(r, "*")
 
 	vinfo, err := hls.GetVideoInformation(path)
 	if err != nil {

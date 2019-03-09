@@ -3,15 +3,10 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"github.com/go-chi/chi"
-	_ "github.com/go-chi/chi/middleware"
-
-	"github.com/shimberger/gohls/internal/config"
-
-	"github.com/shimberger/gohls/internal/fileindex"
-
 	"fmt"
-	_ "github.com/shimberger/gohls/internal/hls"
+	"github.com/go-chi/chi"
+	"github.com/shimberger/gohls/internal/config"
+	"github.com/shimberger/gohls/internal/fileindex"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -37,6 +32,30 @@ func withFolder(idxs map[string]*indexWithRoot, handler http.HandlerFunc) http.H
 		}
 		serveJson(404, fmt.Errorf("folder not found"), w)
 	}
+}
+
+func withEntry(idxs map[string]*indexWithRoot, handler http.HandlerFunc) http.HandlerFunc {
+	return withFolder(idxs, func(w http.ResponseWriter, r *http.Request) {
+		pathParam := "" + chi.URLParam(r, "*")
+		d := getIndexWithRoot(r)
+		idx := d.idx
+
+		entry, err := idx.Get(pathParam)
+		if err != nil {
+			serveJson(404, err, w)
+			return
+		}
+		r = setEntry(r, entry)
+		handler(w, r)
+	})
+}
+
+func setEntry(r *http.Request, e fileindex.Entry) *http.Request {
+	return r.WithContext(context.WithValue(r.Context(), "entry", e))
+}
+
+func getEntry(r *http.Request) fileindex.Entry {
+	return r.Context().Value("entry").(fileindex.Entry)
 }
 
 func setIndexWithRoot(r *http.Request, d *indexWithRoot) *http.Request {
@@ -80,10 +99,10 @@ func Setup(conf *config.Config) {
 
 		r.Handle("/list/{folder}/*", withFolder(idxs, handleList))
 		r.Handle("/info/{folder}/*", withFolder(idxs, handleInfo))
-		r.Handle("/frame/{folder}/*", withFolder(idxs, handleFrame))
-		r.Handle("/playlist/{folder}/*", withFolder(idxs, handlePlaylist))
+		r.Handle("/frame/{folder}/*", withEntry(idxs, handleFrame))
+		r.Handle("/playlist/{folder}/*", withEntry(idxs, handlePlaylist))
 		r.Handle("/segments/{folder}/*", withFolder(idxs, handleSegment))
-		r.Handle("/download/{folder}/*", withFolder(idxs, handleDownload))
+		r.Handle("/download/{folder}/*", withEntry(idxs, handleDownload))
 
 	})
 
