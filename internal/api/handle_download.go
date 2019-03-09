@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"github.com/shimberger/gohls/internal/fileindex"
+	"github.com/go-chi/chi"
 	"github.com/shimberger/gohls/internal/hls"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -11,20 +11,16 @@ import (
 	"strings"
 )
 
-type downloadHandler struct {
-	idx fileindex.Index
-}
+func handleDownload(w http.ResponseWriter, r *http.Request) {
 
-func NewDownloadHandler(idx fileindex.Index) *downloadHandler {
-	return &downloadHandler{idx}
-}
+	pathParam := "" + chi.URLParam(r, "*")
+	d := getIndexWithRoot(r)
+	idx := d.idx
+	log.Debugf("Download %v", pathParam)
 
-func (s *downloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Debugf("Download %v", r.URL.Path)
-
-	entry, err := s.idx.Get(r.URL.Path)
+	entry, err := idx.Get(pathParam)
 	if err != nil {
-		hls.ServeJson(404, err, w)
+		serveJson(404, err, w)
 		return
 	}
 
@@ -58,6 +54,6 @@ func (s *downloadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Disposition", "attachment; filename='"+filepath.Base(dlfile)+"'")
+	w.Header().Set("Content-Disposition", "attachment; filename="+filepath.Base(dlfile)+"")
 	http.ServeFile(w, r, dlfullpath)
 }
