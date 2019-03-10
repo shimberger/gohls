@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func NewMemIndex(root string, id string, filter Filter) (Index, error) {
+func NewMemIndex(root string, id string, name string, filter Filter) (Index, error) {
 	rootPath := filepath.Clean(root)
 	fi, err := os.Stat(rootPath)
 	if err != nil {
@@ -19,7 +19,7 @@ func NewMemIndex(root string, id string, filter Filter) (Index, error) {
 	if !fi.IsDir() {
 		return nil, fmt.Errorf("%v is not a directory")
 	}
-	idx := &memIndex{id, rootPath, nil}
+	idx := &memIndex{id, name, rootPath, nil}
 	go func() {
 		for {
 			go idx.update()
@@ -77,12 +77,17 @@ func (e *memEntry) Path() string {
 
 type memIndex struct {
 	id   string
+	name string
 	root string
 	data *memIndexData
 }
 
 func (i *memIndex) Id() string {
 	return i.id
+}
+
+func (i *memIndex) Name() string {
+	return i.name
 }
 
 func (i *memIndex) Root() string {

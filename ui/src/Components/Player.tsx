@@ -67,12 +67,12 @@ class Player extends Page<any, any> {
 
 	public fetch(props) {
 		const path = props.match.params[0];
-		return fetch('/api/info/' + path)
+		return fetch('/api/item/' + path)
 			.then((response) => {
 				return response.json().then((data) => {
 					this.setState({
 						'parents': data.parents,
-						'video': data.videos[0],
+						'video': data,
 					})
 				})
 			});
