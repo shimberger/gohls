@@ -51,7 +51,22 @@ Visit the URL [http://127.0.0.1:8080](http://127.0.0.1:8080) to access the web i
 
 ## Contributing
 
-Just do a `go get github.com/shimberger/gohls/...` in your GOPATH. Then change into the project directory and run the development server by executing `./scripts/run_dev` (sorry Windows users, maybe try Windows Subsystem for Linux). You need npm and node to build the frontend.
+### Requirements
+
+- go installed
+- npm installed
+- bash
+
+### Initial setup
+
+1. Clone the repository `git@github.com:shimberger/gohls.git`
+2. Build frontend `cd ui/ && npm install && cd run build && cd ..`
+3. Install go-bindata `go install -v -i github.com/jteeuwen/go-bindata/go-bindata`
+4. Run `go-bindata -pkg api -o ./internal/api/bindata.go -prefix ui/build/ ui/build/...`
+
+### Running server
+
+To then run the development server execute: `./scripts/run.sh serve`
 
 ## License
 
