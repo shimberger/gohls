@@ -5,6 +5,7 @@ import BackIcon from '@material-ui/icons/ChevronLeft';
 
 export default function BackButton(props) {
 	return (
+		// @ts-ignore
 		<IconButton color="inherit" component={Link}
 			// @ts-ignore
 			to={props.to} aria-label="Menu">

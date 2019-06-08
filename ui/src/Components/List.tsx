@@ -144,12 +144,12 @@ class List extends Page<any, any> {
 		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage>No folders or videos found</ListMessage> : null
 		return (
 			<div style={{ padding: 20, paddingTop: '84px' }}>
-				<Grid container={true} spacing={40} alignItems="stretch">
+				<Grid spacing={4} container={true} alignItems="stretch">
 					{folders}
 					{videos}
 					{empty}
 				</Grid>
-			</div>
+			</div >
 		)
 	}
 

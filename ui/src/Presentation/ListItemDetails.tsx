@@ -8,7 +8,8 @@ import formatTitle from '../formatTitle';
 
 const styles = {
 	link: {
-		textDecoration: 'none'
+		textDecoration: 'none',
+		color: 'white'
 	}
 } as any;
 
