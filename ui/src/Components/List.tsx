@@ -82,16 +82,18 @@ class List extends Page<any, any> {
 	public fetch(props) {
 		const path = props.match.params[0] || "";
 		this.setState(this.getInitialState())
-		return fetch('/api/list/' + path).then((response) => {
+		return fetch('/api/item/' + path).then((response) => {
 			return response.json()
 		}).then((data) => {
 			return new Promise((resolve) => {
+				let folders = data.children.filter(c => c.type === 'folder')
+				let videos = data.children.filter(c => c.type === 'video')
 				resolve({
-					'folders': orderBy(data.folders, 'name', 'asc'),
+					'folders': orderBy(folders, 'name', 'asc'),
 					'name': data.name,
 					'parents': data.parents,
 					'path': data.path,
-					'videos': orderBy(data.videos, 'name', 'asc')
+					'videos': orderBy(videos, 'name', 'asc')
 				});
 			})
 		});
