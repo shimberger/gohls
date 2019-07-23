@@ -10,6 +10,12 @@ func ForwardedProtoMiddleware(next http.Handler) http.Handler {
 		if r.Header.Get("X-Forwarded-Proto") == "http" || r.Header.Get("X-Forwarded-Proto") == "https" {
 			r.URL.Scheme = r.Header.Get("X-Forwarded-Proto")
 		}
+		// TODO: Make this enabled by flag so people can't spoof header
+		var forwardedHost = r.Header.Get("X-Forwarded-Host")
+		if forwardedHost != "" {
+			r.Host = forwardedHost
+			r.URL.Host = forwardedHost
+		}
 		next.ServeHTTP(w, r)
 	})
 }
