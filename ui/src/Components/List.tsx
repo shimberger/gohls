@@ -13,7 +13,7 @@ import ListMessage from '../Presentation/ListMessage';
 import Video from '../Presentation/Video';
 import Page from './Page';
 
-const styles = theme => ({
+const styles = (theme: any) => ({
 	root: {
 		flexGrow: 1,
 	},
