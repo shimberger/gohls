@@ -6,7 +6,7 @@ function formatTitle(title) {
 		.replace(/([a-z0-9])([A-Z])([a-z0-9])/g, (match, m1, m2, m3) => `${m1} ${m2}${m3}`)
 		.replace(/([a-z0-9])([A-Z])([A-Z0-9])/g, (match, m1, m2, m3) => `${m1} ${m2} ${m3}`)
 		.replace(/\./g, ' ')
-		.replace(/\-/g, ' ')
+		.replace(/-/g, ' ')
 		.replace(/_/g, ' ')
 		.split(" ").map(str => _.truncate(str, {
 			'length': 15

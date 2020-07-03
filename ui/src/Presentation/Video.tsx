@@ -7,7 +7,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import MovieIcon from '@material-ui/icons/Movie';
 import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import SaveIcon from '@material-ui/icons/Save';
-import * as moment from 'moment';
+import moment from 'moment';
 import * as React from 'react';
 import Duration from './Duration';
 import ListItem from './ListItem';
