@@ -61,8 +61,6 @@ Visit the URL [http://127.0.0.1:8080](http://127.0.0.1:8080) to access the web i
 
 1. Clone the repository `git@github.com:shimberger/gohls.git`
 2. Build frontend `cd ui/ && npm install && npm run build && cd ..`
-3. Install go-bindata `go install -v -i github.com/jteeuwen/go-bindata/go-bindata`
-4. Run `go-bindata -pkg api -o ./internal/api/bindata.go -prefix ui/build/ ui/build/...`
 
 ### Running server
 
