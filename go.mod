@@ -1,9 +1,11 @@
 module github.com/shimberger/gohls
 
+go 1.14
+
 require (
+	github.com/GeertJohan/go.rice v1.0.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/jteeuwen/go-bindata v3.0.7+incompatible
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/cobra v0.0.3

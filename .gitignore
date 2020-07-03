@@ -6,6 +6,6 @@ ui/src/build
 node_modules
 videos
 buildinfo.go
-bindata.go
+rice-box.go
 LOCAL_NOTES.txt
 gohls-config.json

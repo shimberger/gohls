@@ -1,5 +1,3 @@
-//go:generate go install -v -i github.com/jteeuwen/go-bindata/go-bindata
-//go:generate go-bindata -pkg api -prefix ../../ui/build ../../ui/build/...
-package api
+//go:generate go run github.com/GeertJohan/go.rice/rice embed-go
 
-import _ "github.com/jteeuwen/go-bindata"
+package api
