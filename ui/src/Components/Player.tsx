@@ -101,7 +101,7 @@ class Player extends Page<any, any> {
 	};
 
 	handleDownload = () => {
-		var win = window.open(this.downloadsPath(), '_blank');
+		window.open(this.downloadsPath(), '_blank');
 		this.setState({ anchorEl: null });
 	};
 
@@ -122,9 +122,6 @@ class Player extends Page<any, any> {
 
 	toolbar() {
 		const { classes } = this.props;
-		const path = this.props.match.params[0];
-		const name = path.substring(path.lastIndexOf("/") + 1);
-		const parent = path.substring(0, path.lastIndexOf("/"));
 		const { anchorEl, openDialog, start, duration } = this.state;
 		const open = Boolean(anchorEl);
 		const downloadsPath = this.downloadsPath()
