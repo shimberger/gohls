@@ -11,9 +11,12 @@ import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
 import classNames from 'classnames';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import BackButton from '../Presentation/BackButton';
@@ -174,6 +177,14 @@ class Player extends Page<any, any> {
 					{this.state.video.name}
 				</Typography>
 				<div>
+          <IconButton component={Link} to={"/play/"+this.state.video.prev} 
+            disabled={this.state.video.prev===""} >
+						<SkipPreviousIcon />
+					</IconButton>
+          <IconButton component={Link} to={"/play/"+this.state.video.next} 
+            disabled={this.state.video.next===""} >
+						<SkipNextIcon />
+					</IconButton>
 					<IconButton
 						aria-owns={open ? 'download-menu' : null}
 						aria-haspopup="true"
