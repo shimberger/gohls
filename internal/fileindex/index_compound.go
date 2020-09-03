@@ -2,6 +2,7 @@ package fileindex
 
 import (
 	"fmt"
+	"sort"
 )
 
 type compound struct {
@@ -106,6 +107,7 @@ func (i *compound) List(parent string) ([]Entry, error) {
 	for j, e := range list {
 		list[j] = i.transform(idx, e)
 	}
+	sort.Sort(Entries(list))
 	return list, nil
 }
 
