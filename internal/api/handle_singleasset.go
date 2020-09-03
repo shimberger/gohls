@@ -13,7 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var staticBox = rice.MustFindBox("../../ui/build")
+var staticBox *rice.Box
 
 type singleAssetHandler struct {
 	path string
@@ -23,7 +23,14 @@ func NewSingleAssetHandler(path string) *singleAssetHandler {
 	return &singleAssetHandler{path}
 }
 
+func initStaticBox() {
+	if staticBox == nil {
+		staticBox = rice.MustFindBox("../../ui/build")
+	}
+}
+
 func (s *singleAssetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	initStaticBox()
 	data, err := staticBox.Bytes(strings.TrimLeft(r.URL.Path, "/"))
 	if err != nil {
 		log.Debugf("SPA HTTP handling fallback")
