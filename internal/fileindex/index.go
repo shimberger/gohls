@@ -44,3 +44,17 @@ func (e *entry) Path() string {
 func (e *entry) ParentId() string {
 	return e.parentId
 }
+
+type Entries []Entry
+
+func (es Entries) Len() int {
+	return len(es)
+}
+
+func (es Entries) Less(i, j int) bool {
+	return es[i].Name() < es[j].Name()
+}
+
+func (es Entries) Swap(i, j int) {
+	es[i], es[j] = es[j], es[i]
+}
