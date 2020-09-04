@@ -13,13 +13,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var staticBox = rice.MustFindBox("../../ui/build")
+var staticBox *rice.Box
 
 type singleAssetHandler struct {
 	path string
 }
 
 func NewSingleAssetHandler(path string) *singleAssetHandler {
+	staticBox = rice.MustFindBox("../../ui/build")
 	return &singleAssetHandler{path}
 }
 
