@@ -3,11 +3,12 @@ package fileindex
 import (
 	"crypto/sha1"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"path"
 	"path/filepath"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func NewMemIndex(root string, id string, name string, filter Filter) (Index, error) {
@@ -17,7 +18,7 @@ func NewMemIndex(root string, id string, name string, filter Filter) (Index, err
 		return nil, err
 	}
 	if !fi.IsDir() {
-		return nil, fmt.Errorf("%v is not a directory")
+		return nil, fmt.Errorf("%v is not a directory", rootPath)
 	}
 	idx := &memIndex{id, name, rootPath, nil}
 	go func() {
