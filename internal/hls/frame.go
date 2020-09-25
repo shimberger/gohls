@@ -2,12 +2,17 @@ package hls
 
 import (
 	"fmt"
-	"github.com/shimberger/gohls/internal/worker"
 	"io"
 	"path/filepath"
+
+	"github.com/shimberger/gohls/internal/worker"
 )
 
-var frameWorker = worker.NewWorkerServer(worker.WorkerServerConf{2, filepath.Join(HomeDir, cacheDirName, "frames"), worker.NewCommandWorker(FFMPEGPath)})
+var frameWorker = worker.NewWorkerServer(worker.WorkerServerConf{
+	NumWorkers: 2,
+	CacheDir:   filepath.Join(HomeDir, cacheDirName, "frames"),
+	Worker:     worker.NewCommandWorker(FFMPEGPath),
+})
 
 func WriteFrame(video string, time int, w io.Writer) error {
 	args := []string{

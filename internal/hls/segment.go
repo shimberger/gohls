@@ -2,12 +2,17 @@ package hls
 
 import (
 	"fmt"
-	"github.com/shimberger/gohls/internal/worker"
 	"io"
 	"path/filepath"
+
+	"github.com/shimberger/gohls/internal/worker"
 )
 
-var encodeWorker = worker.NewWorkerServer(worker.WorkerServerConf{2, filepath.Join(HomeDir, cacheDirName, "segments"), worker.NewCommandWorker(FFMPEGPath)})
+var encodeWorker = worker.NewWorkerServer(worker.WorkerServerConf{
+	NumWorkers: 2,
+	CacheDir:   filepath.Join(HomeDir, cacheDirName, "segments"),
+	Worker:     worker.NewCommandWorker(FFMPEGPath),
+})
 
 func WriteSegment(file string, segment int64, res int64, w io.Writer) error {
 	args := EncodingArgs(file, segment, res)

@@ -3,12 +3,13 @@ package hls
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var VideoSuffixes = []string{".mp4", ".rmvb", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
@@ -49,7 +50,7 @@ func GetFFMPEGJson(path string) (map[string]interface{}, error) {
 	var info map[string]interface{}
 	err := json.Unmarshal(data, &info)
 	if err != nil {
-		return nil, fmt.Errorf("Error unmarshalling JSON from ffprobe output for file '%v':", path, err)
+		return nil, fmt.Errorf("Error unmarshalling JSON from ffprobe output for file '%v':", path)
 	}
 	return info, nil
 }
@@ -66,7 +67,7 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 		videoInfos[path] = nil
 		return nil, jsonerr
 	}
-	log.Debugf("ffprobe for %v returned", path, info)
+	log.Debugf("ffprobe for %v returned", path)
 	if _, ok := info["format"]; !ok {
 		return nil, fmt.Errorf("ffprobe data for '%v' does not contain format info", path)
 	}
@@ -76,7 +77,7 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	}
 	duration, perr := strconv.ParseFloat(format["duration"].(string), 64)
 	if perr != nil {
-		return nil, fmt.Errorf("Could not parse duration (%v) of '%v' ", format["duration"].(string), path, perr)
+		return nil, fmt.Errorf("Could not parse duration (%v) of '%v' ", format["duration"].(string), path)
 	}
 	finfo, staterr := os.Stat(path)
 	if staterr != nil {
