@@ -1,16 +1,16 @@
 package cmd
 
 import (
-	homedir "github.com/mitchellh/go-homedir"
-	"github.com/shimberger/gohls/internal/hls"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"strconv"
+
+	"github.com/shimberger/gohls/internal/hls"
+	log "github.com/sirupsen/logrus"
 )
 
-func init_hls() {
+func init_hls(dataDir string) {
 	log.SetOutput(os.Stderr)
 	log.SetLevel(log.InfoLevel)
 	if _, err := strconv.ParseBool(os.Getenv("DEBUG")); err == nil {
@@ -32,13 +32,23 @@ func init_hls() {
 		log.Fatal("ffprobe could not be found in your path", err)
 	}
 
-	homeDir, err := homedir.Dir()
+	log.Infof("Initializing HLS with directory '%v'", dataDir)
+	dataDirInfo, err := os.Stat(dataDir)
 	if err != nil {
-		log.Fatal("Could not determine home directory", err)
+		if !os.IsNotExist(err) {
+			log.Fatalf("Error reading data directory '%v': %v", dataDir, err)
+		}
+		if err := os.Mkdir(filepath.Base(dataDir), 0750); err != nil {
+			log.Fatalf("Could not create data directory '%v': %v", dataDir, err)
+		}
+	} else {
+		if !dataDirInfo.IsDir() {
+			log.Fatalf("Data directory '%v' is not a directory", dataDir)
+		}
 	}
 
 	// Configure HLS module
 	hls.FFMPEGPath = ffmpeg
 	hls.FFProbePath = ffprobe
-	hls.HomeDir = path.Join(homeDir, ".gohls")
+	hls.HomeDir = dataDir
 }

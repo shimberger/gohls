@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/shimberger/gohls/internal/api"
 	"github.com/shimberger/gohls/internal/config"
 	"github.com/shimberger/gohls/internal/hls"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"net/http"
 )
 
 var (
@@ -24,7 +25,7 @@ var serveCmd = &cobra.Command{
 	Short: "Runs ths server",
 	Long:  `Runs ths server`,
 	Run: func(cmd *cobra.Command, args []string) {
-		init_hls()
+		init_hls(dataDir)
 
 		config, err := config.GetConfig(cfgFile)
 		if err != nil {
