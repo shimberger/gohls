@@ -3,12 +3,13 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"net/http"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/shimberger/gohls/internal/config"
 	"github.com/shimberger/gohls/internal/fileindex"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func serveJson(status int, data interface{}, w http.ResponseWriter) {
@@ -69,7 +70,7 @@ var ci fileindex.Index
 func Setup(conf *config.Config) {
 	idxs := make([]fileindex.Index, 0)
 	for _, folder := range conf.Folders {
-		idx, err := fileindex.NewMemIndex(folder.Path, folder.Id, folder.Title, fileindex.HiddenFilter)
+		idx, err := fileindex.NewMemIndex(folder.Path, folder.Id, folder.Title, fileindex.HiddenFilter, folder.ScanInterval)
 		if err != nil {
 			log.Errorf("Could not create file index for %v: %v", folder.Path, err)
 			continue

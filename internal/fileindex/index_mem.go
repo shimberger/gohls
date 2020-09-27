@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func NewMemIndex(root string, id string, name string, filter Filter) (Index, error) {
+func NewMemIndex(root string, id string, name string, filter Filter, scanInterval uint) (Index, error) {
 	rootPath := filepath.Clean(root)
 	fi, err := os.Stat(rootPath)
 	if err != nil {
@@ -23,8 +23,8 @@ func NewMemIndex(root string, id string, name string, filter Filter) (Index, err
 	idx := &memIndex{id, name, rootPath, nil}
 	go func() {
 		for {
-			go idx.update()
-			<-time.After(300 * time.Second)
+			idx.update()
+			<-time.After(time.Second * time.Duration(scanInterval))
 		}
 	}()
 	return idx, nil
