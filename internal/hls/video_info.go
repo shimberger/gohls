@@ -7,14 +7,14 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
 var VideoSuffixes = []string{".mp4", ".rmvb", ".avi", ".mkv", ".flv", ".wmv", ".mov", ".mpg"}
-
-// TODO make mutex
+var videoInfosLock sync.RWMutex
 var videoInfos = make(map[string]*VideoInfo)
 
 type VideoInfo struct {
@@ -23,13 +23,44 @@ type VideoInfo struct {
 	FileLastModified time.Time `json:"lastModified"`
 }
 
-func FilenameLooksLikeVideo(name string) bool {
-	for _, suffix := range VideoSuffixes {
-		if strings.HasSuffix(name, suffix) {
-			return true
+func GetVideoInformation(path string) (*VideoInfo, error) {
+	videoInfosLock.RLock()
+	data, ok := videoInfos[path]
+	videoInfosLock.RUnlock()
+	if ok {
+		if data == nil {
+			return nil, fmt.Errorf("no video data available due to previous error for %v", path)
 		}
+		return data, nil
 	}
-	return false
+	info, jsonerr := GetFFMPEGJson(path)
+	if jsonerr != nil {
+		videoInfosLock.Lock()
+		videoInfos[path] = nil
+		videoInfosLock.Unlock()
+		return nil, jsonerr
+	}
+	log.Debugf("ffprobe for %v returned", path)
+	if _, ok := info["format"]; !ok {
+		return nil, fmt.Errorf("ffprobe data for '%v' does not contain format info", path)
+	}
+	format := info["format"].(map[string]interface{})
+	if _, ok := format["duration"]; !ok {
+		return nil, fmt.Errorf("ffprobe format data for '%v' does not contain duration", path)
+	}
+	duration, perr := strconv.ParseFloat(format["duration"].(string), 64)
+	if perr != nil {
+		return nil, fmt.Errorf("Could not parse duration (%v) of '%v' ", format["duration"].(string), path)
+	}
+	finfo, staterr := os.Stat(path)
+	if staterr != nil {
+		return nil, fmt.Errorf("Could not stat file '%v': %v", path, staterr)
+	}
+	var vi = &VideoInfo{duration, finfo.ModTime()}
+	videoInfosLock.Lock()
+	videoInfos[path] = vi
+	videoInfosLock.Unlock()
+	return vi, nil
 }
 
 func GetRawFFMPEGInfo(path string) ([]byte, error) {
@@ -55,35 +86,11 @@ func GetFFMPEGJson(path string) (map[string]interface{}, error) {
 	return info, nil
 }
 
-func GetVideoInformation(path string) (*VideoInfo, error) {
-	if data, ok := videoInfos[path]; ok {
-		if data == nil {
-			return nil, fmt.Errorf("no video data available due to previous error for %v", path)
+func FilenameLooksLikeVideo(name string) bool {
+	for _, suffix := range VideoSuffixes {
+		if strings.HasSuffix(name, suffix) {
+			return true
 		}
-		return data, nil
 	}
-	info, jsonerr := GetFFMPEGJson(path)
-	if jsonerr != nil {
-		videoInfos[path] = nil
-		return nil, jsonerr
-	}
-	log.Debugf("ffprobe for %v returned", path)
-	if _, ok := info["format"]; !ok {
-		return nil, fmt.Errorf("ffprobe data for '%v' does not contain format info", path)
-	}
-	format := info["format"].(map[string]interface{})
-	if _, ok := format["duration"]; !ok {
-		return nil, fmt.Errorf("ffprobe format data for '%v' does not contain duration", path)
-	}
-	duration, perr := strconv.ParseFloat(format["duration"].(string), 64)
-	if perr != nil {
-		return nil, fmt.Errorf("Could not parse duration (%v) of '%v' ", format["duration"].(string), path)
-	}
-	finfo, staterr := os.Stat(path)
-	if staterr != nil {
-		return nil, fmt.Errorf("Could not stat file '%v': %v", path, staterr)
-	}
-	var vi = &VideoInfo{duration, finfo.ModTime()}
-	videoInfos[path] = vi
-	return vi, nil
+	return false
 }
