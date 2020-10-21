@@ -2,12 +2,13 @@ package api
 
 import (
 	"fmt"
-	"github.com/shimberger/gohls/internal/hls"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/shimberger/gohls/internal/hls"
+	log "github.com/sirupsen/logrus"
 )
 
 func handleDownload(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +43,6 @@ func handleDownload(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Disposition", "attachment; filename="+filepath.Base(dlfile)+"")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filepath.Base(dlfile)))
 	http.ServeFile(w, r, dlfullpath)
 }
