@@ -43,6 +43,6 @@ func handleDownload(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filepath.Base(dlfile)))
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%q", filepath.Base(dlfile)))
 	http.ServeFile(w, r, dlfullpath)
 }
