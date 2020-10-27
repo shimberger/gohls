@@ -1,6 +1,7 @@
 # Golang HLS Streamer
 
-[![CircleCI](https://circleci.com/gh/shimberger/gohls/tree/master.svg?style=svg)](https://circleci.com/gh/shimberger/gohls/tree/master)
+[![CircleCI](https://circleci.com/gh/shimberger/gohls/tree/master.svg?style=svg)](https://circleci.com/gh/shimberger/gohls/tree/master) 
+[![GoDoc](https://godoc.org/github.com/shimberger/gohls?status.svg)](https://godoc.org/github.com/shimberger/gohls)  
 
 Simple server that exposes a directory for video streaming via HTTP Live Streaming (HLS). Uses ffmpeg for transcoding.
 
@@ -53,8 +54,8 @@ Visit the URL [http://127.0.0.1:8080](http://127.0.0.1:8080) to access the web i
 
 ### Requirements
 
-- go installed
-- npm installed
+- [go installed](https://golang.org/dl/)
+- [npm installed](https://nodejs.org/en/) *(NPM is part of Node.js)*
 - bash
 
 ### Initial setup
@@ -68,4 +69,4 @@ To then run the development server execute: `./scripts/run.sh serve`
 
 ## License
 
-See LICENSE.txt
+See [LICENSE.txt](https://github.com/shimberger/gohls/blob/master/LICENSE.txt)
