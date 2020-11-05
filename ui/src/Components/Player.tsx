@@ -58,9 +58,9 @@ class Player extends Page<any, any> {
 			// this.video.setAttribute('x-webkit-airplay','allow');
 			// this.video.setAttribute('airplay','allow');
 			this.player = videojs(this.video, {
-
+        playbackRates: [0.5, 1, 1.5, 2],
 			});
-			this.player.play();
+      this.player.play();
 		}
 	}
 
@@ -218,7 +218,7 @@ class Player extends Page<any, any> {
 			<div className={classNames(classes.stage)}>
 				<div className={classNames(classes.video)}>
 					<video
-						className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered"
+						className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered vjs-playback-rate"
 						ref={(c) => this.videoRef = c}
 						width="100%" controls={true} >
 						<source
