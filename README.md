@@ -1,3 +1,7 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/shimberger/gohls)
+
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/shimberger/gohls)
+
 # Golang HLS Streamer
 
 [![CircleCI](https://circleci.com/gh/shimberger/gohls/tree/master.svg?style=svg)](https://circleci.com/gh/shimberger/gohls/tree/master)
