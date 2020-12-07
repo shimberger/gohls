@@ -9,3 +9,14 @@ buildinfo.go
 rice-box.go
 LOCAL_NOTES.txt
 gohls-config.json
+
+# ignore logfiles
+/logs/
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+gohls
