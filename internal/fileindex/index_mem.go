@@ -136,14 +136,16 @@ func (i *memIndex) updateChildren(d *memIndexData, dir *dirInfo, parentId string
 
 			err := i.updateDir(d, filepath.Join(dir.path, fi.Name()), parentId)
 			if err != nil {
-				return err
+				log.Errorf("Error adding directory %v: %v", filepath.Join(dir.path, fi.Name()), err)
+				continue
 			}
 
 		} else {
 
 			fileEntry, err := i.entryFromInfo(fi, filepath.Join(dir.path, fi.Name()), parentId)
 			if err != nil {
-				return err
+				log.Errorf("Error adding file %v: %v", filepath.Join(dir.path, fi.Name()), err)
+				continue
 			}
 
 			d.add(fileEntry.(*memEntry))
