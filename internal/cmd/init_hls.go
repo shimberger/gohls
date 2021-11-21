@@ -4,22 +4,12 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 
 	"github.com/shimberger/gohls/internal/hls"
 	log "github.com/sirupsen/logrus"
 )
 
 func init_hls(dataDir string) {
-	log.SetOutput(os.Stderr)
-	log.SetLevel(log.InfoLevel)
-	if _, err := strconv.ParseBool(os.Getenv("DEBUG")); err == nil {
-		log.SetLevel(log.DebugLevel)
-	}
-	if _, err := strconv.ParseBool(os.Getenv("TRACE")); err == nil {
-		log.SetLevel(log.TraceLevel)
-	}
-
 	// Find ffmpeg
 	ffmpeg, err := exec.LookPath("ffmpeg")
 	if err != nil {

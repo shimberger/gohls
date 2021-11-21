@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/shimberger/gohls/internal/api"
 	"github.com/shimberger/gohls/internal/config"
 	"github.com/shimberger/gohls/internal/hls"
+	_ "github.com/shimberger/gohls/internal/logger"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -35,13 +35,13 @@ var serveCmd = &cobra.Command{
 		api.Setup(config)
 
 		// Dump information to user
-		fmt.Printf("Path to ffmpeg executable: %v\n", hls.FFMPEGPath)
-		fmt.Printf("Path to ffprobe executable: %v\n", hls.FFProbePath)
-		fmt.Printf("HLS data directory: %v/\n", hls.HomeDir)
-		fmt.Printf("Visit http://%v/\n", listen)
+		log.Infof("Path to ffmpeg executable: %v\n", hls.FFMPEGPath)
+		log.Infof("Path to ffprobe executable: %v\n", hls.FFProbePath)
+		log.Infof("HLS data directory: %v/\n", hls.HomeDir)
+		log.Infof("Visit http://%v/\n", listen)
 
 		if herr := http.ListenAndServe(listen, nil); herr != nil {
-			fmt.Printf("Error listening %v", herr)
+			log.Infof("Error listening %v", herr)
 		}
 
 	},
