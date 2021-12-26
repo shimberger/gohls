@@ -1,6 +1,7 @@
 .gohls
 .DS_Store
 .sass-cache
+.gohls-data
 /build
 ui/src/build
 node_modules
