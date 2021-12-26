@@ -2,11 +2,12 @@ package worker
 
 import (
 	"bufio"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type WorkHandler interface {
@@ -95,9 +96,11 @@ func (s *WorkerServer) Serve(request interface{}, w io.Writer) error {
 		log.Errorf("Error handling request: %v", err)
 		return err
 	}
-
-	if err := os.Rename(cacheTmpFile.Name(), cachePath); err != nil {
-		log.Warnf("Error moving cache file into place: %v", err)
+	err = cw.Flush()
+	if err != nil {
+		if err := os.Rename(cacheTmpFile.Name(), cachePath); err != nil {
+			log.Warnf("Error moving cache file into place: %v", err)
+		}
 	}
 	return nil
 }

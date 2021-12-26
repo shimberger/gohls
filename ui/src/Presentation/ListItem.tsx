@@ -18,10 +18,9 @@ const overlayStyles = {
 
 const actionIconStyles = {
 	opacity: 0,
-	transform: 'scale(1.75)',
 	transition: 'all 0.5s',
 	color: 'white',
-	fontSize: '70px',	
+	fontSize: '70px',
 }
 
 const buttonStyles = {
@@ -40,12 +39,14 @@ const overlayIconStyles = {
 
 const cardStyles = {
 	"&:hover": {
-		transform: 'scale(1.05)'
+		transform: 'scale(1.05)',
+		".actionIcon": {
+			opacity: '1 !important',
+			transform: 'scale(1.25)',
+		},
 	},
-	"&:hover $actionIcon": {
-		opacity: [1, '!important'],
-		transform: 'scale(1.25)',
-
+	".actionIcon": {
+		transform: 'scale(1.75)',
 	},
 	flexGrow: 1,
 	overflow: 'hidden' as const,
@@ -60,6 +61,7 @@ export default function ListItem(props) {
 	if (props.actionIcon) {
 		const ActionIcon = props.actionIcon;
 		icon2 = <ActionIcon
+			className="actionIcon"
 			style={actionIconStyles}
 		/>
 	}
@@ -88,7 +90,7 @@ export default function ListItem(props) {
 
 					<div style={{ backgroundImage: image, ...overlayStyles }} />
 
-					<div  style={overlayStyles} >
+					<div style={overlayStyles} >
 						<div style={overlayIconStyles}>
 							{icon2}
 						</div>

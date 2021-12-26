@@ -20,6 +20,11 @@ func init_hls(dataDir string) {
 		log.SetLevel(log.TraceLevel)
 	}
 
+	dataDir, err := filepath.Abs(dataDir)
+	if err != nil {
+		log.Fatal("Could not resolve data dir path", err)
+	}
+
 	// Find ffmpeg
 	ffmpeg, err := exec.LookPath("ffmpeg")
 	if err != nil {
