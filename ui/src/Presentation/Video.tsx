@@ -1,21 +1,16 @@
-import Button from '@material-ui/core/Button';
-import CardActions from '@material-ui/core/CardActions';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import MovieIcon from '@material-ui/icons/Movie';
-import PlayIcon from '@material-ui/icons/PlayCircleOutline';
-import SaveIcon from '@material-ui/icons/Save';
+import Button from '@mui/material/Button';
+import CardActions from '@mui/material/CardActions';
+import Typography from '@mui/material/Typography';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import MovieIcon from '@mui/icons-material/Movie';
+import PlayIcon from '@mui/icons-material/PlayCircleOutline';
+import SaveIcon from '@mui/icons-material/Save';
 import moment from 'moment';
 import * as React from 'react';
 import Duration from './Duration';
 import ListItem from './ListItem';
 import ListItemDetails from './ListItemDetails';
-
-const styles = {
-
-};
 
 function Actions(props) {
 	const downloadsPath = "/api/download/" + props.path
@@ -32,8 +27,7 @@ function Actions(props) {
 	)
 }
 
-function Video(props) {
-	const { classes } = props;
+export default function Video(props) {
 	const time = Math.min(30.0, Math.ceil(props.info.duration * 0.1))
 	const image = "url('/api/frame/" + props.path + "?t=" + time + "')"
 	const playLink = "/play/" + props.path
@@ -45,8 +39,8 @@ function Video(props) {
 			image={image} >
 
 			<ListItemDetails title={props.name} to={playLink}>
-				<Typography className={classes.pos} color="textSecondary">
-
+				<Typography color="textSecondary">
+					
 					<span style={{ marginRight: '0.25em' }}><AccessTimeIcon style={{ fontSize: 'inherit', 'verticalAlign': 'middle' }} /></span>
 					<span style={{ verticalAlign: 'middle' }}><Duration duration={props.info.duration} /></span><br />
 
@@ -69,5 +63,3 @@ function Video(props) {
 		</ListItem >
 	);
 }
-
-export default withStyles(styles)(Video);
