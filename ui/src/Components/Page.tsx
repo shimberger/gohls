@@ -1,7 +1,7 @@
-import Toolbar from '@material-ui/core/Toolbar';
+import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import AppBar from '@material-ui/core/AppBar';
+import CircularProgress from '@mui/material/CircularProgress';
+import AppBar from '@mui/material/AppBar';
 import ListMessage from '../Presentation/ListMessage';
 
 export default class Page<P = {}, S = {}, SS = any> extends React.Component<P & any, (S & any), SS> {

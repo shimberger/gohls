@@ -1,35 +1,33 @@
-import primaryColor from '@material-ui/core/colors/teal';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider, } from '@mui/material/styles';
 import * as React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import 'typeface-roboto';
 import List from './List';
 import Player from './Player';
+import { teal } from '@mui/material/colors';
 
-const theme = createMuiTheme({
+const theme = createTheme({
 	palette: {
-		primary: primaryColor,
-		type: 'dark',
-	},
-	typography: {
-
-	},
+		primary: teal,
+		mode: 'dark',
+	},	
 });
 
 function App() {
 	return (
-		<MuiThemeProvider theme={theme}>
+		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			<Router>
-				<Switch>
-					<Route name="list" path="/list/**" component={List} />
-					<Route name="play" path="/play/**" component={Player} />
-					<Redirect to="/list/" />
-				</Switch>
+				<Routes>
+					<Route path="/list/" element={<List/>} />
+					<Route path="/list/:path" element={<List/>} />
+					<Route path="/play/:path" element={<Player/>} />
+					<Route path="/" element={<List/>} />
+				</Routes>
 			</Router>
-		</MuiThemeProvider>
-	);
+		</ThemeProvider>
+    );
 }
 
 export default App;

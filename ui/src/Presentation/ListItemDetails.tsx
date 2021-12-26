@@ -1,24 +1,17 @@
-import CardContent from '@material-ui/core/CardContent';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import classNames from 'classnames';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from "react-router-dom";
 import formatTitle from '../formatTitle';
 
-const styles = {
-	link: {
-		textDecoration: 'none',
-		color: 'white'
-	}
-} as any;
-
-function ListItemDetails(props) {
-	const { classes } = props
+export default function ListItemDetails(props) {
 	return (
 		<CardContent>
 			<div style={{ overflow: 'hidden', maxWidth: '100%' }}>
-				<Link className={classNames(classes.link)} to={props.to}>
+				<Link style={{
+					textDecoration: 'none',
+					color: 'white'
+				}} to={props.to}>
 					<Typography gutterBottom={true} variant="h5" component="h3">
 						{formatTitle(props.title)}
 					</Typography>
@@ -28,5 +21,3 @@ function ListItemDetails(props) {
 		</CardContent>
 	)
 }
-
-export default withStyles(styles)(ListItemDetails)

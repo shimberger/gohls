@@ -1,10 +1,8 @@
-import Grid from '@material-ui/core/Grid';
-import InputBase from '@material-ui/core/InputBase';
-import { withStyles } from '@material-ui/core/styles';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import Typography from '@material-ui/core/Typography';
-import SearchIcon from '@material-ui/icons/Search';
-import classNames from 'classnames';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import { InputAdornment } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { orderBy } from 'lodash';
 import * as React from 'react';
 import BackButton from '../Presentation/BackButton';
@@ -12,61 +10,21 @@ import Folder from '../Presentation/Folder';
 import ListMessage from '../Presentation/ListMessage';
 import Video from '../Presentation/Video';
 import Page from './Page';
+import { Search as SearchIcon } from "@mui/icons-material"
+import { useParams } from 'react-router';
 
-const styles = (theme: any) => ({
-	root: {
-		flexGrow: 1,
-	},
-	search: {
-		position: 'relative' as 'relative',
-		borderRadius: theme.shape.borderRadius,
-		backgroundColor: fade(theme.palette.common.white, 0.15),
-		'&:hover': {
-			backgroundColor: fade(theme.palette.common.white, 0.25),
-		},
-		marginRight: theme.spacing.unit * 2,
-		marginLeft: 0,
-		width: '100%',
-		[theme.breakpoints.up('sm')]: {
-			marginLeft: theme.spacing.unit * 3,
-			width: 'auto',
-		},
-	},
-	searchIcon: {
-		width: theme.spacing.unit * 9,
-		height: '100%',
-		position: 'absolute' as 'absolute',
-		pointerEvents: 'none' as 'none',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	grow: {
-		flexGrow: 1,
-	},
-	inputRoot: {
-		color: 'inherit',
-		width: '100%',
-	},
-	inputInput: {
-		paddingTop: theme.spacing.unit,
-		paddingRight: theme.spacing.unit,
-		paddingBottom: theme.spacing.unit,
-		paddingLeft: theme.spacing.unit * 10,
-		transition: theme.transitions.create('width'),
-		width: '100%',
-		[theme.breakpoints.up('md')]: {
-			width: 200,
-		},
-	},
-	title: {
-		marginLeft: '24px',
-		overflow: 'hidden',
-		whiteSpace: 'nowrap' as 'nowrap',
-	}
-});
+const titleStyles = {
+	marginLeft: '24px',
+	overflow: 'hidden',
+	whiteSpace: 'nowrap' as const,
+}
 
-class List extends Page<any, any> {
+export default function List(props) {
+	const params = useParams()
+	return <List2 params={params} {...props} />
+}
+
+class List2 extends Page<any, any> {
 
 	getInitialState() {
 		return {
@@ -80,7 +38,7 @@ class List extends Page<any, any> {
 	}
 
 	public fetch(props) {
-		const path = props.match.params[0] || "";
+		const path = props.params.path || "";
 		this.setState(this.getInitialState())
 		return fetch('/api/item/' + path).then((response) => {
 			return response.json()
@@ -113,26 +71,26 @@ class List extends Page<any, any> {
 	}
 
 	public toolbar() {
-		const { classes } = this.props;
 		const back = (this.state.parents[0]) ? <BackButton to={"/list/" + this.state.parents[0].path} /> : null
 		return (
 			<React.Fragment>
 				{back}
-				<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
+				<Typography variant="h6" sx={titleStyles} color="inherit" >
 					{this.state.name}
 				</Typography>
-				<div className={classes.grow} />
-				<div className={classes.search}>
-					<div className={classes.searchIcon}>
-						<SearchIcon />
-					</div>
-					<InputBase
+				<Box sx={{ flexGrow: 1 }} />
+				<div>
+					<TextField
+						size="small"
 						value={this.state.search}
 						placeholder="Search…"
 						onChange={this.onSearch}
-						classes={{
-							root: classes.inputRoot,
-							input: classes.inputInput,
+						InputProps={{
+							startAdornment: (
+								< InputAdornment position="start">
+									<SearchIcon />
+								</InputAdornment>
+							)
 						}}
 					/>
 				</div>
@@ -141,11 +99,12 @@ class List extends Page<any, any> {
 	}
 
 	public content() {
+
 		let folders = this.filter(this.state.folders).map((folder) => <Grid key={folder.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Folder name={folder.name} path={folder.path} /></Grid>)
 		let videos = this.filter(this.state.videos).map((video) => <Grid key={video.name} item={true} xs={12} sm={6} md={4} lg={3} style={{ display: 'flex' }}><Video name={video.name} info={video.info} path={video.path} /></Grid>)
 		const empty = (this.state.folders != null && (videos.length + folders.length) === 0) ? <ListMessage>No folders or videos found</ListMessage> : null
 		return (
-			<div style={{ padding: 20, paddingTop: '84px' }}>
+			<div style={{ padding: 20, paddingTop: '84px', flexGrow: 1 }}>
 				<Grid spacing={4} container={true} alignItems="stretch">
 					{folders}
 					{videos}
@@ -156,5 +115,3 @@ class List extends Page<any, any> {
 	}
 
 }
-
-export default withStyles(styles)(List);

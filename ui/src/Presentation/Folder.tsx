@@ -1,19 +1,12 @@
-import { withStyles } from '@material-ui/core/styles';
-import FolderIcon from '@material-ui/icons/FolderOpen';
+import FolderIcon from '@mui/icons-material/FolderOpen';
 import * as React from 'react';
 import ListItem from './ListItem';
 import ListItemDetails from './ListItemDetails';
 
-const styles = {
-
-};
-
-function Folder(props) {
+export default function Folder(props) {
 	return (
 		<ListItem to={"/list/" + props.path} icon={FolderIcon}>
 			<ListItemDetails title={props.name} to={"/list/" + props.path} />
 		</ListItem>
 	);
 }
-
-export default withStyles(styles)(Folder);

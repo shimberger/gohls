@@ -1,19 +1,18 @@
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
-import SkipNextIcon from '@material-ui/icons/SkipNext';
-import classNames from 'classnames';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import Box from '@mui/material/Box';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
@@ -21,32 +20,34 @@ import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import BackButton from '../Presentation/BackButton';
 import Page from './Page';
+import { useParams } from 'react-router';
 
-const styles = {
-	root: {
-		flexGrow: 1,
-	},
-	stage: {
-		alignItems: 'center',
-		display: 'flex',
-		flexBasis: 'fit-content',
-		height: '100vh',
-		justifyItems: 'center',
-		padding: '20px',
-		paddingTop: '80px',
-	},
-	title: {
-		flexGrow: 1,
-		marginLeft: '24px'
-	},
-	video: {
-		boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
-		margin: '0 auto',
-		width: 'calc(90vh * 1.77 - 100px)',
-	},
-};
+const titleStyles = {
+	flexGrow: 1,
+	marginLeft: '24px'
+}
 
-class Player extends Page<any, any> {
+const videoStyles = {
+	boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
+	margin: '0 auto',
+	width: 'calc(90vh * 1.77 - 100px)',
+}
+
+const stageStyles = {
+	alignItems: 'center',
+	display: 'flex',
+	flexBasis: 'fit-content',
+	height: '100vh',
+	justifyItems: 'center',
+	padding: '20px',
+	paddingTop: '80px',
+}
+
+export default function Player(props) {
+	const params = useParams()
+	return <Player2 params={params}  {...props} />
+}
+class Player2 extends Page<any, any> {
 
 	private video: any
 	private videoRef: any
@@ -69,7 +70,7 @@ class Player extends Page<any, any> {
 	}
 
 	public fetch(props) {
-		const path = props.match.params[0];
+		const path = props.params.path;
 		return fetch('/api/item/' + path)
 			.then((response) => {
 				return response.json().then((data) => {
@@ -119,12 +120,11 @@ class Player extends Page<any, any> {
 	};
 
 	downloadsPath() {
-		const path = this.props.match.params[0];
+		const path = this.props.params.path;
 		return "/api/download/" + path
 	}
 
 	toolbar() {
-		const { classes } = this.props;
 		const { anchorEl, openDialog, start, duration } = this.state;
 		const open = Boolean(anchorEl);
 		const downloadsPath = this.downloadsPath()
@@ -170,26 +170,32 @@ class Player extends Page<any, any> {
 				</DialogActions>
 			</Dialog>
 		return (
-			<React.Fragment>
+            <React.Fragment>
 				{clipDialog}
 				<BackButton to={"/list/" + this.state.parents[0].path} />
-				<Typography variant="h6" className={classNames(classes.title)} color="inherit" >
+				<Typography variant="h6" sx={titleStyles} color="inherit" >
 					{this.state.video.name}
 				</Typography>
 				<div>
-          <IconButton component={Link} to={"/play/"+this.state.video.prev} 
-            disabled={this.state.video.prev===""} >
+          <IconButton
+              component={Link}
+              to={"/play/"+this.state.video.prev}
+              disabled={this.state.video.prev===""}
+              size="large">
 						<SkipPreviousIcon />
 					</IconButton>
-          <IconButton component={Link} to={"/play/"+this.state.video.next} 
-            disabled={this.state.video.next===""} >
+          <IconButton
+              component={Link}
+              to={"/play/"+this.state.video.next}
+              disabled={this.state.video.next===""}
+              size="large">
 						<SkipNextIcon />
 					</IconButton>
 					<IconButton
-						aria-owns={open ? 'download-menu' : null}
-						aria-haspopup="true"
-						onClick={this.handleMenu}
-					>
+                        aria-owns={open ? 'download-menu' : null}
+                        aria-haspopup="true"
+                        onClick={this.handleMenu}
+                        size="large">
 						<MoreVertIcon />
 					</IconButton>
 					<Menu
@@ -207,16 +213,14 @@ class Player extends Page<any, any> {
 					</Menu>
 				</div>
 			</React.Fragment>
-
-		)
+        );
 	}
 
 	public content() {
-		const { classes } = this.props;
-		const path = this.props.match.params[0];
+		const path = this.props.params.path;
 		return (
-			<div className={classNames(classes.stage)}>
-				<div className={classNames(classes.video)}>
+			<Box sx={stageStyles}>
+				<Box sx={videoStyles}>
 					<video
 						className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered vjs-playback-rate"
 						ref={(c) => this.videoRef = c}
@@ -225,11 +229,10 @@ class Player extends Page<any, any> {
 							src={"/api/playlist/" + path}
 							type="application/x-mpegURL" />
 					</video>
-				</div>
-			</div>
+				</Box>
+			</Box>
 		)
 	}
 
 }
 
-export default withStyles(styles)(Player)
