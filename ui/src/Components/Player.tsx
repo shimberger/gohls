@@ -52,7 +52,7 @@ const VideoJS = (props) => {
 			if (!videoElement) return;
 
 			const player = playerRef.current = videojs(videoElement, options, () => {
-				console.log("player is ready");
+				//console.log("player is ready");
 				onReady && onReady(player);
 			});
 		} else {
@@ -61,7 +61,7 @@ const VideoJS = (props) => {
 			// player.autoplay(options.autoplay);
 			player.src(options.sources);
 		}
-	}, [options, videoRef]);
+	}, [options, videoRef, onReady]);
 
 	// Dispose the Video.js player when the functional component unmounts
 	React.useEffect(() => {
