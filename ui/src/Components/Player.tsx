@@ -1,26 +1,22 @@
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import BackButton from '../Presentation/BackButton';
-import Page from './Page';
 import { useParams } from 'react-router';
+import ClipDialog from '../Presentation/ClipDialog';
+import Toolbar from '@mui/material/Toolbar';
+import CircularProgress from '@mui/material/CircularProgress';
+import AppBar from '@mui/material/AppBar';
+import ListMessage from '../Presentation/ListMessage';
 
 const titleStyles = {
 	flexGrow: 1,
@@ -43,196 +39,186 @@ const stageStyles = {
 	paddingTop: '80px',
 }
 
+const VideoJS = (props) => {
+
+	const videoRef = React.useRef(null);
+	const playerRef = React.useRef(null);
+	const { options, onReady } = props;
+
+	React.useEffect(() => {
+		// make sure Video.js player is only initialized once
+		if (!playerRef.current) {
+			const videoElement = videoRef.current;
+			if (!videoElement) return;
+
+			const player = playerRef.current = videojs(videoElement, options, () => {
+				//console.log("player is ready");
+				onReady && onReady(player);
+			});
+		} else {
+			// you can update player here [update player through props]
+			const player = playerRef.current;
+			// player.autoplay(options.autoplay);
+			player.src(options.sources);
+		}
+	}, [options, videoRef, onReady]);
+
+	// Dispose the Video.js player when the functional component unmounts
+	React.useEffect(() => {
+		const player = playerRef.current;
+
+		return () => {
+			if (player) {
+				player.dispose();
+				playerRef.current = null;
+			}
+		};
+	}, [playerRef]);
+
+	return (
+		<div data-vjs-player>
+			<video width="100%" controls={true} ref={videoRef} className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered vjs-playback-rate" />
+		</div>
+	);
+}
+
+function VideoToolbar({ data, path }) {
+
+	const handleMenu = event => {
+		setAnchorEL(event.currentTarget);
+	};
+
+	const handleReset = () => {
+		setAnchorEL(null);
+	};
+
+	const handleClip = () => {
+		setDialog(true)
+	};
+
+	const handleDownload = () => {
+		window.open(downloadsPath(), '_blank');
+		setDialog(false)
+		setAnchorEL(null);
+	};
+
+	const handleClose = () => {
+		setDialog(false)
+	};
+
+	function downloadsPath() {
+		return "/api/download/" + path
+	}
+
+	const [openDialog, setDialog] = React.useState(false)
+	const [anchorEl, setAnchorEL] = React.useState(null)
+
+
+	const open = Boolean(anchorEl);
+	const clipDialog = <ClipDialog
+		open={openDialog}
+		onClose={() => handleClose()}
+		onDownload={(start, duration) => {
+			const clipPath = downloadsPath() + "?start=" + start + "&duration=" + duration
+			window.open(clipPath, '_blank');
+			setAnchorEL(false)
+			setDialog(false)
+		}}
+	/>
+	return (
+		<React.Fragment>
+			{clipDialog}
+			<BackButton to={"/list/" + data.parents[0].path} />
+			<Typography variant="h6" sx={titleStyles} color="inherit" >
+				{data.video.name}
+			</Typography>
+			<Box sx={{ flexShrink: 0 }}>
+				<IconButton
+					component={Link}
+					to={"/play/" + data.video.prev}
+					disabled={data.video.prev === ""}
+					size="large">
+					<SkipPreviousIcon />
+				</IconButton>
+				<IconButton
+					component={Link}
+					to={"/play/" + data.video.next}
+					disabled={data.video.next === ""}
+					size="large">
+					<SkipNextIcon />
+				</IconButton>
+				<IconButton
+					aria-owns={open ? 'download-menu' : null}
+					aria-haspopup="true"
+					onClick={handleMenu}
+					size="large">
+					<MoreVertIcon />
+				</IconButton>
+				<Menu
+					id="download-menu"
+					anchorEl={anchorEl}
+					open={open}
+					onClose={handleReset}
+				>
+					<MenuItem onClick={handleDownload}>
+						Download Video
+					</MenuItem>
+					<MenuItem onClick={handleClip}>
+						Download Clip
+					</MenuItem>
+				</Menu>
+			</Box>
+		</React.Fragment>
+	)
+}
+
 export default function Player(props) {
 	const params = useParams()
-	return <Player2 params={params}  {...props} />
-}
-class Player2 extends Page<any, any> {
+	const path = params.path;
 
-	private video: any
-	private videoRef: any
-	private player: any
+	const [data, setData] = React.useState(null)
 
-	public componentDidUpdate() {
-		this.video = ReactDOM.findDOMNode(this.videoRef);
-		if (this.video) {
-			// this.video.setAttribute('x-webkit-airplay','allow');
-			// this.video.setAttribute('airplay','allow');
-			this.player = videojs(this.video, {
-        playbackRates: [0.5, 1, 1.5, 2],
-			});
-      this.player.play();
-		}
-	}
-
-	public componentWillUnmount() {
-		this.player.dispose();
-	}
-
-	public fetch(props) {
-		const path = props.params.path;
-		return fetch('/api/item/' + path)
+	React.useEffect(() => {
+		fetch('/api/item/' + path)
 			.then((response) => {
-				return response.json().then((data) => {
-					this.setState({
+				response.json().then((data) => {
+					setData({
 						'parents': data.parents,
 						'video': data,
 					})
 				})
 			});
+	}, [path])
+
+	const videoJsOptions = { // lookup the options in the docs for more options
+		autoplay: true,
+		controls: true,
+		responsive: true,
+		fluid: true,
+		playbackRates: [0.5, 1, 1.5, 2],
+		sources: [{
+			src: "/api/playlist/" + path,
+			type: "application/x-mpegURL"
+		}]
 	}
 
-	getInitialState() {
-		return {
-			anchorEl: null,
-			openDialog: false,
-			start: '0',
-			video: null,
-			duration: '60',
-		}
-	}
-
-	handleMenu = event => {
-		this.setState({ anchorEl: event.currentTarget });
-	};
-
-	handleReset = () => {
-		this.setState({ anchorEl: null });
-	};
-
-	handleClip = () => {
-		this.setState({ openDialog: true, anchorEl: null });
-	};
-
-	handleDownload = () => {
-		window.open(this.downloadsPath(), '_blank');
-		this.setState({ anchorEl: null });
-	};
-
-	handleClose = () => {
-		this.setState({ openDialog: false });
-	};
-
-	handleChange = name => event => {
-		this.setState({
-			[name]: event.target.value,
-		});
-	};
-
-	downloadsPath() {
-		const path = this.props.params.path;
-		return "/api/download/" + path
-	}
-
-	toolbar() {
-		const { anchorEl, openDialog, start, duration } = this.state;
-		const open = Boolean(anchorEl);
-		const downloadsPath = this.downloadsPath()
-		const clipPath = downloadsPath + "?start=" + start + "&duration=" + duration
-		const clipDialog =
-			<Dialog
-				open={openDialog}
-				onClose={this.handleClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">{"Download video clip"}</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						Enter the starting position and duration of the clip in seconds.
-						<br /><br />
-					</DialogContentText>
-					<TextField
-						label="Start at"
-						value={start}
-						autoFocus={true}
-						onChange={this.handleChange('start')}
-					/>
-					&nbsp;&nbsp;
-					<TextField
-						label="Duration"
-						value={duration}
-						onChange={this.handleChange('duration')}
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={this.handleClose} color="primary">
-						Cancel
-					</Button>
-					<Button
-						onClick={this.handleClose}
-						color="primary"
-						target="_blank"
-						href={clipPath}
-					>
-						Download
-					</Button>
-				</DialogActions>
-			</Dialog>
-		return (
-            <React.Fragment>
-				{clipDialog}
-				<BackButton to={"/list/" + this.state.parents[0].path} />
-				<Typography variant="h6" sx={titleStyles} color="inherit" >
-					{this.state.video.name}
-				</Typography>
-				<div>
-          <IconButton
-              component={Link}
-              to={"/play/"+this.state.video.prev}
-              disabled={this.state.video.prev===""}
-              size="large">
-						<SkipPreviousIcon />
-					</IconButton>
-          <IconButton
-              component={Link}
-              to={"/play/"+this.state.video.next}
-              disabled={this.state.video.next===""}
-              size="large">
-						<SkipNextIcon />
-					</IconButton>
-					<IconButton
-                        aria-owns={open ? 'download-menu' : null}
-                        aria-haspopup="true"
-                        onClick={this.handleMenu}
-                        size="large">
-						<MoreVertIcon />
-					</IconButton>
-					<Menu
-						id="download-menu"
-						anchorEl={anchorEl}
-						open={open}
-						onClose={this.handleReset}
-					>
-						<MenuItem onClick={this.handleDownload}>
-							Download Video
-					</MenuItem>
-						<MenuItem onClick={this.handleClip}>
-							Download Clip
-					</MenuItem>
-					</Menu>
-				</div>
-			</React.Fragment>
-        );
-	}
-
-	public content() {
-		const path = this.props.params.path;
-		return (
-			<Box sx={stageStyles}>
-				<Box sx={videoStyles}>
-					<video
-						className="video-js vjs-default-skin vjs-16-9  vjs-big-play-centered vjs-playback-rate"
-						ref={(c) => this.videoRef = c}
-						width="100%" controls={true} >
-						<source
-							src={"/api/playlist/" + path}
-							type="application/x-mpegURL" />
-					</video>
-				</Box>
-			</Box>
-		)
-	}
-
+	return (
+		<div className="page" key="">
+			<AppBar >
+				<Toolbar>
+					{(data) ? <VideoToolbar path={params.path} data={data} /> : null}
+				</Toolbar>
+			</AppBar>
+			<div>
+				{(!data) ? <ListMessage><CircularProgress size={50} /></ListMessage> : (
+					<Box sx={stageStyles}>
+						<Box sx={videoStyles}>
+							<VideoJS options={videoJsOptions} />
+						</Box>
+					</Box>
+				)}
+			</div>
+		</div>
+	)
 }
 
