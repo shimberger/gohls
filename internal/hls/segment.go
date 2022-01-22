@@ -48,6 +48,9 @@ func EncodingArgs(videoFile string, segment int64, res int64) []string {
 		// TODO: Find out what it does
 		//"-strict", "-2",
 
+		// Synchronize audio
+		"-async", "1",
+
 		// 720p
 		"-vf", fmt.Sprintf("scale=-2:%v", res),
 
@@ -61,7 +64,8 @@ func EncodingArgs(videoFile string, segment int64, res int64) []string {
 		"-c:a", "aac",
 		"-b:a", "128k",
 		"-ac", "2",
-		//
+
+		// TODO
 		"-pix_fmt", "yuv420p",
 
 		//"-r", "25", // fixed framerate
