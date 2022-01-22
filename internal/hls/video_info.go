@@ -50,11 +50,11 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	}
 	duration, perr := strconv.ParseFloat(format["duration"].(string), 64)
 	if perr != nil {
-		return nil, fmt.Errorf("Could not parse duration (%v) of '%v' ", format["duration"].(string), path)
+		return nil, fmt.Errorf("could not parse duration (%v) of '%v' ", format["duration"].(string), path)
 	}
 	finfo, staterr := os.Stat(path)
 	if staterr != nil {
-		return nil, fmt.Errorf("Could not stat file '%v': %v", path, staterr)
+		return nil, fmt.Errorf("could not stat file '%v': %v", path, staterr)
 	}
 	var vi = &VideoInfo{duration, finfo.ModTime()}
 	videoInfosLock.Lock()
@@ -68,7 +68,7 @@ func GetRawFFMPEGInfo(path string) ([]byte, error) {
 	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", path)
 	data, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("Error executing ffprobe for file '%v': %v", path, err)
+		return nil, fmt.Errorf("error executing ffprobe for file '%v': %v", path, err)
 	}
 	return data, nil
 }
@@ -81,7 +81,7 @@ func GetFFMPEGJson(path string) (map[string]interface{}, error) {
 	var info map[string]interface{}
 	err := json.Unmarshal(data, &info)
 	if err != nil {
-		return nil, fmt.Errorf("Error unmarshalling JSON from ffprobe output for file '%v':", path)
+		return nil, fmt.Errorf("error unmarshalling JSON from ffprobe output for file '%v'", path)
 	}
 	return info, nil
 }
