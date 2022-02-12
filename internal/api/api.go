@@ -88,6 +88,7 @@ func Setup(conf *config.Config) {
 		r.Handle("/playlist/*", withEntry(handlePlaylist))
 		r.Handle("/segments/{resolution}/{segment}/*", withEntry(handleSegment))
 		r.Handle("/download/*", withEntry(handleDownload))
+		r.Handle("/listcaptions/*", withEntry(handleCaptionlist))
 		r.HandleFunc("/item/*", handleItem)
 	})
 	router.Handle("/*", NewSingleAssetHandler("index.html"))
