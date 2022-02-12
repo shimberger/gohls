@@ -36,10 +36,8 @@ func handleCaptionlist(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, entry := range entries {
 		if filenameLooksLikeCaptions(entry.Name()) {
-			fmt.Println(entry.Id())
 			captions = append(captions, getUrl(entry.Id()))
 		}
 	}
-	fmt.Printf("%#v\n", captions)
 	serveJson(200, captions, w)
 }
