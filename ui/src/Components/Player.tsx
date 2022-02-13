@@ -43,7 +43,7 @@ const VideoJS = (props) => {
 
 	const videoRef = React.useRef(null);
 	const playerRef = React.useRef(null);
-	const { options, onReady } = props;
+	const { options, onReady, captions } = props;
 
 	React.useEffect(() => {
 		// make sure Video.js player is only initialized once
@@ -61,7 +61,10 @@ const VideoJS = (props) => {
 			// player.autoplay(options.autoplay);
 			player.src(options.sources);
 		}
-	}, [options, videoRef, onReady]);
+    captions.forEach((cap) => {
+      playerRef.current.addRemoteTextTrack(cap, true)
+    })
+	}, [options, videoRef, onReady, captions]);
 
 	// Dispose the Video.js player when the functional component unmounts
 	React.useEffect(() => {
@@ -177,6 +180,7 @@ export default function Player(props) {
 	const path = params.path;
 
 	const [data, setData] = React.useState(null)
+  const [captions, setCaptions] = React.useState([])
 
 	React.useEffect(() => {
 		fetch('/api/item/' + path)
@@ -188,6 +192,20 @@ export default function Player(props) {
 					})
 				})
 			});
+
+    fetch('/api/captionlist/' + path)
+      .then((response) => {
+        response.json().then((data) => {
+          setCaptions(data.map(((cap, i) => {
+            return {
+              src: cap, 
+              kind:'subtitles', 
+              srclang: 'en', 
+              label: `subtitle ${i}`
+            }
+          })))
+        })
+      })
 	}, [path])
 
 	const videoJsOptions = { // lookup the options in the docs for more options
@@ -200,7 +218,7 @@ export default function Player(props) {
 			src: "/api/playlist/" + path,
 			type: "application/x-mpegURL"
 		}]
-	}
+  }
 
 	return (
 		<div className="page" key="">
@@ -210,10 +228,10 @@ export default function Player(props) {
 				</Toolbar>
 			</AppBar>
 			<div>
-				{(!data) ? <ListMessage><CircularProgress size={50} /></ListMessage> : (
+				{(!data && !captions) ? <ListMessage><CircularProgress size={50} /></ListMessage> : (
 					<Box sx={stageStyles}>
 						<Box sx={videoStyles}>
-							<VideoJS options={videoJsOptions} />
+							<VideoJS options={videoJsOptions} captions={captions}/>
 						</Box>
 					</Box>
 				)}

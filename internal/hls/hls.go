@@ -6,6 +6,7 @@ import (
 )
 
 const PlaylistContentType = "application/vnd.apple.mpegurl"
+const CaptionContentType = "text/vtt"
 
 var HomeDir = ".gohls"
 var FFProbePath = "ffprobe"
