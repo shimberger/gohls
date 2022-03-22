@@ -46,6 +46,7 @@ func (s *WorkerServer) getCachePath(r interface{}) string {
 
 func (s *WorkerServer) tryServeFromCache(r interface{}, w io.Writer) (bool, error) {
 	path := s.getCachePath(r)
+	log.Debugf("Looking for request %v in cache %v", r, path)
 	if file, err := os.Open(path); err == nil {
 		defer file.Close()
 		_, err = io.Copy(w, file)
@@ -62,6 +63,9 @@ func (s *WorkerServer) tryServeFromCache(r interface{}, w io.Writer) (bool, erro
 func (s *WorkerServer) Serve(request interface{}, w io.Writer) error {
 
 	if served, err := s.tryServeFromCache(request, w); served || err != nil {
+		if served {
+			log.Debugf("Served request %v from cache", request)
+		}
 		if err != nil {
 			log.Errorf("Error serving request from cache: %v", err)
 		}
@@ -73,6 +77,8 @@ func (s *WorkerServer) Serve(request interface{}, w io.Writer) error {
 	defer func() {
 		s.tokens <- token
 	}()
+
+	log.Debugf("Processing request %v", request)
 
 	cachePath := s.getCachePath(request)
 	cacheDir := filepath.Dir(cachePath)
@@ -97,10 +103,12 @@ func (s *WorkerServer) Serve(request interface{}, w io.Writer) error {
 		return err
 	}
 	err = cw.Flush()
-	if err != nil {
+	if err == nil {
 		if err := os.Rename(cacheTmpFile.Name(), cachePath); err != nil {
 			log.Warnf("Error moving cache file into place: %v", err)
 		}
+	} else {
+		os.Remove(cacheTmpFile.Name())
 	}
 	return nil
 }
