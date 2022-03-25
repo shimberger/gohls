@@ -1,12 +1,12 @@
 package worker
 
 import (
-	"bufio"
+	"bytes"
+	"context"
 	"io"
-	"io/ioutil"
-	"os"
 	"path/filepath"
 
+	"github.com/shimberger/gohls/internal/cache"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -25,6 +25,7 @@ type token struct{}
 
 type WorkerServer struct {
 	conf   WorkerServerConf
+	cache  cache.Cache
 	tokens chan token
 }
 
@@ -33,7 +34,7 @@ func NewWorkerServer(conf WorkerServerConf) *WorkerServer {
 	for i := conf.NumWorkers; i > 0; i-- {
 		tokens <- token{}
 	}
-	return &WorkerServer{conf, tokens}
+	return &WorkerServer{conf, cache.NewDirCache(conf.CacheDir), tokens}
 }
 
 func (s *WorkerServer) handler() WorkHandler {
@@ -45,18 +46,21 @@ func (s *WorkerServer) getCachePath(r interface{}) string {
 }
 
 func (s *WorkerServer) tryServeFromCache(r interface{}, w io.Writer) (bool, error) {
-	path := s.getCachePath(r)
-	log.Debugf("Looking for request %v in cache %v", r, path)
-	if file, err := os.Open(path); err == nil {
-		defer file.Close()
-		_, err = io.Copy(w, file)
-		if err != nil {
-			log.Errorf("Error copying file to client: %v", err)
-			return true, err
-		}
-		return true, nil
+	data, err := s.cache.Get(context.Background(), s.handler().Key(r))
+	// If error getting item, return not served with error
+	if err != nil {
+		return false, err
 	}
-	return false, nil
+	// If no item found, return not served with no error
+	if data == nil {
+		return false, nil
+	}
+	// If copying fails, return served with error
+	if _, err = io.Copy(w, bytes.NewReader(data)); err != nil {
+		return true, err
+	}
+	// Everything worked, return served with no error
+	return true, nil
 }
 
 // TODO timeout & context
@@ -80,35 +84,16 @@ func (s *WorkerServer) Serve(request interface{}, w io.Writer) error {
 
 	log.Debugf("Processing request %v", request)
 
-	cachePath := s.getCachePath(request)
-	cacheDir := filepath.Dir(cachePath)
-	cacheName := filepath.Base(cachePath)
-
-	if err := os.MkdirAll(cacheDir, 0777); err != nil {
-		log.Errorf("Could not create cache dir %v: %v", cachePath, err)
-		return err
-	}
-
-	cacheTmpFile, err := ioutil.TempFile(cacheDir, cacheName+".*")
-	if err != nil {
-		log.Errorf("Could not create cache file %v: %v", cacheTmpFile, err)
-		return err
-	}
-
-	cw := bufio.NewWriter(cacheTmpFile)
+	cw := new(bytes.Buffer)
 	mw := io.MultiWriter(cw, w)
 	if err := s.handler().Handle(request, mw); err != nil {
-		os.Remove(cacheTmpFile.Name())
 		log.Errorf("Error handling request: %v", err)
 		return err
 	}
-	err = cw.Flush()
-	if err == nil {
-		if err := os.Rename(cacheTmpFile.Name(), cachePath); err != nil {
-			log.Warnf("Error moving cache file into place: %v", err)
-		}
-	} else {
-		os.Remove(cacheTmpFile.Name())
+
+	if err := s.cache.Set(context.Background(), s.handler().Key(request), cw.Bytes()); err != nil {
+		log.Errorf("Error caching request: %v", err)
 	}
+
 	return nil
 }
