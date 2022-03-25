@@ -1,7 +1,7 @@
 package hls
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/shimberger/gohls/internal/cmdutil"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -35,12 +36,13 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	}
 	info, jsonerr := GetFFMPEGJson(path)
 	if jsonerr != nil {
+		log.Warnf("Error getting video info: %v", jsonerr)
 		videoInfosLock.Lock()
 		videoInfos[path] = nil
 		videoInfosLock.Unlock()
 		return nil, jsonerr
 	}
-	log.Debugf("ffprobe for %v returned", path)
+	log.Debugf("ffprobe for %v returned: %v", path, info)
 	if _, ok := info["format"]; !ok {
 		return nil, fmt.Errorf("ffprobe data for '%v' does not contain format info", path)
 	}
@@ -63,26 +65,15 @@ func GetVideoInformation(path string) (*VideoInfo, error) {
 	return vi, nil
 }
 
-func GetRawFFMPEGInfo(path string) ([]byte, error) {
-	log.Debugf("Executing ffprobe for %v", path)
-	cmd := exec.Command(FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", path)
-	data, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("error executing ffprobe for file '%v': %v", path, err)
-	}
-	return data, nil
-}
-
 func GetFFMPEGJson(path string) (map[string]interface{}, error) {
-	data, cmderr := GetRawFFMPEGInfo(path)
-	if cmderr != nil {
-		return nil, cmderr
-	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, FFProbePath, "-v", "quiet", "-print_format", "json", "-show_format", path)
 	var info map[string]interface{}
-	err := json.Unmarshal(data, &info)
-	if err != nil {
-		return nil, fmt.Errorf("error unmarshalling JSON from ffprobe output for file '%v'", path)
+	if err := cmdutil.ExecAndGetStdoutJson(cmd, &info); err != nil {
+		return nil, fmt.Errorf("error getting JSON from ffprobe output for file '%v': %v", path, err)
 	}
+
 	return info, nil
 }
 
