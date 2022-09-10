@@ -32,8 +32,9 @@ func NewMemIndex(root string, id string, name string, filter Filter, scanInterva
 
 /* Index Entry */
 
-func entryId(path string, fi os.FileInfo) string {
+func entryId(name string, path string, fi os.FileInfo) string {
 	h := sha1.New()
+	h.Write([]byte(fmt.Sprintf("%v\n", name)))
 	h.Write([]byte(fmt.Sprintf("%v\n", path)))
 	h.Write([]byte(fmt.Sprintf("%v\n", fi.Size())))
 	h.Write([]byte(fmt.Sprintf("%v\n", fi.ModTime())))
@@ -50,7 +51,7 @@ type memEntry struct {
 }
 
 func newMemEntry(index *memIndex, path string, fi os.FileInfo, parentId string) Entry {
-	id := entryId(path, fi)
+	id := entryId(index.name, path, fi)
 	return &memEntry{index, id, path, parentId, fi.IsDir()}
 }
 
