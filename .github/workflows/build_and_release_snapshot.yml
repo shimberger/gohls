@@ -71,7 +71,9 @@ jobs:
       contents: write
 
     # https://github.blog/changelog/2021-04-19-github-actions-limit-workflow-run-or-job-concurrency/
-    concurrency: std::lock_guard
+    concurrency:
+      group: std::lock_guard
+      cancel-in-progress: true
 
     timeout-minutes: 10
 
