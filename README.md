@@ -1,6 +1,5 @@
 # Golang HLS Streamer
 
-[![CircleCI](https://circleci.com/gh/shimberger/gohls/tree/master.svg?style=svg)](https://circleci.com/gh/shimberger/gohls/tree/master) 
 [![GitHub Actions: Build, and may release a new snapshot](https://github.com/shimberger/gohls/actions/workflows/build_and_release_snapshot.yml/badge.svg)](https://github.com/shimberger/gohls/actions/workflows/build_and_release_snapshot.yml) 
 [![GoDoc](https://godoc.org/github.com/shimberger/gohls?status.svg)](https://godoc.org/github.com/shimberger/gohls)  
 
