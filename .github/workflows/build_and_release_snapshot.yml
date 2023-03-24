@@ -1,0 +1,121 @@
+# You may want to know...
+#
+# Conditions:
+# - Pushing any commits triggers building.
+# - Pushing commits to "master" produces a snapshot.
+#
+# Q: This workflow will not triggered by releases. What if I want to release a new no-snapshot version?
+# A: Manually create a release on GitHub with your customized release note, then download and upload
+#    the artifacts from the recent snapshot.
+#
+
+name: Build, and may release a new snapshot
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  tag_name: "snapshot"
+
+jobs:
+  build_artifacts:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 20
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+
+    - name: Install node
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version-file: "./ui/.nvmrc"
+        cache: "npm"        
+        cache-dependency-path: "./ui"
+
+    - name: Install golang
+      uses: actions/setup-go@v3.5.0
+      with:
+        go-version-file: "./go.mod"
+
+    - name: Install UI dependencies
+      working-directory: "./ui"
+      run: |
+        set -euo pipefail
+        npm ci
+
+    - name: Build version '${{ env.tag_name }}'
+      run: |
+        set -euo pipefail
+        ./scripts/prep_release.sh '${{ env.tag_name }}'
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        if-no-files-found: error
+        name: gohls-${{ env.tag_name }}-all_in_one
+        path: "./build/gohls-*-${{ env.tag_name }}.tar.gz"
+
+  make_release:
+    # https://docs.github.com/en/actions/learn-github-actions/contexts
+    # https://docs.github.com/actions/learn-github-actions/expressions
+    if: ${{ github.ref == 'refs/heads/master' }}
+
+    needs: build_artifacts
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    # https://github.blog/changelog/2021-04-19-github-actions-limit-workflow-run-or-job-concurrency/
+    concurrency:
+      group: std::lock_guard
+      cancel-in-progress: true
+
+    timeout-minutes: 10
+
+    steps:
+    # for deleting existing tag later
+    - uses: actions/checkout@v3.3.0
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: gohls-${{ env.tag_name }}-all_in_one
+
+    - name: Delete existing tag '${{ env.tag_name }}' if it exists
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        set -x
+        if gh release view '${{ env.tag_name }}'; then
+          gh release delete '${{ env.tag_name }}' --cleanup-tag --yes
+          # GitHub seems to need some time to clean things up.
+          # If there is no sleep, a draft release may be generated.
+          sleep 60
+        fi
+
+    - name: Tag and release '${{ env.tag_name }}'
+      uses: svenstaro/upload-release-action@2.5.0
+      with:
+        tag: "${{ env.tag_name }}"
+        file: "./gohls-*-${{ env.tag_name }}.tar.gz"
+        file_glob: true
+        prerelease: true
+        release_name: "${{ env.tag_name }}"
+        body: "The ${{ env.tag_name }} release."
+
+    - name: Push to AWS S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        set -euo pipefail
+        aws s3 cp --region us-east-1 './gohls-osx-${{ env.tag_name }}.tar.gz' s3://gohls/
+        aws s3 cp --region us-east-1 './gohls-linux-386-${{ env.tag_name }}.tar.gz' s3://gohls/
+        aws s3 cp --region us-east-1 './gohls-linux-amd64-${{ env.tag_name }}.tar.gz' s3://gohls/
+        aws s3 cp --region us-east-1 './gohls-windows-amd64-${{ env.tag_name }}.tar.gz' s3://gohls/
