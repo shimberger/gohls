@@ -18,7 +18,10 @@ You can find the latest release on the releases page [https://github.com/shimber
 
 - [Windows (64 bit)](https://s3.amazonaws.com/gohls/gohls-windows-amd64-snapshot.tar.gz)
 - [Linux (64 bit)](https://s3.amazonaws.com/gohls/gohls-linux-amd64-snapshot.tar.gz)
+- [Linux (32 bit)](https://s3.amazonaws.com/gohls/gohls-linux-386-snapshot.tar.gz)
+- [Linux (Arm 64 bit)](https://s3.amazonaws.com/gohls/gohls-linux-arm64-snapshot.tar.gz)
 - [macOS (64 bit)](https://s3.amazonaws.com/gohls/gohls-osx-snapshot.tar.gz)
+- [macOS (Arm (M1) 64 bit)](https://s3.amazonaws.com/gohls/gohls-osx-arm64-snapshot.tar.gz)
 
 ### 2. Create a configuration file
 
