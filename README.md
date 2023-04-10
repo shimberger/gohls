@@ -1,3 +1,7 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/shimberger/gohls)
+
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/shimberger/gohls)
+
 # Golang HLS Streamer
 
 [![GitHub Actions: Build, and may release a new snapshot](https://github.com/shimberger/gohls/actions/workflows/build_and_release_snapshot.yml/badge.svg)](https://github.com/shimberger/gohls/actions/workflows/build_and_release_snapshot.yml) 
